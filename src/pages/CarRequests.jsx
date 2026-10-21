@@ -1,19 +1,16 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Car, Phone, MessageCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { format } from "date-fns";
-
-const statusColors = {
-  "New": "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  "Searching": "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-  "Found": "bg-green-500/20 text-green-400 border-green-500/30",
-  "Closed": "bg-slate-500/20 text-slate-400 border-slate-500/30",
-};
+import GlassCard from "@/components/premium/GlassCard";
+import StatusPill from "@/components/premium/StatusPill";
+import Avatar from "@/components/premium/Avatar";
+import StatCard from "@/components/premium/StatCard";
+import EmptyState from "@/components/premium/EmptyState";
 
 export default function CarRequests() {
   const qc = useQueryClient();
@@ -37,132 +34,89 @@ export default function CarRequests() {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
-          <Car className="w-5 h-5 text-purple-400" />
-        </div>
+    <div>
+      <div className="km-hero">
         <div>
-          <h1 className="text-2xl font-bold text-slate-100">Car Requests</h1>
-          <p className="text-slate-400 text-sm">Clients looking for specific vehicles — find & match them</p>
+          <h1 className="km-h1">Car Requests</h1>
+          <div className="km-sub">Clients looking for specific vehicles — find & match them</div>
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
-        {[
-          { label: "Total", value: counts.total, color: "text-slate-300" },
-          { label: "New", value: counts.new, color: "text-blue-400" },
-          { label: "Searching", value: counts.searching, color: "text-yellow-400" },
-          { label: "Found", value: counts.found, color: "text-green-400" },
-        ].map(s => (
-          <div key={s.label} className="bg-slate-800 rounded-xl p-4 border border-slate-700">
-            <p className="text-slate-400 text-xs mb-1">{s.label}</p>
-            <p className={`text-3xl font-bold ${s.color}`}>{s.value}</p>
-          </div>
-        ))}
+      <div className="km-stats-grid" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
+        <StatCard label="Total" icon={<Car style={{ width: 18, height: 18, strokeWidth: 1.6 }} />} value={counts.total} footer="All requests" />
+        <StatCard label="New" icon={<Car style={{ width: 18, height: 18, strokeWidth: 1.6 }} />} value={counts.new} footer="Fresh requests" />
+        <StatCard label="Searching" icon={<Car style={{ width: 18, height: 18, strokeWidth: 1.6 }} />} value={counts.searching} footer="In progress" />
+        <StatCard label="Found" icon={<Car style={{ width: 18, height: 18, strokeWidth: 1.6 }} />} value={counts.found} footer="Matched" />
       </div>
 
       {isLoading ? (
-        <div className="text-center py-20 text-slate-400">Loading...</div>
+        <div style={{ textAlign: "center", padding: 40, color: "var(--mut)" }}>Loading…</div>
       ) : requests.length === 0 ? (
-        <div className="text-center py-20 text-slate-400">
-          <Car className="w-12 h-12 mx-auto mb-3 opacity-30" />
-          <p>No car requests yet.</p>
-        </div>
+        <EmptyState icon={<Car style={{ width: 20, height: 20, strokeWidth: 1.6 }} />} message="No car requests yet." />
       ) : (
-        <div className="space-y-3">
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {requests.map(r => (
-            <div key={r.id} className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
+            <GlassCard key={r.id} tight>
               <div
-                className="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-750"
+                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer", gap: 12, flexWrap: "wrap" }}
                 onClick={() => setExpanded(expanded === r.id ? null : r.id)}
               >
-                <div className="flex items-center gap-4 flex-wrap">
+                <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                  <Avatar name={r.requester_name || "?"} />
                   <div>
-                    <p className="text-slate-100 font-semibold">{r.requester_name}</p>
-                    <p className="text-slate-400 text-sm">{r.phone}</p>
+                    <div style={{ fontWeight: 500, color: "var(--ink)" }}>{r.requester_name}</div>
+                    <div style={{ fontSize: 12, color: "var(--mut)" }}>{r.phone}</div>
                   </div>
-                  <div>
-                    <p className="text-slate-300 font-medium">
-                      {[r.make, r.model].filter(Boolean).join(" ") || "Any vehicle"}
-                    </p>
-                    <p className="text-slate-400 text-sm">
-                      {r.year_from && r.year_to ? `${r.year_from}–${r.year_to}` : r.year_from || r.year_to || ""}
-                      {r.max_price ? ` · Budget: R ${r.max_price.toLocaleString()}` : ""}
-                    </p>
+                  <div style={{ fontSize: 13, color: "var(--ink)" }}>
+                    {[r.make, r.model].filter(Boolean).join(" ") || "Any vehicle"}
+                    {r.max_price && <span style={{ color: "var(--gold-deep)", fontWeight: 600 }}> · R {r.max_price.toLocaleString()}</span>}
                   </div>
-                  {r.finance_required && <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 text-xs border">Finance Needed</Badge>}
-                  <Badge className={`border text-xs ${statusColors[r.status]}`}>{r.status}</Badge>
+                  {r.finance_required && <span className="km-chip" style={{ fontSize: 10, padding: "3px 8px" }}>Finance Needed</span>}
+                  <StatusPill status={r.status} />
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-500 text-xs">{r.created_date ? format(new Date(r.created_date), "dd MMM yyyy") : ""}</span>
-                  {expanded === r.id ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 11, color: "var(--mut)" }}>{r.created_date ? format(new Date(r.created_date), "dd MMM yyyy") : ""}</span>
+                  {expanded === r.id ? <ChevronUp style={{ width: 16, height: 16, color: "var(--mut)" }} /> : <ChevronDown style={{ width: 16, height: 16, color: "var(--mut)" }} />}
                 </div>
               </div>
 
               {expanded === r.id && (
-                <div className="px-4 pb-4 border-t border-slate-700 pt-4 space-y-4">
-                  <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--line)" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 12, fontSize: 13, marginBottom: 12 }}>
                     {[
                       { label: "Email", value: r.email },
                       { label: "Preferred Contact", value: r.contact_preference },
                       { label: "Colour Preference", value: r.colour_preference },
                       { label: "Finance Required", value: r.finance_required ? "Yes" : "No" },
+                      { label: "Year Range", value: r.year_from && r.year_to ? `${r.year_from}–${r.year_to}` : r.year_from || r.year_to || null },
                     ].filter(f => f.value).map(f => (
                       <div key={f.label}>
-                        <p className="text-slate-500 text-xs">{f.label}</p>
-                        <p className="text-slate-200">{f.value}</p>
+                        <div style={{ fontSize: 11, color: "var(--mut)" }}>{f.label}</div>
+                        <div style={{ color: "var(--ink)" }}>{f.value}</div>
                       </div>
                     ))}
                   </div>
-                  {r.additional_requirements && (
-                    <div>
-                      <p className="text-slate-500 text-xs mb-1">Client Requirements</p>
-                      <p className="text-slate-300 text-sm bg-slate-900 rounded-lg p-3">{r.additional_requirements}</p>
-                    </div>
-                  )}
-
-                  <div className="flex flex-wrap gap-3 items-end">
-                    <div className="flex flex-col gap-1">
-                      <p className="text-slate-500 text-xs">Update Status</p>
+                  {r.additional_requirements && <div style={{ marginBottom: 12 }}><div style={{ fontSize: 11, color: "var(--mut)", marginBottom: 4 }}>Client Requirements</div><div style={{ fontSize: 13, color: "var(--ink)", padding: 10, borderRadius: 10, background: "var(--glass)" }}>{r.additional_requirements}</div></div>}
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "flex-end" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                      <div style={{ fontSize: 11, color: "var(--mut)" }}>Update Status</div>
                       <Select value={r.status} onValueChange={v => updateMutation.mutate({ id: r.id, data: { status: v } })}>
-                        <SelectTrigger className="bg-slate-900 border-slate-600 text-slate-200 w-40">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {["New", "Searching", "Found", "Closed"].map(s => (
-                            <SelectItem key={s} value={s}>{s}</SelectItem>
-                          ))}
-                        </SelectContent>
+                        <SelectTrigger style={{ width: 160, background: "var(--glass)", border: "1px solid var(--glass-border)", borderRadius: 30, height: 38 }}><SelectValue /></SelectTrigger>
+                        <SelectContent>{["New", "Searching", "Found", "Closed"].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
                       </Select>
                     </div>
-                    <div className="flex-1 flex flex-col gap-1">
-                      <p className="text-slate-500 text-xs">Admin Notes</p>
-                      <Textarea
-                        defaultValue={r.admin_notes || ""}
-                        onBlur={e => updateMutation.mutate({ id: r.id, data: { admin_notes: e.target.value } })}
-                        rows={2}
-                        className="bg-slate-900 border-slate-600 text-slate-200 text-sm"
-                        placeholder="Add notes about search progress..."
-                      />
+                    <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
+                      <div style={{ fontSize: 11, color: "var(--mut)" }}>Admin Notes</div>
+                      <Textarea defaultValue={r.admin_notes || ""} onBlur={e => updateMutation.mutate({ id: r.id, data: { admin_notes: e.target.value } })} rows={2} style={{ background: "var(--glass)", border: "1px solid var(--glass-border)", borderRadius: 10, fontSize: 13 }} placeholder="Add notes about search progress…" />
                     </div>
-                    <div className="flex gap-2">
-                      <a href={`tel:${r.phone}`}>
-                        <Button size="sm" variant="outline" className="border-slate-600 text-slate-300 gap-1">
-                          <Phone className="w-3 h-3" /> Call
-                        </Button>
-                      </a>
-                      <a href={`https://wa.me/${r.phone?.replace(/\D/g, "")}`} target="_blank" rel="noreferrer">
-                        <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white gap-1">
-                          <MessageCircle className="w-3 h-3" /> WhatsApp
-                        </Button>
-                      </a>
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <a href={`tel:${r.phone}`}><Button size="sm" variant="outline" className="gap-1"><Phone style={{ width: 14, height: 14 }} /> Call</Button></a>
+                      <a href={`https://wa.me/${r.phone?.replace(/\D/g, "")}`} target="_blank" rel="noreferrer"><Button size="sm" className="bg-green-600 hover:bg-green-700 text-white gap-1"><MessageCircle style={{ width: 14, height: 14 }} /> WhatsApp</Button></a>
                     </div>
                   </div>
                 </div>
               )}
-            </div>
+            </GlassCard>
           ))}
         </div>
       )}

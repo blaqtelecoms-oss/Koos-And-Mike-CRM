@@ -1,44 +1,35 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "./utils";
-import { 
-  LayoutDashboard, 
-  Users, 
-  Car, 
-  CheckSquare, 
-  Share2, 
-  Menu,
-  X,
-  LogOut,
-  RefreshCw,
-  Search,
-  ExternalLink,
-  BarChart2,
-  Phone,
-  ChevronLeft,
-  Megaphone
+import {
+  LayoutGrid, Users, Car, CheckSquare, Share2,
+  Menu, X, LogOut, RefreshCcw, Search, BarChart3,
+  ShieldCheck, Megaphone, Bell, Plus, Trash2
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Button } from "@/components/ui/button";
-import BottomTabBar from "@/components/BottomTabBar";
 import DeleteAccountDialog from "@/components/DeleteAccountDialog";
+import Avatar from "@/components/premium/Avatar";
 
-const TOP_LEVEL_PAGES = ["Dashboard", "Leads", "Vehicles", "Tasks", "SocialPosts", "TradeIns", "CarRequests"];
+const TOP_LEVEL_PAGES = ["Dashboard", "Leads", "Vehicles", "Tasks", "SocialPosts", "TradeIns", "CarRequests", "Adverts"];
 
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [newLeadsCount, setNewLeadsCount] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
   const isChildRoute = !TOP_LEVEL_PAGES.includes(currentPageName);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
+    base44.entities.Lead.filter({ status: "New" }, "-created_date", 500)
+      .then(data => setNewLeadsCount(data?.length || 0))
+      .catch(() => {});
   }, []);
 
   const navigation = [
-    { name: "Dashboard", page: "Dashboard", icon: LayoutDashboard },
-    { name: "Leads", page: "Leads", icon: Users },
+    { name: "Dashboard", page: "Dashboard", icon: LayoutGrid },
+    { name: "Leads", page: "Leads", icon: Users, badge: newLeadsCount },
     { name: "Vehicles", page: "Vehicles", icon: Car },
     { name: "Daily Tasks", page: "Tasks", icon: CheckSquare },
     { name: "Social Posts", page: "SocialPosts", icon: Share2 },
@@ -46,200 +37,134 @@ export default function Layout({ children, currentPageName }) {
   ];
 
   const clientNav = [
-    { name: "Trade-In Reviews", page: "TradeIns", icon: RefreshCw },
+    { name: "Trade-In Reviews", page: "TradeIns", icon: RefreshCcw },
     { name: "Car Requests", page: "CarRequests", icon: Search },
   ];
 
   const adminNav = [
-    { name: "Performance Monitor", path: "/AdminPerformance", icon: BarChart2 },
-    { name: "Sales Portals", path: "/SalesPortal", icon: Users },
-    { name: "Call Centre Portal", path: "/CCLanding", icon: Phone },
+    { name: "Performance Monitor", path: "/AdminPerformance", icon: BarChart3 },
+    { name: "Sales Portals", path: "/SalesPortal", icon: ShieldCheck },
   ];
 
-  const handleLogout = () => {
-    base44.auth.logout();
-  };
+  const handleLogout = () => base44.auth.logout();
+
+  const firstName = user?.full_name?.split(" ")[0] || user?.email?.split("@")[0] || "?";
+  const initials = user?.full_name
+    ? user.full_name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase()
+    : (user?.email?.charAt(0) || "?").toUpperCase();
 
   return (
-    <div className="min-h-screen" style={{ background: "#0D0D0D" }}>
-      {/* Mobile header */}
-      <div
-        className="lg:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 bg-black border-b border-amber-700/40"
-        style={{ paddingTop: "env(safe-area-inset-top)", height: "calc(3.5rem + env(safe-area-inset-top))" }}
-      >
-        <button
-          onClick={() => isChildRoute ? navigate(-1) : setSidebarOpen(true)}
-          className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-        >
-          {isChildRoute
-            ? <ChevronLeft className="w-6 h-6 text-amber-400" />
-            : <Menu className="w-6 h-6 text-amber-400" />
-          }
-        </button>
-        <div className="flex items-center gap-2">
-          <img src="https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png" alt="Koos & Mike Cars" className="h-10 w-10 object-contain rounded-lg" />
-          <span className="font-bold text-amber-400">Koos & Mike CRM</span>
-        </div>
-        <div className="w-10" />
-      </div>
-
-      {/* Mobile overlay */}
-      {sidebarOpen && (
-        <div 
-          className="lg:hidden fixed inset-0 bg-black/70 z-40"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      <aside className={`
-        fixed top-0 left-0 h-full w-72 bg-black border-r border-amber-700/30 z-50
-        transform transition-transform duration-300 ease-out
-        lg:translate-x-0
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-      `}>
-        <div className="flex flex-col h-full">
-          {/* Logo */}
-          <div className="h-24 flex items-center justify-between px-6 border-b border-amber-700/30">
-            <div className="flex items-center gap-3">
-              <img 
-                src="https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png" 
-                alt="Koos & Mike Cars" 
-                className="w-12 h-12 object-contain rounded-xl"
-              />
-              <div>
-                <h1 className="font-bold text-amber-400 text-base leading-tight">Koos & Mike Cars</h1>
-                <p className="text-xs text-amber-600/70">Lead Management</p>
-              </div>
-            </div>
-            <button 
-              onClick={() => setSidebarOpen(false)}
-              className="lg:hidden p-2 hover:bg-white/10 rounded-lg"
-            >
-              <X className="w-5 h-5 text-amber-500" />
-            </button>
+    <div className="km-app">
+      {/* ===== Sidebar ===== */}
+      <aside className="km-sidebar">
+        {/* Logo */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, fontWeight: 700, fontSize: 15, letterSpacing: "-0.2px", color: "#fff", padding: "0 6px" }}>
+          <span style={{ width: 38, height: 38, borderRadius: 12, background: "linear-gradient(145deg, #2b2a24, #0b0a07)", color: "var(--gold)", display: "grid", placeItems: "center", font: "800 13px Inter", boxShadow: "0 6px 16px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.2)" }}>K&M</span>
+          <div>
+            <div>Koos & Mike Cars</div>
+            <small style={{ display: "block", fontWeight: 400, fontSize: "10.5px", color: "var(--mut)", letterSpacing: ".3px" }}>LEAD MANAGEMENT</small>
           </div>
-
-          {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-            {navigation.map((item) => {
-              const isActive = currentPageName === item.page;
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.page}
-                  to={createPageUrl(item.page)}
-                  onClick={() => setSidebarOpen(false)}
-                  className={`
-                    flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
-                    ${isActive 
-                      ? 'bg-amber-600 text-black shadow-lg shadow-amber-600/25' 
-                      : 'text-amber-200/70 hover:bg-white/5 hover:text-amber-300'
-                    }
-                  `}
-                >
-                  <Icon className={`w-5 h-5 ${isActive ? 'text-black' : 'text-amber-500/60'}`} />
-                  <span className="font-medium">{item.name}</span>
-                </Link>
-              );
-            })}
-
-            <p className="text-xs font-semibold text-amber-700/60 uppercase tracking-wider px-4 pt-4 pb-1">Client Submissions</p>
-            {clientNav.map((item) => {
-              const isActive = currentPageName === item.page;
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.page}
-                  to={createPageUrl(item.page)}
-                  onClick={() => setSidebarOpen(false)}
-                  className={`
-                    flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
-                    ${isActive 
-                      ? 'bg-amber-700 text-white shadow-lg shadow-amber-700/25' 
-                      : 'text-amber-200/70 hover:bg-white/5 hover:text-amber-300'
-                    }
-                  `}
-                >
-                  <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-amber-500/60'}`} />
-                  <span className="font-medium">{item.name}</span>
-                </Link>
-              );
-            })}
-
-            {user?.role === "admin" && (
-              <>
-                <p className="text-xs font-semibold text-amber-700/60 uppercase tracking-wider px-4 pt-4 pb-1">Admin Only</p>
-                {adminNav.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <a key={item.path} href={item.path} onClick={() => setSidebarOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-amber-200/70 hover:bg-white/5 hover:text-amber-300">
-                      <Icon className="w-5 h-5 text-amber-500/60" />
-                      <span className="font-medium">{item.name}</span>
-                    </a>
-                  );
-                })}
-              </>
-            )}
-
-            <div className="px-4 pt-4">
-              <a href="/ClientPortal" target="_blank" rel="noreferrer">
-                <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-amber-600/10 border border-amber-600/30 hover:bg-amber-600/20 transition-all cursor-pointer">
-                  <ExternalLink className="w-4 h-4 text-amber-500" />
-                  <span className="font-medium text-amber-400 text-sm">Open Client Portal</span>
-                </div>
-              </a>
-            </div>
-          </nav>
-
-          {/* User section */}
-          {user && (
-            <div className="p-4 border-t border-amber-700/30 space-y-2">
-              <div className="flex items-center gap-3 px-4 py-3 bg-white/5 rounded-xl">
-                <div className="w-10 h-10 bg-gradient-to-br from-amber-600 to-amber-700 rounded-full flex items-center justify-center">
-                  <span className="text-black font-semibold text-sm">
-                    {user.full_name?.charAt(0) || user.email?.charAt(0) || '?'}
-                  </span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-amber-300 truncate text-sm">
-                    {user.full_name || 'User'}
-                  </p>
-                  <p className="text-xs text-amber-600/60 truncate">{user.email}</p>
-                </div>
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={handleLogout}
-                  className="text-amber-600/60 hover:text-amber-400"
-                >
-                  <LogOut className="w-4 h-4" />
-                </Button>
-              </div>
-              <DeleteAccountDialog />
-            </div>
-          )}
         </div>
+
+        {/* Nav */}
+        <nav className="km-nav-scroll">
+          {navigation.map(item => {
+            const isActive = currentPageName === item.page;
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.page}
+                to={createPageUrl(item.page)}
+                onClick={() => setSidebarOpen(false)}
+                className={`km-nav-item ${isActive ? "active" : ""}`}
+              >
+                <Icon style={{ width: 18, height: 18, strokeWidth: 1.6 }} />
+                <span>{item.name}</span>
+                {item.badge != null && item.badge > 0 && (
+                  <span className="km-nav-badge">{item.badge}</span>
+                )}
+              </Link>
+            );
+          })}
+
+          <div className="km-nav-group-label">Client Submissions</div>
+          {clientNav.map(item => {
+            const isActive = currentPageName === item.page;
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.page}
+                to={createPageUrl(item.page)}
+                onClick={() => setSidebarOpen(false)}
+                className={`km-nav-item ${isActive ? "active" : ""}`}
+              >
+                <Icon style={{ width: 18, height: 18, strokeWidth: 1.6 }} />
+                <span>{item.name}</span>
+              </Link>
+            );
+          })}
+
+          {user?.role === "admin" && (
+            <>
+              <div className="km-nav-group-label">Admin Only</div>
+              {adminNav.map(item => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                return (
+                  <a
+                    key={item.path}
+                    href={item.path}
+                    onClick={() => setSidebarOpen(false)}
+                    className={`km-nav-item ${isActive ? "active" : ""}`}
+                  >
+                    <Icon style={{ width: 18, height: 18, strokeWidth: 1.6 }} />
+                    <span>{item.name}</span>
+                  </a>
+                );
+              })}
+            </>
+          )}
+        </nav>
+
+        {/* User card */}
+        {user && (
+          <div style={{ marginTop: "auto" }}>
+            <div className="km-user-card">
+              <Avatar name={user.full_name || user.email || "?"} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <b>{user.full_name || "User"}</b>
+                <small>{user.email}</small>
+              </div>
+              <button onClick={handleLogout} style={{ background: "none", border: 0, cursor: "pointer", color: "#b8b095", padding: 4 }} title="Sign out">
+                <LogOut style={{ width: 18, height: 18 }} />
+              </button>
+            </div>
+            <DeleteAccountDialog />
+          </div>
+        )}
       </aside>
 
-      {/* Main content */}
-      <main
-        className="lg:pl-72 lg:pt-0 min-h-screen"
-        style={{ paddingTop: "calc(3.5rem + env(safe-area-inset-top))" }}
-      >
-        <div
-          data-page-content
-          className="p-4 lg:p-8 lg:pt-8 lg:pb-8"
-          style={{ paddingBottom: "calc(4.5rem + env(safe-area-inset-bottom))" }}
-          key={location.pathname}
-        >
-          {children}
+      {/* ===== Main content ===== */}
+      <main className="km-content" key={location.pathname} data-page-content>
+        {/* Top bar */}
+        <div className="km-topbar">
+          <div className="km-pill km-pill-search">
+            <Search style={{ width: 16, height: 16, strokeWidth: 1.6 }} />
+            <span>Search…</span>
+          </div>
+          <div className="km-pill" style={{ padding: "0 12px" }}>
+            <Bell style={{ width: 16, height: 16, strokeWidth: 1.6 }} />
+            <span className="km-notification-dot" />
+          </div>
+          <div className="km-pill" style={{ padding: "0 12px" }}>
+            <Avatar name={user?.full_name || user?.email || "?"} size={28} />
+            <span>{firstName}</span>
+          </div>
         </div>
-      </main>
 
-      {/* Mobile bottom tab bar */}
-      <BottomTabBar />
+        {/* Page content */}
+        {children}
+      </main>
     </div>
   );
 }

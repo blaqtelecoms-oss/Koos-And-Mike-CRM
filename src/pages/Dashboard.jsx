@@ -4,38 +4,25 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import moment from "moment";
 import {
-  Users, Car, TrendingUp, Clock, CheckCircle2, Circle,
-  BarChart2, Phone, ArrowUpRight, Plus, Flame, Target
+  Users, Car, TrendingUp, Flame, Target,
+  ArrowUpRight, Plus, CheckSquare as SquareCheck, Share2,
+  RefreshCcw, Search, Megaphone, Phone, ChevronLeft, ChevronRight
 } from "lucide-react";
+import GlassCard from "@/components/premium/GlassCard";
+import StatCard from "@/components/premium/StatCard";
+import StatusPill from "@/components/premium/StatusPill";
+import Avatar from "@/components/premium/Avatar";
+import PipelineRing from "@/components/premium/PipelineRing";
+import LeadsChart from "@/components/premium/LeadsChart";
+import QuickTile from "@/components/premium/QuickTile";
 
 const ADMIN_EMAILS = ["deon", "heino", "blaqtelecoms@gmail.com"];
-
 function isAdminUser(user) {
   if (!user) return false;
   if (user.role === "admin") return true;
   const email = (user.email || "").toLowerCase();
   return ADMIN_EMAILS.some(a => email.includes(a));
 }
-
-const STATUS_DOT = {
-  "New":        "bg-amber-400",
-  "Contacted":  "bg-yellow-400",
-  "Test Drive": "bg-purple-400",
-  "Approved":   "bg-blue-400",
-  "Sold":       "bg-emerald-400",
-  "No Answer":  "bg-slate-400",
-  "Lost":       "bg-red-400",
-};
-
-const STATUS_PILL = {
-  "New":        "bg-amber-500/15 text-amber-300 border border-amber-500/30",
-  "Contacted":  "bg-yellow-500/15 text-yellow-300 border border-yellow-500/30",
-  "Test Drive": "bg-purple-500/15 text-purple-300 border border-purple-500/30",
-  "Approved":   "bg-blue-500/15 text-blue-300 border border-blue-500/30",
-  "Sold":       "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30",
-  "No Answer":  "bg-slate-500/15 text-slate-300 border border-slate-500/30",
-  "Lost":       "bg-red-500/15 text-red-400 border border-red-500/30",
-};
 
 export default function Dashboard() {
   const [leads, setLeads] = useState([]);
@@ -49,7 +36,6 @@ export default function Dashboard() {
       base44.auth.me().catch(() => null),
       loadData()
     ]).then(([user]) => setCurrentUser(user));
-
     const interval = setInterval(loadData, 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
@@ -72,202 +58,183 @@ export default function Dashboard() {
   };
 
   const todayLeads = leads.filter(l => moment(l.created_date).isSame(moment(), "day")).length;
-  const stats = {
-    newLeads: leads.filter(l => l.status === "New").length,
-    soldLeads: leads.filter(l => l.status === "Sold").length,
-    availableVehicles: vehicles.filter(v => v.status === "Available").length,
-    todaysTasks: tasks.length,
-    completedTasks: tasks.filter(t => t.completed).length,
-  };
-
+  const newLeads = leads.filter(l => l.status === "New").length;
+  const soldLeads = leads.filter(l => l.status === "Sold").length;
+  const availableVehicles = vehicles.filter(v => v.status === "Available").length;
   const recentLeads = leads.slice(0, 6);
-  const pendingTasks = tasks.filter(t => !t.completed).slice(0, 5);
-  const taskProgress = stats.todaysTasks > 0 ? Math.round((stats.completedTasks / stats.todaysTasks) * 100) : 0;
+
+  // Build chart data: last 8 months of leads & deals
+  const chartData = (() => {
+    const months = [];
+    for (let i = 7; i >= 0; i--) {
+      const m = moment().subtract(i, "months");
+      const monthLeads = leads.filter(l => moment(l.created_date).isSame(m, "month"));
+      months.push({
+        month: m.format("MMM"),
+        leads: monthLeads.length,
+        deals: monthLeads.filter(l => l.status === "Sold").length,
+      });
+    }
+    return months;
+  })();
+
+  // Vehicle spotlight: most referenced vehicle
+  const spotlightVehicle = vehicles.find(v => v.images?.length > 0) || vehicles[0] || null;
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 400 }}>
         <div className="w-8 h-8 border-2 border-amber-500/30 border-t-amber-400 rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-7 max-w-7xl">
-
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div style={{ maxWidth: "100%" }}>
+      {/* Hero */}
+      <div className="km-hero">
         <div>
-          <p className="text-xs font-semibold text-amber-500/70 uppercase tracking-widest mb-1">
-            {moment().format("dddd, D MMMM YYYY")}
-          </p>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Dashboard</h1>
+          <h1 className="km-h1">Welcome in, <b>Koos & Mike Cars</b></h1>
+          <div className="km-sub">{moment().format("dddd, D MMMM YYYY")}</div>
         </div>
-        <Link
-          to={createPageUrl("Leads") + "?action=new"}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-black text-sm font-semibold rounded-xl transition-colors shadow-lg shadow-amber-500/20"
-        >
-          <Plus className="w-4 h-4" />
-          New Lead
+        <Link to={createPageUrl("Leads") + "?action=new"} className="km-btn-primary">
+          <Plus style={{ width: 16, height: 16 }} /> New Lead
         </Link>
       </div>
 
-      {/* Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="rounded-2xl border border-amber-500/20 bg-[#111] p-5 flex items-center justify-between">
-          <div>
-            <p className="text-xs text-white/40 font-medium uppercase tracking-wider mb-1">New Leads</p>
-            <p className="text-4xl font-bold text-white">{stats.newLeads}</p>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
-            <Users className="w-5 h-5 text-amber-400" />
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-emerald-500/20 bg-[#111] p-5 flex items-center justify-between">
-          <div>
-            <p className="text-xs text-white/40 font-medium uppercase tracking-wider mb-1">Deals Closed</p>
-            <p className="text-4xl font-bold text-white">{stats.soldLeads}</p>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
-            <TrendingUp className="w-5 h-5 text-emerald-400" />
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-white/10 bg-[#111] p-5 flex items-center justify-between">
-          <div>
-            <p className="text-xs text-white/40 font-medium uppercase tracking-wider mb-1">Available Cars</p>
-            <p className="text-4xl font-bold text-white">{stats.availableVehicles}</p>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center border border-white/10">
-            <Car className="w-5 h-5 text-white/50" />
-          </div>
-        </div>
+      {/* Stat cards */}
+      <div className="km-stats-grid">
+        <StatCard label="New Leads" icon={<Users style={{ width: 18, height: 18, strokeWidth: 1.6 }} />} value={newLeads} highlight />
+        <StatCard label="Deals Closed" icon={<TrendingUp style={{ width: 18, height: 18, strokeWidth: 1.6 }} />} value={soldLeads} />
+        <StatCard label="Available Cars" icon={<Car style={{ width: 18, height: 18, strokeWidth: 1.6 }} />} value={availableVehicles} />
+        <StatCard label="Today's Leads" icon={<Flame style={{ width: 18, height: 18, strokeWidth: 1.6 }} />} value={todayLeads} footer="Target 3 – 5" />
       </div>
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
-
-        {/* Recent Leads — wider column */}
-        <div className="lg:col-span-3 rounded-2xl border border-white/8 bg-[#0f0f0f]">
-          <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-white/5">
-            <h2 className="text-sm font-semibold text-white">Recent Leads</h2>
-            <Link to={createPageUrl("Leads")} className="text-xs text-amber-400/80 hover:text-amber-300 font-medium flex items-center gap-1">
-              View all <ArrowUpRight className="w-3 h-3" />
-            </Link>
-          </div>
-          <div className="divide-y divide-white/5">
-            {recentLeads.length === 0 ? (
-              <div className="py-12 text-center text-white/30 text-sm">No leads yet</div>
-            ) : recentLeads.map((lead) => (
-              <div key={lead.id} className="flex items-center justify-between px-6 py-3.5 hover:bg-white/[0.03] transition-colors">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center flex-shrink-0">
-                    <span className="text-amber-400 text-xs font-bold">{(lead.lead_name || "?").charAt(0).toUpperCase()}</span>
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-white truncate">{lead.lead_name}</p>
-                    <p className="text-xs text-white/35 truncate">{lead.car_interested || "—"}</p>
-                  </div>
-                </div>
-                <span className={`ml-3 flex-shrink-0 text-xs font-medium px-2.5 py-1 rounded-lg ${STATUS_PILL[lead.status] || "bg-white/10 text-white/50"}`}>
-                  {lead.status}
-                </span>
+      {/* Main grid */}
+      <div className="km-main-grid">
+        <div>
+          {/* Pipeline + Chart */}
+          <div className="km-two-col">
+            <GlassCard>
+              <div className="km-card-header">Lead Pipeline</div>
+              <PipelineRing total={leads.length} filled={newLeads} />
+            </GlassCard>
+            <GlassCard>
+              <div className="km-card-header">
+                Lead Statistics
+                <span className="km-chip">2026</span>
               </div>
-            ))}
+              <div style={{ fontSize: "11.5px", color: "var(--mut)", display: "flex", gap: 14, marginBottom: 4 }}>
+                <span>● <b style={{ color: "var(--gold)" }}>Leads</b></span>
+                <span>● Deals</span>
+              </div>
+              <LeadsChart data={chartData} />
+            </GlassCard>
           </div>
+
+          {/* Recent Leads table */}
+          <GlassCard style={{ marginTop: 14 }}>
+            <div className="km-card-header">
+              <div>
+                Recent Leads
+                <div style={{ fontSize: 11, color: "var(--mut)", fontWeight: 400 }}>+{newLeads} new leads</div>
+              </div>
+              <Link to={createPageUrl("Leads")} className="km-icon-btn" style={{ cursor: "pointer", textDecoration: "none" }}>
+                <ArrowUpRight style={{ width: 16, height: 16, strokeWidth: 1.6 }} />
+              </Link>
+            </div>
+            {recentLeads.length === 0 ? (
+              <div className="km-empty">No leads yet</div>
+            ) : (
+              <div className="km-table-wrap">
+                <table className="km-table">
+                  <thead>
+                    <tr><th>Lead</th><th>Interest</th><th>Status</th><th></th></tr>
+                  </thead>
+                  <tbody>
+                    {recentLeads.map(lead => (
+                      <tr key={lead.id}>
+                        <td>
+                          <div style={{ display: "flex", alignItems: "center", gap: 10, fontWeight: 500, color: "var(--ink)" }}>
+                            <Avatar name={lead.lead_name || "?"} />
+                            {lead.lead_name}
+                          </div>
+                        </td>
+                        <td style={{ color: "var(--mut)" }}>{lead.car_interested || "—"}</td>
+                        <td><StatusPill status={lead.status} /></td>
+                        <td>···</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </GlassCard>
         </div>
 
         {/* Right column */}
-        <div className="lg:col-span-2 flex flex-col gap-5">
-
-          {/* Today's Tasks */}
-          <div className="rounded-2xl border border-white/8 bg-[#0f0f0f] flex-1">
-            <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-white/5">
-              <h2 className="text-sm font-semibold text-white">Today's Tasks</h2>
-              <Link to={createPageUrl("Tasks")} className="text-xs text-amber-400/80 hover:text-amber-300 font-medium flex items-center gap-1">
-                View all <ArrowUpRight className="w-3 h-3" />
-              </Link>
-            </div>
-
-            {/* Progress bar */}
-            <div className="px-5 pt-4 pb-3">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-white/40">{stats.completedTasks} / {stats.todaysTasks} done</span>
-                <span className="text-xs font-semibold text-amber-400">{taskProgress}%</span>
-              </div>
-              <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-amber-500 rounded-full transition-all"
-                  style={{ width: `${taskProgress}%` }}
-                />
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          {/* Vehicle spotlight */}
+          <GlassCard>
+            <div className="km-card-header">
+              Recent Vehicle Listings
+              <div style={{ display: "flex", gap: 6 }}>
+                <button className="km-icon-btn" style={{ cursor: "pointer" }}><ChevronLeft style={{ width: 16, height: 16 }} /></button>
+                <button className="km-icon-btn" style={{ cursor: "pointer" }}><ChevronRight style={{ width: 16, height: 16 }} /></button>
               </div>
             </div>
-
-            <div className="px-5 pb-4 space-y-2">
-              {pendingTasks.length === 0 ? (
-                <div className="py-6 text-center text-white/25 text-xs flex flex-col items-center gap-2">
-                  <CheckCircle2 className="w-6 h-6 text-emerald-500/40" />
-                  All tasks complete
+            <div style={{ textAlign: "center" }}>
+              {spotlightVehicle?.images?.[0] ? (
+                <img src={spotlightVehicle.images[0]} alt={spotlightVehicle.title} style={{ width: "88%", maxWidth: 330, borderRadius: 16, objectFit: "cover", maxHeight: 160 }} />
+              ) : (
+                <div style={{ width: "88%", maxWidth: 330, margin: "0 auto", aspectRatio: "16/10", display: "grid", placeItems: "center", color: "var(--mut)" }}>
+                  <Car style={{ width: 48, height: 48, strokeWidth: 1 }} />
                 </div>
-              ) : pendingTasks.map((task) => (
-                <div key={task.id} className="flex items-start gap-3 py-2">
-                  <Circle className="w-4 h-4 text-white/20 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-xs font-medium text-white/80">{task.description}</p>
-                    <p className="text-xs text-white/30">{task.task_type}</p>
-                  </div>
-                </div>
-              ))}
+              )}
+              <h3 style={{ fontWeight: 400, fontSize: 22, margin: "12px 0 0", letterSpacing: "-0.5px", color: "var(--ink)" }}>{spotlightVehicle?.title || "No vehicles"}</h3>
+              <p style={{ margin: "4px 0 0", color: "var(--mut)", fontSize: 12 }}>{spotlightVehicle ? "Most requested by leads" : "Add vehicles to your stand"}</p>
             </div>
-          </div>
 
-          {/* Today's Activity */}
-          <div className="rounded-2xl border border-white/8 bg-[#0f0f0f] px-5 py-4 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center flex-shrink-0">
-              <Flame className="w-5 h-5 text-amber-400" />
+            {/* Quick tiles */}
+            <div className="km-tiles-grid">
+              <QuickTile to={createPageUrl("Leads")} icon={<Users style={{ width: 20, height: 20, strokeWidth: 1.6 }} />} label="Leads" />
+              <QuickTile to={createPageUrl("Vehicles")} icon={<Car style={{ width: 20, height: 20, strokeWidth: 1.6 }} />} label="Vehicles" />
+              <QuickTile to={createPageUrl("Tasks")} icon={<SquareCheck style={{ width: 20, height: 20, strokeWidth: 1.6 }} />} label="Tasks" />
+              <QuickTile to={createPageUrl("SocialPosts")} icon={<Share2 style={{ width: 20, height: 20, strokeWidth: 1.6 }} />} label="Posts" />
+              <QuickTile to={createPageUrl("TradeIns")} icon={<RefreshCcw style={{ width: 20, height: 20, strokeWidth: 1.6 }} />} label="Trade-In" />
+              <QuickTile to={createPageUrl("CarRequests")} icon={<Search style={{ width: 20, height: 20, strokeWidth: 1.6 }} />} label="Requests" />
             </div>
-            <div>
-              <p className="text-xs text-white/40 uppercase tracking-wider font-medium">Today's Leads</p>
-              <p className="text-2xl font-bold text-white">{todayLeads}</p>
+
+            {/* Call Centre toggle */}
+            <div className="km-switch-row">
+              <div>
+                Call Centre
+                <small>Switch on for lead outreach</small>
+              </div>
+              <div className="km-toggle off" />
             </div>
-            <div className="ml-auto text-right">
-              <p className="text-xs text-white/30">Target</p>
-              <p className="text-sm font-semibold text-amber-400/70">3 – 5</p>
-            </div>
-          </div>
+          </GlassCard>
+
+          {/* Admin portals */}
+          {isAdminUser(currentUser) && (
+            <GlassCard>
+              <div className="km-card-header" style={{ fontSize: 13 }}>Admin Portals</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {[
+                  { href: "/AdminPerformance", icon: <TrendingUp style={{ width: 18, height: 18, strokeWidth: 1.6 }} />, label: "Performance", desc: "Team stats & KPIs" },
+                  { href: "/SalesPortal", icon: <Users style={{ width: 18, height: 18, strokeWidth: 1.6 }} />, label: "Sales Portal", desc: "Consultants & leads" },
+                  { href: "/CCLanding", icon: <Phone style={{ width: 18, height: 18, strokeWidth: 1.6 }} />, label: "Call Centre", desc: "Lead outreach" },
+                ].map(({ href, icon, label, desc }) => (
+                  <a key={href} href={href} className="km-chip" style={{ justifyContent: "space-between", padding: "10px 14px", textDecoration: "none" }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: 8 }}>{icon} <span>{label}</span></span>
+                    <ArrowUpRight style={{ width: 14, height: 14 }} />
+                  </a>
+                ))}
+              </div>
+            </GlassCard>
+          )}
         </div>
       </div>
-
-      {/* Admin Portals */}
-      {isAdminUser(currentUser) && (
-        <div>
-          <p className="text-xs font-semibold text-white/25 uppercase tracking-widest mb-3">Admin Portals</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {[
-              { href: "/AdminPerformance", icon: BarChart2, label: "Performance", desc: "Team stats & KPIs" },
-              { href: "/SalesPortal",      icon: Users,    label: "Sales Portal",   desc: "Consultants & leads" },
-              { href: "/CCLanding",        icon: Phone,    label: "Call Centre",    desc: "Lead outreach" },
-            ].map(({ href, icon: Icon, label, desc }) => (
-              <a
-                key={href}
-                href={href}
-                className="flex items-center gap-4 px-5 py-4 rounded-2xl border border-white/8 bg-[#0f0f0f] hover:border-amber-500/30 hover:bg-amber-500/5 transition-all group"
-              >
-                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/8 flex items-center justify-center flex-shrink-0 group-hover:border-amber-500/30 group-hover:bg-amber-500/10 transition-all">
-                  <Icon className="w-4 h-4 text-white/40 group-hover:text-amber-400 transition-colors" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-white/80 group-hover:text-white transition-colors">{label}</p>
-                  <p className="text-xs text-white/30">{desc}</p>
-                </div>
-                <ArrowUpRight className="w-4 h-4 text-white/15 group-hover:text-amber-400/60 ml-auto transition-colors" />
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
-
     </div>
   );
 }
