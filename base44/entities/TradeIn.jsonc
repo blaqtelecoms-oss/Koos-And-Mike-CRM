@@ -1,0 +1,97 @@
+{
+  "type": "object",
+  "name": "TradeIn",
+  "properties": {
+    "owner_name": {
+      "type": "string",
+      "title": "Owner Name"
+    },
+    "phone": {
+      "type": "string",
+      "title": "Phone Number"
+    },
+    "email": {
+      "type": "string",
+      "title": "Email"
+    },
+    "contact_preference": {
+      "type": "string",
+      "title": "Preferred Contact",
+      "enum": [
+        "Call",
+        "WhatsApp",
+        "Email"
+      ],
+      "default": "WhatsApp"
+    },
+    "car_make": {
+      "type": "string",
+      "title": "Car Make"
+    },
+    "car_model": {
+      "type": "string",
+      "title": "Car Model"
+    },
+    "car_year": {
+      "type": "number",
+      "title": "Year"
+    },
+    "mileage": {
+      "type": "number",
+      "title": "Mileage (km)"
+    },
+    "color": {
+      "type": "string",
+      "title": "Colour"
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "enum": [
+        "Excellent",
+        "Good",
+        "Fair",
+        "Needs Work"
+      ],
+      "default": "Good"
+    },
+    "asking_price": {
+      "type": "number",
+      "title": "Asking Price (R)"
+    },
+    "description": {
+      "type": "string",
+      "title": "Additional Notes"
+    },
+    "photos": {
+      "type": "array",
+      "title": "Photos",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      }
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": [
+        "Pending Review",
+        "Reviewed",
+        "Accepted",
+        "Declined"
+      ],
+      "default": "Pending Review"
+    },
+    "admin_notes": {
+      "type": "string",
+      "title": "Admin Notes"
+    }
+  },
+  "required": [
+    "owner_name",
+    "phone",
+    "car_make",
+    "car_model",
+    "car_year"
+  ]
+}

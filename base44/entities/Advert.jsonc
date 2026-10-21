@@ -1,0 +1,48 @@
+{
+  "type": "object",
+  "name": "Advert",
+  "properties": {
+    "title": {
+      "type": "string",
+      "title": "Vehicle Title"
+    },
+    "description": {
+      "type": "string",
+      "title": "Advert Description (full text)"
+    },
+    "price": {
+      "type": "number",
+      "title": "Price (R)"
+    },
+    "images": {
+      "type": "array",
+      "title": "Photos",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      }
+    },
+    "video_url": {
+      "type": "string",
+      "title": "Video URL (YouTube / direct link)"
+    },
+    "is_published": {
+      "type": "boolean",
+      "title": "Published (visible on client portal)",
+      "default": true
+    },
+    "whatsapp_number": {
+      "type": "string",
+      "title": "WhatsApp Contact Number"
+    },
+    "finance_available": {
+      "type": "boolean",
+      "title": "Finance Available",
+      "default": true
+    }
+  },
+  "required": [
+    "title",
+    "description"
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "type": "object",
+  "name": "Lead",
+  "properties": {
+    "lead_name": {
+      "type": "string",
+      "title": "Lead Name"
+    },
+    "phone": {
+      "type": "string",
+      "title": "Phone Number"
+    },
+    "email": {
+      "type": "string",
+      "title": "Email"
+    },
+    "car_interested": {
+      "type": "string",
+      "title": "Car Interested In"
+    },
+    "assigned_consultant": {
+      "type": "string",
+      "title": "Sales Consultant"
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": [
+        "New",
+        "Contacted",
+        "Test Drive",
+        "Approved",
+        "Sold",
+        "No Answer",
+        "Lost"
+      ],
+      "default": "New"
+    },
+    "source": {
+      "type": "string",
+      "title": "Lead Source",
+      "enum": [
+        "Website",
+        "Facebook",
+        "Instagram",
+        "TikTok",
+        "WhatsApp",
+        "Email",
+        "Other"
+      ]
+    },
+    "notes": {
+      "type": "string",
+      "title": "Notes"
+    },
+    "response_time_minutes": {
+      "type": "number",
+      "title": "Response Time (Minutes)"
+    },
+    "email_received_date": {
+      "type": "string",
+      "title": "Email Received Date",
+      "description": "The actual date/time the enquiry email was sent by the customer"
+    }
+  },
+  "required": [
+    "lead_name",
+    "phone"
+  ]
+}

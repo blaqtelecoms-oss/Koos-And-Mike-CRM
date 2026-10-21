@@ -1,0 +1,59 @@
+{
+  "type": "object",
+  "name": "Consultant",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Consultant Name"
+    },
+    "role": {
+      "type": "string",
+      "title": "Role",
+      "enum": [
+        "Sales",
+        "Call Centre"
+      ],
+      "default": "Sales"
+    },
+    "email": {
+      "type": "string",
+      "title": "Email"
+    },
+    "phone": {
+      "type": "string",
+      "title": "Phone Number"
+    },
+    "whatsapp_number": {
+      "type": "string",
+      "title": "WhatsApp Number"
+    },
+    "is_manager": {
+      "type": "boolean",
+      "title": "Is Manager",
+      "default": false
+    },
+    "active": {
+      "type": "boolean",
+      "title": "Active",
+      "default": true
+    },
+    "available": {
+      "type": "boolean",
+      "title": "Available for Leads",
+      "default": true
+    },
+    "password_hash": {
+      "type": "string",
+      "title": "Password Hash"
+    },
+    "password_setup_required": {
+      "type": "boolean",
+      "title": "Password Setup Required",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "email"
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "type": "object",
+  "name": "Vehicle",
+  "properties": {
+    "title": {
+      "type": "string",
+      "title": "Title (Year | Make | Model | Mileage)"
+    },
+    "make": {
+      "type": "string",
+      "title": "Make"
+    },
+    "model": {
+      "type": "string",
+      "title": "Model"
+    },
+    "year": {
+      "type": "number",
+      "title": "Year"
+    },
+    "mileage": {
+      "type": "number",
+      "title": "Mileage (km)"
+    },
+    "price": {
+      "type": "number",
+      "title": "Price (R)"
+    },
+    "stand": {
+      "type": "string",
+      "title": "Stand",
+      "enum": [
+        "Stand 1",
+        "Stand 2",
+        "Stand 3",
+        "Detailing Workshop",
+        "Dekra"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    },
+    "images": {
+      "type": "array",
+      "title": "Photos",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      }
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": [
+        "Available",
+        "Reserved",
+        "Sold"
+      ],
+      "default": "Available"
+    },
+    "uploaded_to_website": {
+      "type": "boolean",
+      "title": "Uploaded to Website",
+      "default": false
+    },
+    "finance_available": {
+      "type": "boolean",
+      "title": "Finance Available",
+      "default": true
+    },
+    "website_slug": {
+      "type": "string",
+      "title": "Website Slug (auto)"
+    }
+  },
+  "required": [
+    "title",
+    "make",
+    "model"
+  ]
+}

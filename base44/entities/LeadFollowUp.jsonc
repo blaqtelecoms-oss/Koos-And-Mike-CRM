@@ -1,0 +1,73 @@
+{
+  "type": "object",
+  "name": "LeadFollowUp",
+  "properties": {
+    "lead_id": {
+      "type": "string",
+      "title": "Lead ID"
+    },
+    "lead_name": {
+      "type": "string",
+      "title": "Lead Name"
+    },
+    "update_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Date"
+    },
+    "contact_method": {
+      "type": "string",
+      "title": "Contact Method",
+      "enum": [
+        "Called",
+        "WhatsApp Messaged",
+        "Email Sent",
+        "In Person",
+        "No Contact Attempted"
+      ]
+    },
+    "lead_response": {
+      "type": "string",
+      "title": "Lead Response",
+      "enum": [
+        "Answered - Interested",
+        "Answered - Not Interested",
+        "No Answer",
+        "Callback Requested",
+        "WhatsApp Replied",
+        "No Response"
+      ]
+    },
+    "pipeline_stage": {
+      "type": "string",
+      "title": "Pipeline Stage",
+      "enum": [
+        "Initial Contact",
+        "Engaged",
+        "Test Drive Booked",
+        "Test Drive Done",
+        "With Sales Department",
+        "With Finance",
+        "Application Submitted",
+        "Application Approved",
+        "Deal Closed - Sold",
+        "Deal Closed - Not Buying",
+        "Application Failed"
+      ]
+    },
+    "reported_by": {
+      "type": "string",
+      "title": "Reported By (Consultant)"
+    },
+    "notes": {
+      "type": "string",
+      "title": "Update Notes"
+    }
+  },
+  "required": [
+    "lead_id",
+    "update_date",
+    "pipeline_stage",
+    "reported_by"
+  ]
+}
