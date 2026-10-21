@@ -1,0 +1,22 @@
+{
+  "name": "Koos & Mike Cars CRM",
+  "short_name": "KM CRM",
+  "description": "Lead management system for Koos & Mike Cars",
+  "start_url": "/Leads",
+  "display": "standalone",
+  "background_color": "#0D0D0D",
+  "theme_color": "#D97706",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

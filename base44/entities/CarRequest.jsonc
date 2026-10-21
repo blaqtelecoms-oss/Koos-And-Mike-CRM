@@ -1,0 +1,80 @@
+{
+  "type": "object",
+  "name": "CarRequest",
+  "properties": {
+    "requester_name": {
+      "type": "string",
+      "title": "Your Name"
+    },
+    "phone": {
+      "type": "string",
+      "title": "Phone Number"
+    },
+    "email": {
+      "type": "string",
+      "title": "Email"
+    },
+    "contact_preference": {
+      "type": "string",
+      "title": "Preferred Contact",
+      "enum": [
+        "Call",
+        "WhatsApp",
+        "Email"
+      ],
+      "default": "WhatsApp"
+    },
+    "make": {
+      "type": "string",
+      "title": "Preferred Make"
+    },
+    "model": {
+      "type": "string",
+      "title": "Preferred Model"
+    },
+    "year_from": {
+      "type": "number",
+      "title": "Year From"
+    },
+    "year_to": {
+      "type": "number",
+      "title": "Year To"
+    },
+    "max_price": {
+      "type": "number",
+      "title": "Maximum Budget (R)"
+    },
+    "colour_preference": {
+      "type": "string",
+      "title": "Colour Preference"
+    },
+    "finance_required": {
+      "type": "boolean",
+      "title": "Finance Required",
+      "default": false
+    },
+    "additional_requirements": {
+      "type": "string",
+      "title": "Additional Requirements"
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": [
+        "New",
+        "Searching",
+        "Found",
+        "Closed"
+      ],
+      "default": "New"
+    },
+    "admin_notes": {
+      "type": "string",
+      "title": "Admin Notes"
+    }
+  },
+  "required": [
+    "requester_name",
+    "phone"
+  ]
+}

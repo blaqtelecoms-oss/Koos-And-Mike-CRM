@@ -1,0 +1,56 @@
+{
+  "type": "object",
+  "properties": {
+    "task_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Date"
+    },
+    "task_type": {
+      "type": "string",
+      "title": "Task Type",
+      "enum": [
+        "Inventory Check",
+        "Lead Check",
+        "Social Media Post",
+        "Quality Control",
+        "Other"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    },
+    "completed": {
+      "type": "boolean",
+      "title": "Completed",
+      "default": false
+    },
+    "assigned_to": {
+      "type": "string",
+      "title": "Assigned To"
+    },
+    "notes": {
+      "type": "string",
+      "title": "Notes"
+    },
+    "platform": {
+      "type": "string",
+      "title": "Platform (for social media)",
+      "enum": [
+        "Facebook Page",
+        "Facebook Groups",
+        "Instagram",
+        "TikTok",
+        "WhatsApp Status",
+        "N/A"
+      ]
+    }
+  },
+  "required": [
+    "task_date",
+    "task_type",
+    "description"
+  ],
+  "name": "DailyTask"
+}

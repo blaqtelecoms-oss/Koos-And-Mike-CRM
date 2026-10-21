@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "name": "PushSubscription",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "title": "User Email"
+    },
+    "endpoint": {
+      "type": "string",
+      "title": "Push Endpoint"
+    },
+    "p256dh": {
+      "type": "string",
+      "title": "P256DH Key"
+    },
+    "auth": {
+      "type": "string",
+      "title": "Auth Key"
+    }
+  },
+  "required": [
+    "endpoint",
+    "p256dh",
+    "auth"
+  ]
+}

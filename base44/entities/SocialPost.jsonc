@@ -1,0 +1,54 @@
+{
+  "type": "object",
+  "properties": {
+    "post_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Post Date"
+    },
+    "platform": {
+      "type": "string",
+      "title": "Platform",
+      "enum": [
+        "Facebook Page",
+        "Facebook Groups",
+        "Instagram",
+        "TikTok",
+        "WhatsApp Status"
+      ]
+    },
+    "post_type": {
+      "type": "string",
+      "title": "Post Type",
+      "enum": [
+        "Car Post",
+        "Reel/Video",
+        "Story"
+      ]
+    },
+    "vehicle_featured": {
+      "type": "string",
+      "title": "Vehicle Featured"
+    },
+    "includes_website_link": {
+      "type": "boolean",
+      "title": "Includes Website Link",
+      "default": false
+    },
+    "includes_cta": {
+      "type": "boolean",
+      "title": "Includes Contact CTA",
+      "default": false
+    },
+    "posted_by": {
+      "type": "string",
+      "title": "Posted By"
+    }
+  },
+  "required": [
+    "post_date",
+    "platform",
+    "post_type"
+  ],
+  "name": "SocialPost"
+}

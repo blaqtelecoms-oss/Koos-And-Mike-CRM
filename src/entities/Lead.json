@@ -1,0 +1,86 @@
+{
+  "type": "object",
+  "properties": {
+    "lead_name": {
+      "type": "string",
+      "title": "Lead Name"
+    },
+    "phone": {
+      "type": "string",
+      "title": "Phone Number"
+    },
+    "email": {
+      "type": "string",
+      "title": "Email"
+    },
+    "car_interested": {
+      "type": "string",
+      "title": "Car Interested In"
+    },
+    "assigned_consultant": {
+      "type": "string",
+      "title": "Sales Consultant",
+      "enum": [
+        "Jaco",
+        "Vuyo",
+        "Marius",
+        "Leandri",
+        "Koos",
+        "Unassigned"
+      ]
+    },
+    "date_sent": {
+      "type": "string",
+      "format": "date",
+      "title": "Date Sent"
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": [
+        "New",
+        "Contacted",
+        "Test Drive",
+        "Approved",
+        "Sold",
+        "Lost"
+      ],
+      "default": "New"
+    },
+    "commission_received": {
+      "type": "boolean",
+      "title": "Commission Received",
+      "default": false
+    },
+    "source": {
+      "type": "string",
+      "title": "Lead Source",
+      "enum": [
+        "Website",
+        "Facebook",
+        "Instagram",
+        "TikTok",
+        "WhatsApp",
+        "Email",
+        "Other"
+      ]
+    },
+    "notes": {
+      "type": "string",
+      "title": "Notes"
+    },
+    "assigned_to": {
+      "type": "string",
+      "title": "Assigned To (Intern)"
+    },
+    "response_time_minutes": {
+      "type": "number",
+      "title": "Response Time (Minutes)"
+    }
+  },
+  "required": [
+    "lead_name",
+    "phone"
+  ],
+  "name": "Lead"
+}
