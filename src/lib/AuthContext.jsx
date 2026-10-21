@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
           'X-App-Id': appParams.appId
         },
         token: appParams.token, // Include token if available
-        interceptResponses: true
+        interceptResponses: false
       });
       
       try {
@@ -46,11 +46,17 @@ export const AuthProvider = ({ children }) => {
         }
         setIsLoadingPublicSettings(false);
       } catch (appError) {
-        console.error('App state check failed:', appError);
+        // Extract status/data from raw axios error (interceptResponses is false)
+        const status = appError?.response?.status || appError?.status;
+        const data = appError?.response?.data || appError?.data;
+        const reason = data?.extra_data?.reason;
         
-        // Handle app-level errors
-        if (appError.status === 403 && appError.data?.extra_data?.reason) {
-          const reason = appError.data.extra_data.reason;
+        // auth_required is expected for unauthenticated visitors — don't log it
+        if (reason !== 'auth_required') {
+          console.error('App state check failed:', appError);
+        }
+        
+        if (status === 403 && reason) {
           if (reason === 'auth_required') {
             setAuthError({
               type: 'auth_required',
@@ -64,13 +70,13 @@ export const AuthProvider = ({ children }) => {
           } else {
             setAuthError({
               type: reason,
-              message: appError.message
+              message: data?.message || 'Failed to load app'
             });
           }
         } else {
           setAuthError({
             type: 'unknown',
-            message: appError.message || 'Failed to load app'
+            message: data?.message || appError?.message || 'Failed to load app'
           });
         }
         setIsLoadingPublicSettings(false);
@@ -96,7 +102,10 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(true);
       setIsLoadingAuth(false);
     } catch (error) {
-      console.error('User auth check failed:', error);
+      // auth failure is expected for unauthenticated visitors — don't log it
+      if (error?.status !== 403 && error?.response?.status !== 403) {
+        console.error('User auth check failed:', error);
+      }
       setIsLoadingAuth(false);
       setIsAuthenticated(false);
       
