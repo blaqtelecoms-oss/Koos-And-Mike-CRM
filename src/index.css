@@ -49,7 +49,32 @@
   --sidebar-active: linear-gradient(145deg, #ffd45e, #f59e0b);
 }
 
-/* Dark mode override removed — cream-to-gold glassmorphism is the default design */
+/* Dark mode — matches the reference design (dark glassmorphism with gold accents) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f0e0a;
+    --ink: #f7f3e4;
+    --mut: #a39d84;
+    --glass: rgba(255,255,255,.06);
+    --glass-border: rgba(255,255,255,.1);
+    --line: rgba(255,224,130,.12);
+    --shadow: 0 10px 30px rgba(0,0,0,.4);
+    --app-canvas: linear-gradient(135deg, #1d1b14, #2a2412 60%, #3d3213 130%);
+
+    --background: 40 20% 6%;
+    --foreground: 45 30% 94%;
+    --card: 40 15% 10%;
+    --card-foreground: 45 30% 94%;
+    --popover: 40 15% 8%;
+    --popover-foreground: 45 30% 94%;
+    --muted: 40 15% 12%;
+    --muted-foreground: 42 15% 60%;
+    --border: 42 15% 18%;
+    --input: 42 15% 15%;
+    --secondary: 42 20% 12%;
+    --secondary-foreground: 42 50% 70%;
+  }
+}
 
 /* ===== Base ===== */
 * { box-sizing: border-box; }
