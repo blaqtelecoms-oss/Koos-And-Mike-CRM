@@ -29,7 +29,7 @@ export default function DeleteAccountDialog() {
       <AlertDialogTrigger asChild>
         <button
           onClick={() => setStep("confirm")}
-          className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
+          className="flex items-center gap-2 w-full px-4 py-2 text-sm text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 rounded-lg transition-colors"
         >
           <Trash2 className="w-4 h-4" />
           Delete Account
@@ -46,7 +46,7 @@ export default function DeleteAccountDialog() {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel className="border-amber-200/60 text-white hover:bg-amber-50" onClick={() => setStep("idle")}>
+              <AlertDialogCancel className="border-amber-500/40 text-white hover:bg-amber-500/10" onClick={() => setStep("idle")}>
                 Cancel
               </AlertDialogCancel>
               <Button onClick={handleRequestDeletion} className="bg-red-600 hover:bg-red-700 text-white">

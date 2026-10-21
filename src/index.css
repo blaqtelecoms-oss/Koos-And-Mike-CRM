@@ -139,7 +139,7 @@ body:has(.km-app) {
   font: 600 10px 'Inter';
   letter-spacing: 1.8px;
   text-transform: uppercase;
-  color: #666;
+  color: #ff9d00aa;
   margin: 20px 14px 8px;
 }
 
@@ -364,6 +364,7 @@ body:has(.km-app) {
   width: 6px;
   height: 6px;
   border-radius: 50%;
+  background: var(--c);
 }
 
 /* ===== Avatar ===== */
