@@ -4,7 +4,14 @@ import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import AdminPasswordGate from "@/components/AdminPasswordGate";
 
-const GOLD = "#C9A84C";
+const GOLD = "#f6c635";
+const GOLD_DEEP = "#f59e0b";
+const INK = "#14130f";
+const MUT = "#8a8572";
+const GLASS = "rgba(255,255,255,0.62)";
+const GLASS_BORDER = "rgba(255,255,255,0.9)";
+const CANVAS = "linear-gradient(135deg, #fffef9 0%, #fff6d6 55%, #fde9a0 130%)";
+const SHADOW = "0 10px 30px rgba(150,125,30,0.12)";
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -18,15 +25,10 @@ export default function Landing() {
     base44.auth.redirectToLogin("/Dashboard");
   };
 
-
-
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#0D0D0D" }}>
-      {/* Gold top bar */}
-      <div className="h-1 w-full" style={{ background: GOLD }} />
-
+    <div className="min-h-screen flex flex-col" style={{ background: CANVAS, fontFamily: "'Inter', system-ui, sans-serif" }}>
       {/* Header */}
-      <header className="border-b py-4 px-6" style={{ borderColor: "#C9A84C22", background: "#111111" }}>
+      <header className="py-5 px-6" style={{ borderBottom: `1px solid rgba(120,105,50,0.14)` }}>
         <div className="max-w-5xl mx-auto flex items-center gap-3">
           <img
             src="https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png"
@@ -34,8 +36,8 @@ export default function Landing() {
             className="w-11 h-11 object-contain"
           />
           <div>
-            <h1 className="font-bold text-base leading-none" style={{ color: GOLD }}>Koos & Mike Cars</h1>
-            <p className="text-xs" style={{ color: "#C9A84C66" }}>Quality Vehicles, Trusted Service</p>
+            <h1 className="font-bold text-base leading-none" style={{ color: INK }}>Koos & Mike Cars</h1>
+            <p className="text-xs mt-1" style={{ color: GOLD_DEEP }}>Quality Vehicles, Trusted Service</p>
           </div>
         </div>
       </header>
@@ -43,13 +45,16 @@ export default function Landing() {
       {/* Hero */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-16">
         <div className="text-center mb-14 max-w-2xl">
-          <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium mb-5 border" style={{ background: "#C9A84C18", borderColor: "#C9A84C44", color: GOLD }}>
+          <div
+            className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium mb-5"
+            style={{ background: GLASS, border: `1px solid ${GLASS_BORDER}`, color: GOLD_DEEP, boxShadow: SHADOW, backdropFilter: "blur(16px)" }}
+          >
             <Star className="w-4 h-4" /> Welcome — Choose Your Portal
           </div>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
-            How Can We<br /><span style={{ color: GOLD }}>Help You Today?</span>
+          <h2 className="text-4xl md:text-5xl font-light mb-4 leading-tight" style={{ color: INK, letterSpacing: "-1.4px" }}>
+            How Can We<br /><b style={{ fontWeight: 600, color: GOLD_DEEP }}>Help You Today?</b>
           </h2>
-          <p className="text-white/50 text-lg">
+          <p className="text-lg" style={{ color: MUT }}>
             Select the portal that applies to you to get started.
           </p>
         </div>
@@ -59,46 +64,51 @@ export default function Landing() {
           {/* Client Card */}
           <button
             onClick={handleClientClick}
-            className="group text-left rounded-2xl p-8 border transition-all duration-200 hover:scale-[1.02] hover:shadow-2xl cursor-pointer"
-            style={{ background: "#ffffff08", borderColor: "#ffffff15" }}
-            onMouseEnter={e => e.currentTarget.style.borderColor = "#C9A84C55"}
-            onMouseLeave={e => e.currentTarget.style.borderColor = "#ffffff15"}
+            className="group text-left rounded-3xl p-8 transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+            style={{ background: GLASS, border: `1px solid ${GLASS_BORDER}`, boxShadow: SHADOW, backdropFilter: "blur(18px)" }}
           >
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style={{ background: "#C9A84C18" }}>
-              <Car className="w-8 h-8" style={{ color: GOLD }} />
+            <div
+              className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
+              style={{ background: "rgba(246,198,53,0.15)" }}
+            >
+              <Car className="w-8 h-8" style={{ color: GOLD_DEEP }} />
             </div>
-            <h3 className="text-white text-2xl font-bold mb-2">I'm a Client</h3>
-            <p className="text-white/50 text-sm mb-6 leading-relaxed">
+            <h3 className="text-2xl font-semibold mb-2" style={{ color: INK }}>I'm a Client</h3>
+            <p className="text-sm mb-6 leading-relaxed" style={{ color: MUT }}>
               Browse our vehicles, submit a trade-in, register your interest, or request a specific car.
             </p>
-            <div className="flex items-center gap-2 font-semibold text-sm" style={{ color: GOLD }}>
+            <div
+              className="inline-flex items-center gap-2 font-semibold text-sm rounded-full px-5 py-2.5"
+              style={{ background: "linear-gradient(145deg, #ffe082, #f6c635)", color: "#1c1400", boxShadow: "0 8px 20px rgba(246,198,53,0.35)" }}
+            >
               Enter Client Portal <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </div>
           </button>
 
-
-
           {/* Sales Card */}
           <button
             onClick={() => setShowAdminGate(true)}
-            className="group text-left rounded-2xl p-8 border transition-all duration-200 hover:scale-[1.02] hover:shadow-2xl cursor-pointer"
-            style={{ background: "#ffffff08", borderColor: "#ffffff15" }}
-            onMouseEnter={e => e.currentTarget.style.borderColor = "#C9A84C55"}
-            onMouseLeave={e => e.currentTarget.style.borderColor = "#ffffff15"}
+            className="group text-left rounded-3xl p-8 transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+            style={{ background: GLASS, border: `1px solid ${GLASS_BORDER}`, boxShadow: SHADOW, backdropFilter: "blur(18px)" }}
           >
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style={{ background: "#C9A84C18" }}>
-              <BarChart2 className="w-8 h-8" style={{ color: GOLD }} />
+            <div
+              className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
+              style={{ background: "rgba(246,198,53,0.15)" }}
+            >
+              <BarChart2 className="w-8 h-8" style={{ color: GOLD_DEEP }} />
             </div>
-            <h3 className="text-white text-2xl font-bold mb-2">Sales / Admin</h3>
-            <p className="text-white/50 text-sm mb-6 leading-relaxed">
+            <h3 className="text-2xl font-semibold mb-2" style={{ color: INK }}>Sales / Admin</h3>
+            <p className="text-sm mb-6 leading-relaxed" style={{ color: MUT }}>
               Access the full CRM — manage leads, vehicles, tasks, social posts and more.
             </p>
-            <div className="flex items-center gap-2 font-semibold text-sm" style={{ color: GOLD }}>
+            <div
+              className="inline-flex items-center gap-2 font-semibold text-sm rounded-full px-5 py-2.5"
+              style={{ background: "linear-gradient(145deg, #ffe082, #f6c635)", color: "#1c1400", boxShadow: "0 8px 20px rgba(246,198,53,0.35)" }}
+            >
               Enter Sales Dashboard <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </div>
           </button>
         </div>
-
       </main>
 
       <AdminPasswordGate
@@ -107,7 +117,7 @@ export default function Landing() {
         onSuccess={handleSalesLogin}
       />
 
-      <footer className="border-t py-5 text-center text-xs" style={{ borderColor: "#C9A84C22", color: "#ffffff25" }}>
+      <footer className="py-5 text-center text-xs" style={{ color: MUT, borderTop: `1px solid rgba(120,105,50,0.14)` }}>
         © 2026 Koos & Mike Cars · Quality Vehicles, Trusted Service.
       </footer>
     </div>
