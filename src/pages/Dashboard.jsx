@@ -58,10 +58,22 @@ export default function Dashboard() {
   };
 
   const todayLeads = leads.filter(l => moment(l.created_date).isSame(moment(), "day")).length;
+  const yesterdayLeads = leads.filter(l => moment(l.created_date).isSame(moment().subtract(1, "day"), "day")).length;
   const newLeads = leads.filter(l => l.status === "New").length;
   const soldLeads = leads.filter(l => l.status === "Sold").length;
   const availableVehicles = vehicles.filter(v => v.status === "Available").length;
   const recentLeads = leads.slice(0, 6);
+
+  // Month-over-month trends
+  const thisMonthLeads = leads.filter(l => moment(l.created_date).isSame(moment(), "month")).length;
+  const lastMonthLeads = leads.filter(l => moment(l.created_date).isSame(moment().subtract(1, "month"), "month")).length;
+  const thisMonthSold = leads.filter(l => l.status === "Sold" && moment(l.created_date).isSame(moment(), "month")).length;
+  const lastMonthSold = leads.filter(l => l.status === "Sold" && moment(l.created_date).isSame(moment().subtract(1, "month"), "month")).length;
+  const todayTrendPct = yesterdayLeads > 0 ? Math.round(((todayLeads - yesterdayLeads) / yesterdayLeads) * 100) : (todayLeads > 0 ? 100 : 0);
+  const newLeadsTrendPct = lastMonthLeads > 0 ? Math.round(((thisMonthLeads - lastMonthLeads) / lastMonthLeads) * 100) : (thisMonthLeads > 0 ? 100 : 0);
+  const soldTrendPct = lastMonthSold > 0 ? Math.round(((thisMonthSold - lastMonthSold) / lastMonthSold) * 100) : (thisMonthSold > 0 ? 100 : 0);
+  const trendDir = (pct) => pct > 0 ? "up" : pct < 0 ? "dn" : "nu";
+  const trendStr = (pct) => (pct > 0 ? "+" : "") + pct + "%";
 
   // Build chart data: last 8 months of leads & deals
   const chartData = (() => {
@@ -104,10 +116,10 @@ export default function Dashboard() {
 
       {/* Stat cards */}
       <div className="km-stats-grid">
-        <StatCard label="New Leads" icon={<Users style={{ width: 18, height: 18, strokeWidth: 1.6 }} />} value={newLeads} highlight />
-        <StatCard label="Deals Closed" icon={<TrendingUp style={{ width: 18, height: 18, strokeWidth: 1.6 }} />} value={soldLeads} />
-        <StatCard label="Available Cars" icon={<Car style={{ width: 18, height: 18, strokeWidth: 1.6 }} />} value={availableVehicles} />
-        <StatCard label="Today's Leads" icon={<Flame style={{ width: 18, height: 18, strokeWidth: 1.6 }} />} value={todayLeads} footer="Target 3 – 5" />
+        <StatCard label="New Leads" icon={<Users style={{ width: 18, height: 18, strokeWidth: 1.6 }} />} value={newLeads} trend={trendStr(newLeadsTrendPct)} trendDir={trendDir(newLeadsTrendPct)} highlight />
+        <StatCard label="Deals Closed" icon={<TrendingUp style={{ width: 18, height: 18, strokeWidth: 1.6 }} />} value={soldLeads} trend={trendStr(soldTrendPct)} trendDir={trendDir(soldTrendPct)} />
+        <StatCard label="Available Cars" icon={<Car style={{ width: 18, height: 18, strokeWidth: 1.6 }} />} value={availableVehicles} trend="0%" trendDir="nu" />
+        <StatCard label="Today's Leads" icon={<Flame style={{ width: 18, height: 18, strokeWidth: 1.6 }} />} value={todayLeads} trend={trendStr(todayTrendPct)} trendDir={trendDir(todayTrendPct)} />
       </div>
 
       {/* Main grid */}
@@ -116,7 +128,7 @@ export default function Dashboard() {
           {/* Pipeline + Chart */}
           <div className="km-two-col">
             <GlassCard>
-              <div className="km-card-header">Lead Pipeline</div>
+              <div className="km-card-header">Lead Pipeline <span className="km-chip">Today ⌄</span></div>
               <PipelineRing total={leads.length} filled={newLeads} />
             </GlassCard>
             <GlassCard>
@@ -128,7 +140,7 @@ export default function Dashboard() {
                 <span>● <b style={{ color: "var(--gold)" }}>Leads</b></span>
                 <span>● Deals</span>
               </div>
-              <LeadsChart data={chartData} />
+              <LeadsChart data={chartData} callout={{ month: moment().format("MMM"), value: chartData[chartData.length - 1]?.leads || 0 }} />
             </GlassCard>
           </div>
 
