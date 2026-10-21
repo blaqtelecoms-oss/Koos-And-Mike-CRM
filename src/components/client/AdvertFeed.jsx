@@ -86,7 +86,7 @@ function AdvertCard({ ad }) {
   const hasMore = descLines.length > 4;
 
   return (
-    <div className="rounded-2xl border overflow-hidden" style={{ background: "#111", borderColor: "#C9A84C33" }}>
+    <div className="rounded-2xl border overflow-hidden" style={{ background: "var(--glass)", borderColor: "#C9A84C33" }}>
       {/* Images */}
       {ad.images?.length > 0 && (
         <div className="p-4 pb-0">
@@ -155,7 +155,7 @@ export default function AdvertFeed() {
 
   if (adverts.length === 0) return (
     <section className="max-w-6xl mx-auto px-4 pb-12">
-      <div className="rounded-2xl border p-8 text-center" style={{ borderColor: "#C9A84C22", background: "#111" }}>
+      <div className="rounded-2xl border p-8 text-center" style={{ borderColor: "#C9A84C22", background: "var(--glass)" }}>
         <p className="text-2xl mb-2">🚗</p>
         <p className="text-white/50 text-sm">New featured vehicles coming soon — stay tuned!</p>
       </div>

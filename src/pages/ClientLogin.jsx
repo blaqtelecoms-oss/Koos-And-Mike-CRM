@@ -20,12 +20,12 @@ export default function ClientLogin() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#0D0D0D" }}>
+    <div className="min-h-screen flex flex-col" style={{ background: "var(--app-canvas)" }}>
       {/* Gold top bar */}
       <div className="h-1 w-full" style={{ background: GOLD }} />
 
       {/* Header */}
-      <header className="border-b backdrop-blur-sm" style={{ background: "#111111ee", borderColor: "#C9A84C22" }}>
+      <header className="border-b backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.85)", borderColor: "#C9A84C22" }}>
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img

@@ -16,12 +16,12 @@ export default function ClientLayout({ children }) {
   const { pathname } = useLocation();
 
   return (
-    <div className="min-h-screen" style={{ background: "#0D0D0D" }}>
+    <div className="min-h-screen" style={{ background: "var(--app-canvas)" }}>
       {/* Gold top bar */}
       <div className="h-1 w-full" style={{ background: GOLD }} />
 
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b" style={{ background: "#111111", borderColor: "#C9A84C22" }}>
+      <header className="sticky top-0 z-50 border-b" style={{ background: "rgba(255,255,255,0.85)", borderColor: "#C9A84C22" }}>
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link to="/ClientPortal" className="flex items-center gap-3">
             <img

@@ -9,7 +9,7 @@ import { CheckCircle2, FileDown, Mail, ChevronLeft, Shield, Car, User, Clipboard
 const LOGO_URL = "https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/ed57e5a9f_istockphoto-1482350068-612x612.jpg";
 
 const SECTION = ({ title, icon, color = "#0ea5e9", children }) => (
-  <div className="rounded-2xl border p-5 space-y-4" style={{ background: "#111", borderColor: color + "30" }}>
+  <div className="rounded-2xl border p-5 space-y-4" style={{ background: "var(--glass)", borderColor: color + "30" }}>
     <div className="flex items-center gap-2 border-b pb-3" style={{ borderColor: color + "20" }}>
       <span style={{ color }}>{icon}</span>
       <h3 className="font-bold text-white text-lg">{title}</h3>
@@ -65,7 +65,7 @@ const YesNo = ({ label, name, value, onChange }) => (
           className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-semibold transition-all"
           style={value === opt
             ? { background: opt === "Yes" ? "#22c55e22" : "#ef444422", borderColor: opt === "Yes" ? "#22c55e" : "#ef4444", color: opt === "Yes" ? "#4ade80" : "#f87171" }
-            : { background: "transparent", borderColor: "#ffffff20", color: "#ffffff50" }
+            : { background: "transparent", borderColor: "var(--line)", color: "var(--mut)" }
           }
         >
           <div className="w-4 h-4 rounded border-2 flex items-center justify-center" style={{ borderColor: value === opt ? (opt === "Yes" ? "#4ade80" : "#f87171") : "#ffffff30" }}>
@@ -280,11 +280,11 @@ ${form.additional_notes ? `<h2>Additional Notes</h2><div class="row"><div class=
   };
 
   return (
-    <div className="km-admin-page min-h-screen" style={{ background: "#0D0D0D" }}>
+    <div className="km-admin-page min-h-screen" style={{ background: "var(--app-canvas)" }}>
       <div className="h-1 w-full" style={{ background: "linear-gradient(90deg, #0ea5e9, #38bdf8)" }} />
 
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-sm border-b" style={{ background: "#111111ee", borderColor: "#0ea5e920" }}>
+      <header className="sticky top-0 z-50 backdrop-blur-sm border-b" style={{ background: "rgba(255,255,255,0.85)", borderColor: "#0ea5e920" }}>
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3">
           <button onClick={() => window.history.back()} className="p-2 rounded-lg hover:bg-white/5">
             <ChevronLeft className="w-5 h-5 text-blue-400" />
@@ -306,7 +306,7 @@ ${form.additional_notes ? `<h2>Additional Notes</h2><div class="row"><div class=
       <div className="max-w-3xl mx-auto px-4 py-6 space-y-5">
 
         {/* Agent name */}
-        <div className="rounded-2xl border p-4" style={{ background: "#111", borderColor: "#0ea5e930" }}>
+        <div className="rounded-2xl border p-4" style={{ background: "var(--glass)", borderColor: "#0ea5e930" }}>
           <FIELD label="Agent Name" name="agent_name" value={form.agent_name} onChange={handle} placeholder="Your name" />
         </div>
 
@@ -398,7 +398,7 @@ ${form.additional_notes ? `<h2>Additional Notes</h2><div class="row"><div class=
                   className="flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-semibold transition-all"
                   style={form.licence_send_method === opt
                     ? { background: "#0ea5e922", borderColor: "#0ea5e9", color: "#38bdf8" }
-                    : { background: "transparent", borderColor: "#ffffff20", color: "#ffffff50" }
+                    : { background: "transparent", borderColor: "var(--line)", color: "var(--mut)" }
                   }
                 >
                   {opt}
@@ -424,7 +424,7 @@ ${form.additional_notes ? `<h2>Additional Notes</h2><div class="row"><div class=
         </SECTION>
 
         {/* AGENT CHECKLIST */}
-        <div className="rounded-2xl border p-5 space-y-3" style={{ background: "#111", borderColor: "#f59e0b30" }}>
+        <div className="rounded-2xl border p-5 space-y-3" style={{ background: "var(--glass)", borderColor: "#f59e0b30" }}>
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-amber-400 flex items-center gap-2"><ClipboardList className="w-5 h-5" /> Agent Checklist</h3>
             <span className="text-sm font-bold px-3 py-1 rounded-full" style={{ background: checkedCount === checklistItems.length ? "#22c55e22" : "#f59e0b22", color: checkedCount === checklistItems.length ? "#4ade80" : "#fbbf24" }}>
@@ -440,7 +440,7 @@ ${form.additional_notes ? `<h2>Additional Notes</h2><div class="row"><div class=
                   className="flex items-center gap-2 px-3 py-2 rounded-xl border text-left transition-all text-sm"
                   style={checked
                     ? { background: "#22c55e15", borderColor: "#22c55e40", color: "#4ade80" }
-                    : { background: "#ffffff05", borderColor: "#ffffff15", color: "#ffffff60" }
+                    : { background: "rgba(0,0,0,0.03)", borderColor: "var(--line)", color: "var(--mut)" }
                   }
                 >
                   <div className="w-4 h-4 rounded border-2 flex items-center justify-center shrink-0" style={{ borderColor: checked ? "#4ade80" : "#ffffff30" }}>
@@ -466,7 +466,7 @@ ${form.additional_notes ? `<h2>Additional Notes</h2><div class="row"><div class=
         </div>
 
         {/* ACTIONS */}
-        <div className="rounded-2xl border p-5 space-y-4" style={{ background: "#111", borderColor: "#0ea5e930" }}>
+        <div className="rounded-2xl border p-5 space-y-4" style={{ background: "var(--glass)", borderColor: "#0ea5e930" }}>
           <h3 className="font-bold text-white">Save &amp; Send</h3>
           <div className="flex flex-col sm:flex-row gap-3">
             <Button onClick={handleDownloadPdf} className="flex-1 gap-2" style={{ background: "#0ea5e9", color: "#fff" }}>

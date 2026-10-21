@@ -36,7 +36,7 @@ export default function DeleteAccountDialog() {
         </button>
       </AlertDialogTrigger>
 
-      <AlertDialogContent style={{ background: "#1a1a1a", borderColor: "#C9A84C22" }}>
+      <AlertDialogContent style={{ background: "var(--glass)", borderColor: "#C9A84C22" }}>
         {step === "confirm" && (
           <>
             <AlertDialogHeader>

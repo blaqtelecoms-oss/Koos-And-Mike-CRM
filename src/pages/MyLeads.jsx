@@ -282,17 +282,17 @@ export default function MyLeads() {
 
   if (loading) {
     return (
-      <div className="km-admin-page min-h-screen flex items-center justify-center" style={{ background: "#0D0D0D" }}>
+      <div className="km-admin-page min-h-screen flex items-center justify-center" style={{ background: "var(--app-canvas)" }}>
         <div className="w-10 h-10 border-4 border-amber-700 border-t-amber-400 rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="km-admin-page min-h-screen" style={{ background: "#0D0D0D" }}>
+    <div className="km-admin-page min-h-screen" style={{ background: "var(--app-canvas)" }}>
       {/* Pull-to-refresh indicator */}
       {(pullIndicator > 0 || refreshing) && (
-        <div className="flex justify-center py-2" style={{ background: "#0D0D0D" }}>
+        <div className="flex justify-center py-2" style={{ background: "var(--app-canvas)" }}>
           <RefreshCw
             className={`w-5 h-5 text-amber-400 ${refreshing ? "animate-spin" : ""}`}
             style={{ transform: `rotate(${pullIndicator * 180}deg)`, opacity: refreshing ? 1 : pullIndicator }}
@@ -302,7 +302,7 @@ export default function MyLeads() {
       <div className="h-1 w-full" style={{ background: GOLD }} />
 
       {/* Header */}
-      <header className="border-b py-3 px-4" style={{ borderColor: "#C9A84C22", background: "#111111" }}>
+      <header className="border-b py-3 px-4" style={{ borderColor: "#C9A84C22", background: "rgba(255,255,255,0.85)" }}>
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src="https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png" alt="K&M" className="w-9 h-9 object-contain" />
@@ -342,7 +342,7 @@ export default function MyLeads() {
       </header>
 
       {/* Tabs */}
-      <div className="border-b px-4" style={{ borderColor: "#C9A84C22", background: "#0D0D0D" }}>
+      <div className="border-b px-4" style={{ borderColor: "#C9A84C22", background: "var(--app-canvas)" }}>
         <div className="max-w-5xl mx-auto flex gap-1">
           {TABS.map(tab => (
             <button
@@ -373,7 +373,7 @@ export default function MyLeads() {
               { label: "Active", value: displayLeads.filter(l => !["Sold", "Lost"].includes(l.status)).length },
               { label: "Sold", value: displayLeads.filter(l => l.status === "Sold").length },
             ].map(stat => (
-              <div key={stat.label} className="rounded-xl p-3 border text-center" style={{ background: "#ffffff08", borderColor: "#C9A84C22" }}>
+              <div key={stat.label} className="rounded-xl p-3 border text-center" style={{ background: "rgba(0,0,0,0.03)", borderColor: "#C9A84C22" }}>
                 <p className="text-xl font-bold text-white">{stat.value}</p>
                 <p className="text-xs text-white/50 mt-0.5">{stat.label}</p>
               </div>
@@ -388,7 +388,7 @@ export default function MyLeads() {
           onChange={e => setSearchQuery(e.target.value)}
           placeholder={activeTab === "Vehicles" ? "Search vehicles..." : "Search by name or phone..."}
           className="w-full px-4 py-2.5 rounded-xl text-white text-sm outline-none mb-4"
-          style={{ background: "#1a1a1a", border: "1px solid #C9A84C22" }}
+          style={{ background: "var(--glass)", border: "1px solid #C9A84C22" }}
         />
 
         {/* Status filter (leads only) */}
@@ -420,7 +420,7 @@ export default function MyLeads() {
           ) : (
             <div className="space-y-3">
               {filteredLeads.map(lead => {
-                const sc = STATUS_COLORS[lead.status] || { bg: "#ffffff10", color: "#ffffff80" };
+                const sc = STATUS_COLORS[lead.status] || { bg: "rgba(0,0,0,0.06)", color: "var(--mut)" };
                 return (
                   <div
                     key={lead.id}
@@ -472,7 +472,7 @@ export default function MyLeads() {
           ) : (
             <div className="space-y-3">
               {tasks.map(t => (
-                <div key={t.id} className="rounded-xl p-4 border flex items-start gap-3" style={{ background: "#ffffff06", borderColor: "#ffffff10" }}>
+                <div key={t.id} className="rounded-xl p-4 border flex items-start gap-3" style={{ background: "#ffffff06", borderColor: "var(--line)" }}>
                   <div className={`w-5 h-5 rounded-full flex-shrink-0 mt-0.5 border-2 flex items-center justify-center ${t.completed ? "bg-amber-500 border-amber-500" : "border-white/30"}`}>
                     {t.completed && <Check className="w-3 h-3 text-black" />}
                   </div>
@@ -504,7 +504,7 @@ export default function MyLeads() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {filteredVehicles.map(v => (
-                <div key={v.id} className="rounded-xl border overflow-hidden" style={{ background: "#ffffff06", borderColor: "#ffffff10" }}>
+                <div key={v.id} className="rounded-xl border overflow-hidden" style={{ background: "#ffffff06", borderColor: "var(--line)" }}>
                   {v.images?.[0] && (
                     <img src={v.images[0]} alt={v.title} className="w-full h-40 object-cover" />
                   )}
@@ -513,7 +513,7 @@ export default function MyLeads() {
                     <p className="text-amber-400 font-bold mt-1">R {v.price?.toLocaleString()}</p>
                     <div className="flex gap-2 mt-2 flex-wrap">
                       <span className="px-2 py-0.5 rounded text-xs" style={{ background: "#22c55e20", color: "#22c55e" }}>{v.status}</span>
-                      {v.stand && <span className="px-2 py-0.5 rounded text-xs text-white/40" style={{ background: "#ffffff10" }}>{v.stand}</span>}
+                      {v.stand && <span className="px-2 py-0.5 rounded text-xs text-white/40" style={{ background: "rgba(0,0,0,0.06)" }}>{v.stand}</span>}
                       {v.mileage && <span className="text-xs text-white/40">{v.mileage?.toLocaleString()} km</span>}
                     </div>
                   </div>
@@ -527,7 +527,7 @@ export default function MyLeads() {
       {/* Lead Detail Drawer */}
       {selectedLead && (
         <div className="fixed inset-0 z-50 flex" style={{ background: "rgba(0,0,0,0.7)" }} onClick={() => { setSelectedLead(null); setShowFollowUp(false); setFollowUpHistory([]); }}>
-          <div className="ml-auto w-full max-w-md h-full overflow-y-auto flex flex-col" style={{ background: "#111", borderLeft: `1px solid #C9A84C33` }} onClick={e => e.stopPropagation()}>
+          <div className="ml-auto w-full max-w-md h-full overflow-y-auto flex flex-col" style={{ background: "var(--glass)", borderLeft: `1px solid #C9A84C33` }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: "#C9A84C22" }}>
               <h2 className="text-white font-bold text-lg">{selectedLead.lead_name}</h2>
               <button onClick={() => { setSelectedLead(null); setShowFollowUp(false); setFollowUpHistory([]); }} className="p-2 rounded-lg hover:bg-white/10">
@@ -539,7 +539,7 @@ export default function MyLeads() {
               {/* Status badge */}
               <div className="flex items-center gap-2 flex-wrap">
                 {LEAD_STATUSES.map(s => {
-                  const sc = STATUS_COLORS[s] || { bg: "#ffffff10", color: "#fff" };
+                  const sc = STATUS_COLORS[s] || { bg: "rgba(0,0,0,0.06)", color: "var(--ink)" };
                   const isActive = selectedLead.status === s;
                   return (
                     <button
@@ -601,7 +601,7 @@ export default function MyLeads() {
 
                   <div>
                     <label className="text-xs text-white/40 block mb-1">Contact Method</label>
-                    <select value={followUpData.contact_method || ""} onChange={e => setFollowUpData(p => ({ ...p, contact_method: e.target.value }))} className="w-full px-3 py-2 rounded-lg text-white text-sm outline-none" style={{ background: "#1a1a1a", border: "1px solid #C9A84C33" }}>
+                    <select value={followUpData.contact_method || ""} onChange={e => setFollowUpData(p => ({ ...p, contact_method: e.target.value }))} className="w-full px-3 py-2 rounded-lg text-white text-sm outline-none" style={{ background: "var(--glass)", border: "1px solid #C9A84C33" }}>
                       <option value="">— Select —</option>
                       {CONTACT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
                     </select>
@@ -609,7 +609,7 @@ export default function MyLeads() {
 
                   <div>
                     <label className="text-xs text-white/40 block mb-1">Lead Response</label>
-                    <select value={followUpData.lead_response || ""} onChange={e => setFollowUpData(p => ({ ...p, lead_response: e.target.value }))} className="w-full px-3 py-2 rounded-lg text-white text-sm outline-none" style={{ background: "#1a1a1a", border: "1px solid #C9A84C33" }}>
+                    <select value={followUpData.lead_response || ""} onChange={e => setFollowUpData(p => ({ ...p, lead_response: e.target.value }))} className="w-full px-3 py-2 rounded-lg text-white text-sm outline-none" style={{ background: "var(--glass)", border: "1px solid #C9A84C33" }}>
                       <option value="">— Select —</option>
                       {LEAD_RESPONSES.map(r => <option key={r} value={r}>{r}</option>)}
                     </select>
@@ -617,7 +617,7 @@ export default function MyLeads() {
 
                   <div>
                     <label className="text-xs text-white/40 block mb-1">Pipeline Stage *</label>
-                    <select value={followUpData.pipeline_stage || ""} onChange={e => setFollowUpData(p => ({ ...p, pipeline_stage: e.target.value }))} className="w-full px-3 py-2 rounded-lg text-white text-sm outline-none" style={{ background: "#1a1a1a", border: "1px solid #C9A84C33" }}>
+                    <select value={followUpData.pipeline_stage || ""} onChange={e => setFollowUpData(p => ({ ...p, pipeline_stage: e.target.value }))} className="w-full px-3 py-2 rounded-lg text-white text-sm outline-none" style={{ background: "var(--glass)", border: "1px solid #C9A84C33" }}>
                       <option value="">— Select —</option>
                       {PIPELINE_STAGES.map(s => <option key={s} value={s}>{s}</option>)}
                     </select>
@@ -625,11 +625,11 @@ export default function MyLeads() {
 
                   <div>
                     <label className="text-xs text-white/40 block mb-1">Notes</label>
-                    <textarea value={followUpData.notes || ""} onChange={e => setFollowUpData(p => ({ ...p, notes: e.target.value }))} rows={3} className="w-full px-3 py-2 rounded-lg text-white text-sm outline-none resize-none" style={{ background: "#1a1a1a", border: "1px solid #C9A84C33" }} placeholder="Add notes..." />
+                    <textarea value={followUpData.notes || ""} onChange={e => setFollowUpData(p => ({ ...p, notes: e.target.value }))} rows={3} className="w-full px-3 py-2 rounded-lg text-white text-sm outline-none resize-none" style={{ background: "var(--glass)", border: "1px solid #C9A84C33" }} placeholder="Add notes..." />
                   </div>
 
                   <div className="flex gap-2">
-                    <button onClick={() => { setShowFollowUp(false); setFollowUpData({}); }} className="flex-1 py-2 rounded-lg border text-sm font-semibold text-white/50 hover:bg-white/5 transition-all" style={{ borderColor: "#ffffff20" }}>
+                    <button onClick={() => { setShowFollowUp(false); setFollowUpData({}); }} className="flex-1 py-2 rounded-lg border text-sm font-semibold text-white/50 hover:bg-white/5 transition-all" style={{ borderColor: "var(--line)" }}>
                       Cancel
                     </button>
                     <button onClick={handleSaveFollowUp} disabled={savingFollowUp || !followUpData.pipeline_stage} className="flex-1 py-2 rounded-xl font-semibold text-sm transition-all" style={{ background: followUpData.pipeline_stage ? GOLD : "#ffffff15", color: followUpData.pipeline_stage ? "#000" : "#ffffff40" }}>
@@ -651,7 +651,7 @@ export default function MyLeads() {
                 ) : (
                   <div className="space-y-2">
                     {followUpHistory.map(fu => (
-                      <div key={fu.id} className="rounded-lg p-3 border" style={{ background: "#ffffff05", borderColor: "#ffffff10" }}>
+                      <div key={fu.id} className="rounded-lg p-3 border" style={{ background: "rgba(0,0,0,0.03)", borderColor: "var(--line)" }}>
                         <div className="flex items-center justify-between mb-1.5">
                           <span className="text-xs font-semibold" style={{ color: GOLD }}>{fu.pipeline_stage}</span>
                           <span className="text-xs text-white/30">{fu.update_date}</span>

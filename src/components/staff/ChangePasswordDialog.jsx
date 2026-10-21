@@ -55,7 +55,7 @@ export default function ChangePasswordDialog({ consultantId, open, onClose, forc
 
   return (
     <Dialog open={open} onOpenChange={forced ? undefined : onClose}>
-      <DialogContent className="border" style={{ background: "#111", borderColor: "#C9A84C33", maxWidth: 400 }}>
+      <DialogContent className="border" style={{ background: "var(--glass)", borderColor: "#C9A84C33", maxWidth: 400 }}>
         <DialogHeader>
           <div className="flex items-center gap-3 mb-1">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "#C9A84C18" }}>
@@ -82,7 +82,7 @@ export default function ChangePasswordDialog({ consultantId, open, onClose, forc
                 onChange={e => { setNewPassword(e.target.value); setError(""); }}
                 placeholder="Min. 6 characters"
                 className="w-full px-4 py-3 pr-12 rounded-xl text-white text-sm outline-none"
-                style={{ background: "#1a1a1a", border: `1px solid ${newPassword ? GOLD : "#C9A84C33"}` }}
+                style={{ background: "var(--glass)", border: `1px solid ${newPassword ? GOLD : "#C9A84C33"}` }}
               />
               <button type="button" onClick={() => setShowNew(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2">
                 {showNew ? <EyeOff className="w-4 h-4 text-white/30" /> : <Eye className="w-4 h-4 text-white/30" />}
@@ -99,7 +99,7 @@ export default function ChangePasswordDialog({ consultantId, open, onClose, forc
                 onChange={e => { setConfirmPassword(e.target.value); setError(""); }}
                 placeholder="Repeat your new password"
                 className="w-full px-4 py-3 pr-12 rounded-xl text-white text-sm outline-none"
-                style={{ background: "#1a1a1a", border: `1px solid ${confirmPassword ? GOLD : "#C9A84C33"}` }}
+                style={{ background: "var(--glass)", border: `1px solid ${confirmPassword ? GOLD : "#C9A84C33"}` }}
               />
               <button type="button" onClick={() => setShowConfirm(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2">
                 {showConfirm ? <EyeOff className="w-4 h-4 text-white/30" /> : <Eye className="w-4 h-4 text-white/30" />}

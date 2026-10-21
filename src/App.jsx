@@ -49,7 +49,7 @@ const RoleBasedRedirect = () => {
   }, [isAuthenticated, user, navigate]);
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center" style={{ background: "#0D0D0D" }}>
+    <div className="fixed inset-0 flex items-center justify-center" style={{ background: "var(--app-canvas)" }}>
       <div className="w-8 h-8 border-4 border-amber-800 border-t-amber-400 rounded-full animate-spin"></div>
     </div>
   );
@@ -61,7 +61,7 @@ const AuthenticatedApp = () => {
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center" style={{ background: "#0D0D0D" }}>
+      <div className="fixed inset-0 flex items-center justify-center" style={{ background: "var(--app-canvas)" }}>
         <div className="w-8 h-8 border-4 border-amber-800 border-t-amber-400 rounded-full animate-spin"></div>
       </div>
     );

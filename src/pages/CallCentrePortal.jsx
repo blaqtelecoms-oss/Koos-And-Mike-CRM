@@ -110,17 +110,17 @@ export default function CallCentrePortal() {
   }, [todayFollowUps]);
 
   if (loading || !consultant) return (
-    <div className="km-admin-page fixed inset-0 flex items-center justify-center" style={{ background: "#0D0D0D" }}>
+    <div className="km-admin-page fixed inset-0 flex items-center justify-center" style={{ background: "var(--app-canvas)" }}>
       <div className="w-10 h-10 border-4 border-blue-700 border-t-blue-400 rounded-full animate-spin" />
     </div>
   );
 
   return (
-    <div className="km-admin-page min-h-screen" style={{ background: "#0D0D0D" }}>
+    <div className="km-admin-page min-h-screen" style={{ background: "var(--app-canvas)" }}>
       <div className="h-1 w-full" style={{ background: BLUE }} />
 
       {/* Header */}
-      <header className="border-b sticky top-0 z-50 backdrop-blur-sm" style={{ background: "#111111ee", borderColor: "#3b82f622" }}>
+      <header className="border-b sticky top-0 z-50 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.85)", borderColor: "#3b82f622" }}>
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src="https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png" alt="K&M" className="w-10 h-10 object-contain" />
@@ -183,7 +183,7 @@ export default function CallCentrePortal() {
           </div>
 
           {/* No Answer Today Summary */}
-          <div className="rounded-2xl border p-4 space-y-3" style={{ background: "#111", borderColor: "#ef444430" }}>
+          <div className="rounded-2xl border p-4 space-y-3" style={{ background: "var(--glass)", borderColor: "#ef444430" }}>
             <div className="flex items-center gap-2">
               <PhoneMissed className="w-4 h-4 text-red-400" />
               <h3 className="text-sm font-bold text-red-400">No Answer Today</h3>
@@ -263,7 +263,7 @@ function LeadRow({ lead, onCall }) {
   const c = statusColors[lead.status] || "#6b7280";
 
   return (
-    <div className="rounded-2xl border p-4 flex flex-col sm:flex-row sm:items-center gap-3" style={{ background: "#111", borderColor: isUnassigned ? "#ef444430" : "#ffffff10" }}>
+    <div className="rounded-2xl border p-4 flex flex-col sm:flex-row sm:items-center gap-3" style={{ background: "var(--glass)", borderColor: isUnassigned ? "#ef444430" : "#ffffff10" }}>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-white font-semibold">{lead.lead_name}</span>
@@ -436,7 +436,7 @@ function CallLogDialog({ lead, agent, allConsultants, onClose, onSaved }) {
 
 function StatCard({ label, value, color, icon }) {
   return (
-    <div className="rounded-2xl p-4 border flex items-center gap-3" style={{ background: "#111", borderColor: color + "22" }}>
+    <div className="rounded-2xl p-4 border flex items-center gap-3" style={{ background: "var(--glass)", borderColor: color + "22" }}>
       <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: color + "22" }}>
         <span style={{ color }}>{icon}</span>
       </div>

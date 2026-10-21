@@ -195,18 +195,18 @@ export default function AdminPerformance() {
 
   if (loading) {
     return (
-      <div className="km-admin-page fixed inset-0 flex items-center justify-center" style={{ background: "#0D0D0D" }}>
+      <div className="km-admin-page fixed inset-0 flex items-center justify-center" style={{ background: "var(--app-canvas)" }}>
         <div className="w-10 h-10 border-4 border-amber-700 border-t-amber-400 rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="km-admin-page min-h-screen" style={{ background: "#0D0D0D" }}>
+    <div className="km-admin-page min-h-screen" style={{ background: "var(--app-canvas)" }}>
       <div className="h-1 w-full" style={{ background: GOLD }} />
 
       {/* Header */}
-      <header className="border-b sticky top-0 z-50 backdrop-blur-sm" style={{ background: "#111111ee", borderColor: "#C9A84C22" }}>
+      <header className="border-b sticky top-0 z-50 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.85)", borderColor: "#C9A84C22" }}>
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src="https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png" alt="K&M" className="w-10 h-10 object-contain" />
@@ -253,7 +253,7 @@ export default function AdminPerformance() {
             >
               <ChevronLeft className="w-4 h-4 text-amber-400" />
             </button>
-            <div className="px-4 py-2 text-white text-sm font-medium" style={{ background: "#111" }}>
+            <div className="px-4 py-2 text-white text-sm font-medium" style={{ background: "var(--glass)" }}>
               {moment(selectedDate).format("dddd, DD MMM YYYY")}
               {isYesterday && <span className="ml-2 text-xs" style={{ color: GOLD }}>(Yesterday)</span>}
               {selectedDate === moment().format("YYYY-MM-DD") && <span className="ml-2 text-xs text-emerald-400">(Today)</span>}
@@ -336,7 +336,7 @@ export default function AdminPerformance() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr style={{ background: "#111", borderBottom: "1px solid #3b82f618" }}>
+                      <tr style={{ background: "var(--glass)", borderBottom: "1px solid #3b82f618" }}>
                         {["Agent", "Lead", "Contact Method", "Lead Response", "Pipeline Stage", "Allocated To", "Notes"].map(h => (
                           <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-blue-400/70">{h}</th>
                         ))}
@@ -394,7 +394,7 @@ export default function AdminPerformance() {
                       value={newConsultantName}
                       onChange={(e) => setNewConsultantName(e.target.value)}
                       placeholder="Enter staff name"
-                      className="w-full rounded-lg px-4 py-2 bg-black border text-white"
+                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-white"
                       style={{ borderColor: "#8b5cf630" }}
                     />
                   </div>
@@ -403,7 +403,7 @@ export default function AdminPerformance() {
                     <select
                       value={newConsultantRole}
                       onChange={(e) => setNewConsultantRole(e.target.value)}
-                      className="w-full rounded-lg px-4 py-2 bg-black border text-white"
+                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-white"
                       style={{ borderColor: "#8b5cf630" }}
                     >
                       <option value="Sales">Sales Consultant</option>
@@ -417,7 +417,7 @@ export default function AdminPerformance() {
                       value={newConsultantEmail}
                       onChange={(e) => setNewConsultantEmail(e.target.value)}
                       placeholder="Enter email"
-                      className="w-full rounded-lg px-4 py-2 bg-black border text-white"
+                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-white"
                       style={{ borderColor: "#8b5cf630" }}
                     />
                   </div>
@@ -428,7 +428,7 @@ export default function AdminPerformance() {
                       value={newConsultantPhone}
                       onChange={(e) => setNewConsultantPhone(e.target.value)}
                       placeholder="Enter phone number"
-                      className="w-full rounded-lg px-4 py-2 bg-black border text-white"
+                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-white"
                       style={{ borderColor: "#8b5cf630" }}
                     />
                   </div>
@@ -439,7 +439,7 @@ export default function AdminPerformance() {
                       value={newConsultantWhatsapp}
                       onChange={(e) => setNewConsultantWhatsapp(e.target.value)}
                       placeholder="Enter WhatsApp number"
-                      className="w-full rounded-lg px-4 py-2 bg-black border text-white"
+                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-white"
                       style={{ borderColor: "#8b5cf630" }}
                     />
                   </div>
@@ -502,7 +502,7 @@ export default function AdminPerformance() {
                       type="text"
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
-                      className="w-full rounded-lg px-4 py-2 bg-black border text-white"
+                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-white"
                       style={{ borderColor: "#8b5cf630" }}
                     />
                   </div>
@@ -512,7 +512,7 @@ export default function AdminPerformance() {
                       type="email"
                       value={editEmail}
                       onChange={(e) => setEditEmail(e.target.value)}
-                      className="w-full rounded-lg px-4 py-2 bg-black border text-white"
+                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-white"
                       style={{ borderColor: "#8b5cf630" }}
                     />
                   </div>
@@ -522,7 +522,7 @@ export default function AdminPerformance() {
                       type="text"
                       value={editPhone}
                       onChange={(e) => setEditPhone(e.target.value)}
-                      className="w-full rounded-lg px-4 py-2 bg-black border text-white"
+                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-white"
                       style={{ borderColor: "#8b5cf630" }}
                     />
                   </div>
@@ -532,7 +532,7 @@ export default function AdminPerformance() {
                       type="text"
                       value={editWhatsapp}
                       onChange={(e) => setEditWhatsapp(e.target.value)}
-                      className="w-full rounded-lg px-4 py-2 bg-black border text-white"
+                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-white"
                       style={{ borderColor: "#8b5cf630" }}
                     />
                   </div>
@@ -662,7 +662,7 @@ export default function AdminPerformance() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr style={{ background: "#111", borderBottom: "1px solid #C9A84C18" }}>
+                  <tr style={{ background: "var(--glass)", borderBottom: "1px solid #C9A84C18" }}>
                     {["Lead Name", "Phone", "Car Interested", "Consultant", "Status", "Response Time", "Called?"].map(h => (
                       <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: "#C9A84C99" }}>{h}</th>
                     ))}
@@ -705,7 +705,7 @@ export default function AdminPerformance() {
           </div>
         )}
 
-        <footer className="border-t pt-6 text-center text-xs" style={{ borderColor: "#C9A84C22", color: "#ffffff22" }}>
+        <footer className="border-t pt-6 text-center text-xs" style={{ borderColor: "#C9A84C22", color: "rgba(0,0,0,0.2)" }}>
           Admin Performance Dashboard · Koos & Mike Cars · Internal Use Only
         </footer>
       </div>
@@ -715,7 +715,7 @@ export default function AdminPerformance() {
 
 function KpiCard({ icon, label, value, color }) {
   return (
-    <div className="rounded-2xl p-5 border flex items-center gap-4" style={{ background: "#111", borderColor: "#C9A84C22" }}>
+    <div className="rounded-2xl p-5 border flex items-center gap-4" style={{ background: "var(--glass)", borderColor: "#C9A84C22" }}>
       <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ background: color + "22" }}>
         <span style={{ color }}>{icon}</span>
       </div>
@@ -750,7 +750,7 @@ function ConsultantCard({ stats }) {
       </div>
 
       {/* Stats */}
-      <div className="p-5 space-y-4" style={{ background: "#0f0f0f" }}>
+      <div className="p-5 space-y-4" style={{ background: "transparent" }}>
         <div className="grid grid-cols-2 gap-3">
           <MiniStat label="New Leads" value={stats.newLeads} color="#C9A84C" />
           <MiniStat label="Follow-Ups Logged" value={stats.followUpCount} color="#a78bfa" />
@@ -771,7 +771,7 @@ function ConsultantCard({ stats }) {
             <span className="text-white/50">Contact Rate</span>
             <span className="font-semibold" style={{ color: callRate > 70 ? "#22c55e" : callRate > 40 ? "#C9A84C" : "#ef4444" }}>{callRate}%</span>
           </div>
-          <div className="w-full h-2 rounded-full" style={{ background: "#ffffff10" }}>
+          <div className="w-full h-2 rounded-full" style={{ background: "rgba(0,0,0,0.06)" }}>
             <div className="h-2 rounded-full transition-all" style={{
               width: `${callRate}%`,
               background: callRate > 70 ? "#22c55e" : callRate > 40 ? "#C9A84C" : "#ef4444"
@@ -827,7 +827,7 @@ function PortalLinks() {
       </div>
       <div className="space-y-3">
         {/* Staff (Sales) Portal */}
-        <div className="flex items-center gap-3 rounded-xl border px-4 py-3" style={{ background: "#111", borderColor: "#C9A84C22" }}>
+        <div className="flex items-center gap-3 rounded-xl border px-4 py-3" style={{ background: "var(--glass)", borderColor: "#C9A84C22" }}>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-white/50 mb-0.5">Sales Staff Portal</p>
             <p className="text-sm font-mono text-amber-300 truncate">{staffUrl}</p>
@@ -841,7 +841,7 @@ function PortalLinks() {
           </button>
         </div>
         {/* Call Centre Portal */}
-        <div className="flex items-center gap-3 rounded-xl border px-4 py-3" style={{ background: "#111", borderColor: "#3b82f622" }}>
+        <div className="flex items-center gap-3 rounded-xl border px-4 py-3" style={{ background: "var(--glass)", borderColor: "#3b82f622" }}>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-white/50 mb-0.5">Call Centre Portal</p>
             <p className="text-sm font-mono text-blue-300 truncate">{ccUrl}</p>
@@ -879,7 +879,7 @@ function CCAgentCard({ stats }) {
       </div>
 
       {/* Stats */}
-      <div className="p-5 space-y-4" style={{ background: "#0f0f0f" }}>
+      <div className="p-5 space-y-4" style={{ background: "transparent" }}>
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-xl p-3 border text-center" style={{ background: "#3b82f60D", borderColor: "#3b82f630" }}>
             <p className="text-2xl font-extrabold text-blue-400">{stats.uniqueLeads}</p>

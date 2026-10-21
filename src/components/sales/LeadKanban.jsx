@@ -188,7 +188,7 @@ export default function LeadKanban() {
             value={filterConsultant}
             onChange={e => setFilterConsultant(e.target.value)}
             className="px-3 py-1.5 rounded-lg text-white text-sm outline-none"
-            style={{ background: "#1a1a1a", border: "1px solid #C9A84C33" }}
+            style={{ background: "var(--glass)", border: "1px solid #C9A84C33" }}
           >
             <option value="All">All Consultants</option>
             {consultants.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
@@ -212,7 +212,7 @@ export default function LeadKanban() {
             const stageLeads = leadsByStage[stage] || [];
             return (
               <div key={stage} className="flex-shrink-0 w-60 rounded-xl flex flex-col"
-                style={{ background: "#0f0f0f", border: "1px solid #ffffff0a" }}>
+                style={{ background: "transparent", border: "1px solid #ffffff0a" }}>
                 {/* Column header */}
                 <div className="px-3 py-2.5 rounded-t-xl border-b flex items-center justify-between"
                   style={{ borderColor: color + "30", background: color + "12" }}>

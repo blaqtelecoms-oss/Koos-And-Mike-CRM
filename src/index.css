@@ -688,3 +688,81 @@ button, a, [role="button"] {
 }
 
 .mb-bottom-bar { margin-bottom: calc(4rem + env(safe-area-inset-bottom)); }
+
+/* ===== Admin page dark-to-light overrides (!important beats inline styles) ===== */
+.km-admin-page {
+  background: var(--app-canvas) !important;
+  color: var(--ink) !important;
+}
+
+/* White text → dark ink (headings, labels, table cells) */
+.km-admin-page .text-white { color: var(--ink) !important; }
+.km-admin-page .text-white\/60 { color: var(--mut) !important; }
+.km-admin-page .text-white\/70 { color: var(--mut) !important; }
+.km-admin-page .text-white\/40 { color: var(--mut) !important; }
+.km-admin-page .text-white\/30 { color: var(--mut) !important; }
+.km-admin-page .text-white\/20 { color: var(--line) !important; }
+
+/* Restore white text on colored buttons/badges */
+.km-admin-page [class*="bg-purple"].text-white,
+.km-admin-page [class*="bg-purple"] .text-white,
+.km-admin-page [class*="bg-blue"].text-white,
+.km-admin-page [class*="bg-blue"] .text-white,
+.km-admin-page [class*="bg-red"].text-white,
+.km-admin-page [class*="bg-red"] .text-white,
+.km-admin-page [class*="bg-green"].text-white,
+.km-admin-page [class*="bg-green"] .text-white,
+.km-admin-page [class*="bg-amber"].text-white,
+.km-admin-page [class*="bg-amber"] .text-white,
+.km-admin-page button[class*="bg-"]:not([class*="bg-white"]):not([class*="bg-transparent"]) .text-white,
+.km-admin-page button[class*="bg-"]:not([class*="bg-white"]):not([class*="bg-transparent"]).text-white {
+  color: #fff !important;
+}
+
+/* Inline color: #fff → dark ink (except on gold/colored buttons) */
+.km-admin-page [style*="color:#fff"]:not(button):not([class*="bg-"]),
+.km-admin-page [style*="color: #fff"]:not(button):not([class*="bg-"]),
+.km-admin-page [style*="color:#FFFFFF"]:not(button):not([class*="bg-"]) {
+  color: var(--ink) !important;
+}
+
+/* Inputs, selects, textareas → light glass */
+.km-admin-page input,
+.km-admin-page select,
+.km-admin-page textarea {
+  background: var(--glass) !important;
+  color: var(--ink) !important;
+  border-color: var(--glass-border) !important;
+}
+.km-admin-page input::placeholder,
+.km-admin-page textarea::placeholder {
+  color: var(--mut) !important;
+}
+.km-admin-page option {
+  background: #fff !important;
+  color: var(--ink) !important;
+}
+
+/* Cards with inline dark backgrounds → glass */
+.km-admin-page [style*="background:#111"]:not(input):not(select):not(textarea):not(option),
+.km-admin-page [style*="background: #111"]:not(input):not(select):not(textarea):not(option) {
+  background: var(--glass) !important;
+  border-color: var(--glass-border) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+/* Header bars */
+.km-admin-page [style*="background:rgba(255,255,255,0.85)"],
+.km-admin-page [style*="background: rgba(255,255,255,0.85)"] {
+  backdrop-filter: blur(16px) !important;
+}
+
+/* Borders that used dark-on-dark gold → keep gold, it works on light too */
+.km-admin-page [style*="borderColor:#C9A84C"] {
+  border-color: rgba(200,168,76,0.3) !important;
+}
+
+/* Force dark scrollbar on admin pages */
+.km-admin-page ::-webkit-scrollbar { width: 6px; }
+.km-admin-page ::-webkit-scrollbar-track { background: transparent; }
+.km-admin-page ::-webkit-scrollbar-thumb { background: rgba(200,168,76,0.3); border-radius: 3px; }

@@ -53,10 +53,10 @@ export default function StaffLanding() {
   const selectedConsultant = consultants.find(c => c.id === selectedId);
 
   return (
-    <div className="km-admin-page min-h-screen flex flex-col" style={{ background: "#0D0D0D" }}>
+    <div className="km-admin-page min-h-screen flex flex-col" style={{ background: "var(--app-canvas)" }}>
       <div className="h-1 w-full" style={{ background: GOLD }} />
 
-      <header className="border-b py-4 px-6" style={{ borderColor: "#C9A84C22", background: "#111111" }}>
+      <header className="border-b py-4 px-6" style={{ borderColor: "#C9A84C22", background: "rgba(255,255,255,0.85)" }}>
         <div className="max-w-3xl mx-auto flex items-center gap-3">
           <img
             src="https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png"
@@ -86,7 +86,7 @@ export default function StaffLanding() {
         <form onSubmit={handleLogin} className="w-full max-w-md space-y-4">
           <div
             className="rounded-2xl p-8 border space-y-5"
-            style={{ background: "#ffffff08", borderColor: "#C9A84C33" }}
+            style={{ background: "rgba(0,0,0,0.03)", borderColor: "#C9A84C33" }}
           >
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: "#C9A84C18" }}>
               <Lock className="w-7 h-7" style={{ color: GOLD }} />
@@ -106,14 +106,14 @@ export default function StaffLanding() {
                     onChange={e => { setSelectedId(e.target.value); setError(""); }}
                     className="w-full appearance-none px-4 py-3 pr-10 rounded-xl text-white outline-none text-sm font-medium"
                     style={{
-                      background: "#1a1a1a",
+                      background: "var(--glass)",
                       border: `1px solid ${selectedId ? GOLD : "#C9A84C33"}`,
                       color: selectedId ? "#fff" : "#ffffff66"
                     }}
                   >
                     <option value="" disabled style={{ color: "#888" }}>— Select your name —</option>
                     {consultants.map(c => (
-                      <option key={c.id} value={c.id} style={{ background: "#1a1a1a", color: "#fff" }}>{c.name}</option>
+                      <option key={c.id} value={c.id} style={{ background: "#fff", color: "var(--ink)" }}>{c.name}</option>
                     ))}
                   </select>
                   <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: GOLD }} />
@@ -132,7 +132,7 @@ export default function StaffLanding() {
                   placeholder="Enter your password"
                   className="w-full px-4 py-3 pr-12 rounded-xl text-white text-sm outline-none"
                   style={{
-                    background: "#1a1a1a",
+                    background: "var(--glass)",
                     border: `1px solid ${error ? "#ef4444" : password ? GOLD : "#C9A84C33"}`
                   }}
                 />
@@ -142,8 +142,8 @@ export default function StaffLanding() {
                   className="absolute right-3 top-1/2 -translate-y-1/2"
                 >
                   {showPassword
-                    ? <EyeOff className="w-4 h-4" style={{ color: "#ffffff40" }} />
-                    : <Eye className="w-4 h-4" style={{ color: "#ffffff40" }} />
+                    ? <EyeOff className="w-4 h-4" style={{ color: "var(--mut)" }} />
+                    : <Eye className="w-4 h-4" style={{ color: "var(--mut)" }} />
                   }
                 </button>
               </div>
@@ -177,7 +177,7 @@ export default function StaffLanding() {
         </p>
       </main>
 
-      <footer className="border-t py-5 text-center text-xs" style={{ borderColor: "#C9A84C22", color: "#ffffff25" }}>
+      <footer className="border-t py-5 text-center text-xs" style={{ borderColor: "#C9A84C22", color: "var(--mut)" }}>
         © 2026 Koos & Mike Cars · Staff Portal
       </footer>
     </div>

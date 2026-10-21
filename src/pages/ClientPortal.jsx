@@ -25,12 +25,12 @@ const REVIEWS = [
 
 export default function ClientPortal() {
   return (
-    <div className="min-h-screen" style={{ background: "#0D0D0D" }}>
+    <div className="min-h-screen" style={{ background: "var(--app-canvas)" }}>
       {/* Gold top accent */}
       <div className="h-1 w-full" style={{ background: GOLD }} />
 
       {/* Header */}
-      <header className="border-b sticky top-0 z-50 backdrop-blur-sm" style={{ background: "#111111ee", borderColor: "#C9A84C22" }}>
+      <header className="border-b sticky top-0 z-50 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.85)", borderColor: "#C9A84C22" }}>
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
@@ -108,7 +108,7 @@ export default function ClientPortal() {
 
       {/* HelloPeter Rating Section */}
       <section className="max-w-6xl mx-auto px-4 pb-16">
-        <div className="rounded-2xl border overflow-hidden" style={{ background: "#111", borderColor: "#C9A84C33" }}>
+        <div className="rounded-2xl border overflow-hidden" style={{ background: "var(--glass)", borderColor: "#C9A84C33" }}>
           {/* Header bar */}
           <div className="px-6 py-4 border-b flex items-center gap-3" style={{ background: "#C9A84C12", borderColor: "#C9A84C33" }}>
             <ShieldCheck className="w-5 h-5" style={{ color: GOLD }} />
@@ -137,7 +137,7 @@ export default function ClientPortal() {
               ].map(({ stars, pct }) => (
                 <div key={stars} className="flex items-center gap-3">
                   <span className="text-xs text-white/50 w-8">{stars}★</span>
-                  <div className="flex-1 h-2 rounded-full" style={{ background: "#ffffff15" }}>
+                  <div className="flex-1 h-2 rounded-full" style={{ background: "rgba(0,0,0,0.06)" }}>
                     <div className="h-2 rounded-full" style={{ width: `${pct}%`, background: GOLD }} />
                   </div>
                   <span className="text-xs w-10" style={{ color: GOLD }}>{pct}%</span>
@@ -215,7 +215,7 @@ export default function ClientPortal() {
             </h3>
             <p className="text-white/50 text-sm mt-1">Call or WhatsApp any of our consultants directly</p>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-x divide-y" style={{ borderColor: "#C9A84C15", background: "#0f0f0f" }}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-x divide-y" style={{ borderColor: "#C9A84C15", background: "transparent" }}>
             {TEAM.map((member) => (
               <div key={member.name} className="p-4 flex flex-col items-center text-center gap-3">
                 <div className="w-12 h-12 rounded-full flex items-center justify-center text-black font-bold text-lg"
@@ -270,7 +270,7 @@ export default function ClientPortal() {
 
 function StatBox({ emoji, value, label, sub }) {
   return (
-    <div className="p-5 text-center" style={{ background: "#0f0f0f" }}>
+    <div className="p-5 text-center" style={{ background: "transparent" }}>
       <div className="text-2xl mb-1">{emoji}</div>
       <div className="text-2xl font-extrabold text-white">{value}</div>
       <div className="text-xs font-semibold mt-0.5" style={{ color: GOLD }}>{label}</div>
@@ -282,7 +282,7 @@ function StatBox({ emoji, value, label, sub }) {
 function ServiceCard({ icon, title, desc, link, href, cta, external }) {
   const inner = (
     <div className="rounded-2xl p-6 cursor-pointer transition-all duration-200 group h-full flex flex-col border hover:border-[#C9A84C55]"
-      style={{ background: "#ffffff08", borderColor: "#ffffff10" }}>
+      style={{ background: "rgba(0,0,0,0.03)", borderColor: "var(--line)" }}>
       <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4" style={{ background: "#C9A84C15" }}>
         {icon}
       </div>
