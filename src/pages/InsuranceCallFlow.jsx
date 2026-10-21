@@ -454,7 +454,7 @@ ${form.additional_notes ? `<h2>Additional Notes</h2><div class="row"><div class=
         </div>
 
         {/* IMPORTANT REMINDERS */}
-        <div className="rounded-2xl border p-4" style={{ background: "#1a0a00", borderColor: "#f97316" + "44" }}>
+        <div className="rounded-2xl border p-4" style={{ background: "var(--glass)", borderColor: "rgba(249,115,22,0.3)" }}>
           <p className="text-orange-400 font-bold text-sm mb-2">⚠ Important to Remember</p>
           <ul className="space-y-1 text-sm text-orange-200/70 list-disc list-inside">
             <li>Never promise that the premium <strong>will</strong> be cheaper.</li>

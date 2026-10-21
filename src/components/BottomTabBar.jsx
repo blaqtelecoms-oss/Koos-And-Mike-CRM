@@ -15,8 +15,8 @@ export default function BottomTabBar() {
     <nav
       className="lg:hidden fixed bottom-0 left-0 right-0 z-50 border-t"
       style={{
-        background: "#000000f0",
-        borderColor: "#C9A84C22",
+        background: "rgba(255,253,240,0.92)",
+        borderColor: "rgba(200,168,76,0.3)",
         backdropFilter: "blur(12px)",
         paddingBottom: "env(safe-area-inset-bottom)",
       }}
@@ -29,7 +29,7 @@ export default function BottomTabBar() {
               key={path}
               to={path}
               className="flex-1 flex flex-col items-center justify-center gap-1 transition-colors"
-              style={{ color: isActive ? "#C9A84C" : "#ffffff44" }}
+              style={{ color: isActive ? "#C9A84C" : "var(--mut)" }}
             >
               <Icon className="w-5 h-5" />
               <span className="text-[10px] font-semibold tracking-wide">{label}</span>

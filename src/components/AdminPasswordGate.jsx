@@ -24,14 +24,14 @@ export default function AdminPasswordGate({ open, onClose, onSuccess }) {
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) { setPassword(""); setError(false); onClose(); } }}>
-      <DialogContent className="max-w-sm bg-[#111] border border-white/10 text-white">
+      <DialogContent className="max-w-sm bg-white/90 backdrop-blur-xl border border-amber-200/60 text-gray-900">
         <DialogHeader>
-          <DialogTitle className="text-white flex items-center gap-2">
-            <Lock className="w-5 h-5 text-amber-400" /> Admin Access
+          <DialogTitle className="flex items-center gap-2">
+            <Lock className="w-5 h-5 text-amber-500" /> Admin Access
           </DialogTitle>
         </DialogHeader>
 
-        <p className="text-white/50 text-sm">
+        <p className="text-gray-600 text-sm">
           This portal is restricted to staff only. Please enter the admin password to continue.
         </p>
 
@@ -41,7 +41,7 @@ export default function AdminPasswordGate({ open, onClose, onSuccess }) {
             placeholder="Enter password..."
             value={password}
             onChange={(e) => { setPassword(e.target.value); setError(false); }}
-            className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+            className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-gray-400"
             autoFocus
           />
           {error && (

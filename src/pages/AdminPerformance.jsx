@@ -346,7 +346,7 @@ export default function AdminPerformance() {
                       {followUpsOnDate.filter(f => ccAgentNames.includes(f.reported_by)).map((fu, i) => {
                         const lead = leads.find(l => l.id === fu.lead_id);
                         return (
-                          <tr key={fu.id} style={{ background: i % 2 === 0 ? "#0f0f0f" : "#111", borderBottom: "1px solid #3b82f610" }}>
+                          <tr key={fu.id} style={{ background: i % 2 === 0 ? "rgba(246,198,53,0.04)" : "transparent", borderBottom: "1px solid rgba(59,130,246,0.1)" }}>
                             <td className="px-4 py-3">
                               <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-500/20 text-blue-400">{fu.reported_by}</span>
                             </td>
@@ -676,7 +676,7 @@ export default function AdminPerformance() {
                         f.lead_id === lead.id && f.contact_method !== "No Contact Attempted"
                       );
                       return (
-                        <tr key={lead.id} style={{ background: i % 2 === 0 ? "#0f0f0f" : "#111", borderBottom: "1px solid #C9A84C10" }}>
+                        <tr key={lead.id} style={{ background: i % 2 === 0 ? "rgba(246,198,53,0.04)" : "transparent", borderBottom: "1px solid rgba(201,168,76,0.1)" }}>
                           <td className="px-4 py-3 text-white font-medium">{lead.lead_name}</td>
                           <td className="px-4 py-3 text-white/60">{lead.phone}</td>
                           <td className="px-4 py-3 text-white/60">{lead.car_interested || "—"}</td>

@@ -579,6 +579,76 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .km-app table th { color: var(--mut); }
 .km-app table td { border-top: 1px solid var(--line); }
 
+/* ===== Dark-theme override for .km-app (Layout-wrapped pages: Dashboard, Leads, Tasks, Vehicles, etc.) ===== */
+.km-app .text-white { color: var(--ink) !important; }
+.km-app .text-white\/20 { color: var(--mut) !important; }
+.km-app .text-white\/25 { color: var(--mut) !important; }
+.km-app .text-white\/30 { color: var(--mut) !important; }
+.km-app .text-white\/40 { color: var(--mut) !important; }
+.km-app .text-white\/50 { color: var(--mut) !important; }
+.km-app .text-white\/60 { color: var(--mut) !important; }
+.km-app .text-white\/70 { color: var(--mut) !important; }
+.km-app .text-white\/80 { color: var(--ink) !important; }
+
+/* Restore white text on colored buttons/badges */
+.km-app [class*="bg-purple"].text-white,
+.km-app [class*="bg-purple"] .text-white,
+.km-app [class*="bg-blue"].text-white,
+.km-app [class*="bg-blue"] .text-white,
+.km-app [class*="bg-red"].text-white,
+.km-app [class*="bg-red"] .text-white,
+.km-app [class*="bg-green"].text-white,
+.km-app [class*="bg-green"] .text-white,
+.km-app [class*="bg-amber"].text-white,
+.km-app [class*="bg-amber"] .text-white,
+.km-app button[class*="bg-"]:not([class*="bg-white"]):not([class*="bg-transparent"]) .text-white,
+.km-app button[class*="bg-"]:not([class*="bg-white"]):not([class*="bg-transparent"]).text-white {
+  color: #fff !important;
+}
+
+.km-app .bg-black {
+  background: var(--glass) !important;
+  border-color: var(--glass-border) !important;
+  backdrop-filter: blur(12px);
+}
+.km-app .bg-white\/5 { background: rgba(246,198,53,.06) !important; }
+.km-app .bg-white\/10 { background: rgba(246,198,53,.1) !important; }
+.km-app .border-white\/10 { border-color: var(--line) !important; }
+.km-app .border-white\/20 { border-color: var(--glass-border) !important; }
+.km-app .border-white\/30 { border-color: var(--glass-border) !important; }
+.km-app .placeholder\:text-white\/20::placeholder { color: var(--mut) !important; }
+.km-app .hover\:bg-white\/5:hover { background: rgba(246,198,53,.06) !important; }
+.km-app .hover\:bg-white\/10:hover { background: rgba(246,198,53,.1) !important; }
+
+/* Inline dark backgrounds → glass */
+.km-app [style*="#0f0f0f"] { background: transparent !important; }
+.km-app [style*="#111111"], .km-app [style*="#111,"] {
+  background: var(--glass) !important;
+  backdrop-filter: blur(18px);
+}
+.km-app [style*="#1a0a00"] { background: var(--glass) !important; border-color: var(--glass-border) !important; }
+
+/* Semi-transparent white text/borders for dark theme → dark equivalents */
+.km-app [style*="#ffffff15"] { background: rgba(0,0,0,.06) !important; }
+.km-app [style*="#ffffff40"] { color: var(--mut) !important; }
+.km-app [style*="#ffffff44"] { color: var(--mut) !important; }
+.km-app [style*="#000000f0"] { background: rgba(255,253,240,.92) !important; backdrop-filter: blur(16px); }
+
+/* Inputs */
+.km-app input, .km-app select, .km-app textarea {
+  background: var(--glass) !important;
+  color: var(--ink) !important;
+  border-color: var(--glass-border) !important;
+}
+.km-app input::placeholder, .km-app textarea::placeholder { color: var(--mut) !important; }
+.km-app option { background: #fff !important; color: var(--ink) !important; }
+
+/* Inline color: #fff → dark ink (except on colored buttons) */
+.km-app [style*="color:#fff"]:not(button):not([class*="bg-"]),
+.km-app [style*="color: #fff"]:not(button):not([class*="bg-"]) {
+  color: var(--ink) !important;
+}
+
 /* ===== Standalone admin page glassmorphism ===== */
 .km-admin-page {
   min-height: 100vh;

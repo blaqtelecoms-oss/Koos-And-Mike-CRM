@@ -48,26 +48,26 @@ export default function WhatsAppDialog({ lead, open, onClose, onSaved }) {
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
-      <DialogContent className="max-w-sm bg-[#111] border border-white/10 text-white">
+      <DialogContent className="max-w-sm bg-white/90 backdrop-blur-xl border border-amber-200/60 text-gray-900">
         <DialogHeader>
-          <DialogTitle className="text-white flex items-center gap-2">
+          <DialogTitle className="text-gray-900 flex items-center gap-2">
             <span className="text-2xl">💬</span>
             WhatsApp {lead?.lead_name}
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
-          <p className="text-white/50 text-xs">
+          <p className="text-gray-500 text-xs">
             Send from a consultant's number. The message will be logged in the follow-up history visible to the whole team.
           </p>
 
           <div>
-            <Label className="text-white/70 text-xs mb-1 block">Sending as (Consultant) *</Label>
+            <Label className="text-gray-700 text-xs mb-1 block">Sending as (Consultant) *</Label>
             <Select value={consultant} onValueChange={(v) => {
               setConsultant(v);
               setMessage(`Hi ${lead?.lead_name || "there"}, this is ${v} from Koos & Mike Cars. I'm reaching out regarding your enquiry about the ${lead?.car_interested || "vehicle"}. How can I assist you?`);
             }}>
-              <SelectTrigger className="bg-white/5 border-white/10 text-white">
+              <SelectTrigger className="bg-white/70 border-amber-200/60 text-gray-900">
                 <SelectValue placeholder="Select consultant..." />
               </SelectTrigger>
               <SelectContent>
@@ -77,18 +77,18 @@ export default function WhatsAppDialog({ lead, open, onClose, onSaved }) {
           </div>
 
           <div>
-            <Label className="text-white/70 text-xs mb-1 block">Message to send</Label>
+            <Label className="text-gray-700 text-xs mb-1 block">Message to send</Label>
             <Textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={5}
-              className="bg-white/5 border-white/10 text-white placeholder:text-white/30 text-sm"
+              className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-gray-400 text-sm"
             />
           </div>
 
           <div className="bg-green-900/20 border border-green-600/30 rounded-lg px-3 py-2 text-xs">
             <p className="text-green-400 font-semibold">✅ Sending TO (lead):</p>
-            <p className="text-white font-bold text-sm mt-0.5">{lead?.phone}</p>
+            <p className="text-gray-900 font-bold text-sm mt-0.5">{lead?.phone}</p>
           </div>
 
           <Button
@@ -99,7 +99,7 @@ export default function WhatsAppDialog({ lead, open, onClose, onSaved }) {
             {saving ? "Logging & Opening..." : "Send WhatsApp & Log"}
           </Button>
 
-          <Button variant="ghost" onClick={onClose} className="w-full text-white/40 text-xs">
+          <Button variant="ghost" onClick={onClose} className="w-full text-gray-400 text-xs">
             Cancel
           </Button>
         </div>

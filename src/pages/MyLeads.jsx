@@ -549,8 +549,8 @@ export default function MyLeads() {
                       className="px-3 py-1 rounded-lg text-xs font-semibold transition-all border"
                       style={{
                         background: isActive ? sc.bg : "transparent",
-                        color: isActive ? sc.color : "#ffffff40",
-                        borderColor: isActive ? sc.color + "60" : "#ffffff15"
+                        color: isActive ? sc.color : "var(--mut)",
+                        borderColor: isActive ? sc.color + "60" : "var(--line)"
                       }}
                     >
                       {isActive && <Check className="w-3 h-3 inline mr-1" />}{s}
@@ -632,7 +632,7 @@ export default function MyLeads() {
                     <button onClick={() => { setShowFollowUp(false); setFollowUpData({}); }} className="flex-1 py-2 rounded-lg border text-sm font-semibold text-white/50 hover:bg-white/5 transition-all" style={{ borderColor: "var(--line)" }}>
                       Cancel
                     </button>
-                    <button onClick={handleSaveFollowUp} disabled={savingFollowUp || !followUpData.pipeline_stage} className="flex-1 py-2 rounded-xl font-semibold text-sm transition-all" style={{ background: followUpData.pipeline_stage ? GOLD : "#ffffff15", color: followUpData.pipeline_stage ? "#000" : "#ffffff40" }}>
+                    <button onClick={handleSaveFollowUp} disabled={savingFollowUp || !followUpData.pipeline_stage} className="flex-1 py-2 rounded-xl font-semibold text-sm transition-all" style={{ background: followUpData.pipeline_stage ? GOLD : "var(--line)", color: followUpData.pipeline_stage ? "#000" : "var(--mut)" }}>
                       {savingFollowUp ? "Saving..." : "Save"}
                     </button>
                   </div>

@@ -71,9 +71,9 @@ export default function CallDialog({ lead, open, onClose, onSaved, onOptimisticU
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) { onClose(); setStep("confirm"); } }}>
-      <DialogContent className="max-w-sm bg-[#111] border border-white/10 text-white">
+      <DialogContent className="max-w-sm bg-white/90 backdrop-blur-xl border border-amber-200/60 text-gray-900">
         <DialogHeader>
-          <DialogTitle className="text-white flex items-center gap-2">
+          <DialogTitle className="text-gray-900 flex items-center gap-2">
             <Phone className="w-5 h-5 text-amber-400" />
             Call {lead?.lead_name}
           </DialogTitle>
@@ -81,7 +81,7 @@ export default function CallDialog({ lead, open, onClose, onSaved, onOptimisticU
 
         {step === "confirm" && (
           <div className="space-y-4">
-            <p className="text-white/60 text-sm">
+            <p className="text-gray-600 text-sm">
               Tap below to call <span className="text-amber-400 font-semibold">{lead?.phone}</span>. The app will record the call time and prompt you for the outcome.
             </p>
             <Button
@@ -91,7 +91,7 @@ export default function CallDialog({ lead, open, onClose, onSaved, onOptimisticU
               <Phone className="w-5 h-5 mr-2" />
               Call Now
             </Button>
-            <Button variant="ghost" onClick={onClose} className="w-full text-white/40">
+            <Button variant="ghost" onClick={onClose} className="w-full text-gray-400">
               Cancel
             </Button>
           </div>
@@ -99,10 +99,10 @@ export default function CallDialog({ lead, open, onClose, onSaved, onOptimisticU
 
         {step === "outcome" && (
           <div className="space-y-4">
-            <p className="text-white/60 text-sm">Call logged at <span className="text-amber-400">{moment().format("HH:mm")}</span>. What was the outcome?</p>
+            <p className="text-gray-600 text-sm">Call logged at <span className="text-amber-400">{moment().format("HH:mm")}</span>. What was the outcome?</p>
 
             <div>
-              <Label className="text-white/70 text-xs mb-1 block">Call Outcome</Label>
+              <Label className="text-gray-700 text-xs mb-1 block">Call Outcome</Label>
               <div className="grid grid-cols-2 gap-2">
                 {["Answered - Interested", "Answered - Not Interested", "No Answer", "Callback Requested"].map((r) => (
                   <button
@@ -111,7 +111,7 @@ export default function CallDialog({ lead, open, onClose, onSaved, onOptimisticU
                     className={`text-xs px-3 py-2 rounded-lg border transition-all ${
                       leadResponse === r
                         ? "border-amber-500 bg-amber-600/20 text-amber-300"
-                        : "border-white/10 bg-white/5 text-white/50 hover:border-white/30"
+                        : "border-amber-200/60 bg-white/70 text-gray-500 hover:border-amber-300/60"
                     }`}
                   >
                     {r}
@@ -121,9 +121,9 @@ export default function CallDialog({ lead, open, onClose, onSaved, onOptimisticU
             </div>
 
             <div>
-              <Label className="text-white/70 text-xs mb-1 block">Pipeline Stage</Label>
+              <Label className="text-gray-700 text-xs mb-1 block">Pipeline Stage</Label>
               <Select value={pipelineStage} onValueChange={setPipelineStage}>
-                <SelectTrigger className="bg-white/5 border-white/10 text-white">
+                <SelectTrigger className="bg-white/70 border-amber-200/60 text-gray-900">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -133,9 +133,9 @@ export default function CallDialog({ lead, open, onClose, onSaved, onOptimisticU
             </div>
 
             <div>
-              <Label className="text-white/70 text-xs mb-1 block">Who called? *</Label>
+              <Label className="text-gray-700 text-xs mb-1 block">Who called? *</Label>
               <Select value={reportedBy} onValueChange={setReportedBy}>
-                <SelectTrigger className="bg-white/5 border-white/10 text-white">
+                <SelectTrigger className="bg-white/70 border-amber-200/60 text-gray-900">
                   <SelectValue placeholder="Select consultant..." />
                 </SelectTrigger>
                 <SelectContent>

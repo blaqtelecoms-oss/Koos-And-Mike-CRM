@@ -99,12 +99,12 @@ export default function LeadFollowUpDialog({ lead, open, onClose }) {
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
-      <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-[#111] border border-white/10 text-white">
+      <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-white/90 backdrop-blur-xl border border-amber-200/60 text-gray-900">
         <DialogHeader>
-          <DialogTitle className="text-white text-lg">
+          <DialogTitle className="text-gray-900 text-lg">
             Follow-Up Log — <span className="text-amber-400">{lead?.lead_name}</span>
           </DialogTitle>
-          <p className="text-white/50 text-sm">{lead?.car_interested || "No vehicle specified"} · {lead?.phone}</p>
+          <p className="text-gray-500 text-sm">{lead?.car_interested || "No vehicle specified"} · {lead?.phone}</p>
         </DialogHeader>
 
         {/* Current stage banner */}
@@ -127,7 +127,7 @@ export default function LeadFollowUpDialog({ lead, open, onClose }) {
         )}
 
         {isClosed && (
-          <div className="flex items-center gap-2 text-white/40 text-sm text-center justify-center py-2">
+          <div className="flex items-center gap-2 text-gray-400 text-sm text-center justify-center py-2">
             <AlertCircle className="w-4 h-4" />
             This lead is closed — no further updates required.
           </div>
@@ -135,21 +135,21 @@ export default function LeadFollowUpDialog({ lead, open, onClose }) {
 
         {/* Add Update Form */}
         {showForm && (
-          <form onSubmit={handleSubmit} className="space-y-3 bg-white/5 p-4 rounded-xl border border-white/10">
+          <form onSubmit={handleSubmit} className="space-y-3 bg-white/70 p-4 rounded-xl border border-amber-200/60">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-white/70 text-xs">Date</Label>
+                <Label className="text-gray-700 text-xs">Date</Label>
                 <Input
                   type="date"
                   value={form.update_date}
                   onChange={(e) => setForm({ ...form, update_date: e.target.value })}
-                  className="bg-white/5 border-white/10 text-white"
+                  className="bg-white/70 border-amber-200/60 text-gray-900"
                 />
               </div>
               <div>
-                <Label className="text-white/70 text-xs">Reported By</Label>
+                <Label className="text-gray-700 text-xs">Reported By</Label>
                 <Select value={form.reported_by} onValueChange={(v) => setForm({ ...form, reported_by: v })}>
-                  <SelectTrigger className="bg-white/5 border-white/10 text-white">
+                  <SelectTrigger className="bg-white/70 border-amber-200/60 text-gray-900">
                     <SelectValue placeholder="Consultant..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -158,9 +158,9 @@ export default function LeadFollowUpDialog({ lead, open, onClose }) {
                 </Select>
               </div>
               <div>
-                <Label className="text-white/70 text-xs">Contact Method</Label>
+                <Label className="text-gray-700 text-xs">Contact Method</Label>
                 <Select value={form.contact_method} onValueChange={(v) => setForm({ ...form, contact_method: v })}>
-                  <SelectTrigger className="bg-white/5 border-white/10 text-white">
+                  <SelectTrigger className="bg-white/70 border-amber-200/60 text-gray-900">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -169,9 +169,9 @@ export default function LeadFollowUpDialog({ lead, open, onClose }) {
                 </Select>
               </div>
               <div>
-                <Label className="text-white/70 text-xs">Lead Response</Label>
+                <Label className="text-gray-700 text-xs">Lead Response</Label>
                 <Select value={form.lead_response} onValueChange={(v) => setForm({ ...form, lead_response: v })}>
-                  <SelectTrigger className="bg-white/5 border-white/10 text-white">
+                  <SelectTrigger className="bg-white/70 border-amber-200/60 text-gray-900">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -180,9 +180,9 @@ export default function LeadFollowUpDialog({ lead, open, onClose }) {
                 </Select>
               </div>
               <div className="col-span-2">
-                <Label className="text-white/70 text-xs">Pipeline Stage *</Label>
+                <Label className="text-gray-700 text-xs">Pipeline Stage *</Label>
                 <Select value={form.pipeline_stage} onValueChange={(v) => setForm({ ...form, pipeline_stage: v })}>
-                  <SelectTrigger className="bg-white/5 border-white/10 text-white">
+                  <SelectTrigger className="bg-white/70 border-amber-200/60 text-gray-900">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -191,13 +191,13 @@ export default function LeadFollowUpDialog({ lead, open, onClose }) {
                 </Select>
               </div>
               <div className="col-span-2">
-                <Label className="text-white/70 text-xs">Notes</Label>
+                <Label className="text-gray-700 text-xs">Notes</Label>
                 <Textarea
                   value={form.notes}
                   onChange={(e) => setForm({ ...form, notes: e.target.value })}
                   placeholder="What happened today with this lead?"
                   rows={3}
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                  className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-gray-400"
                 />
               </div>
             </div>
@@ -213,27 +213,27 @@ export default function LeadFollowUpDialog({ lead, open, onClose }) {
 
         {/* Follow-up History */}
         <div className="space-y-3 mt-2">
-          <h4 className="text-white/60 text-xs uppercase tracking-wider font-semibold">Update History</h4>
+          <h4 className="text-gray-600 text-xs uppercase tracking-wider font-semibold">Update History</h4>
           {loading ? (
-            <div className="text-center py-6 text-white/40 text-sm">Loading...</div>
+            <div className="text-center py-6 text-gray-400 text-sm">Loading...</div>
           ) : followUps.length === 0 ? (
-            <div className="text-center py-6 text-white/40 text-sm">No updates yet. Add the first daily update.</div>
+            <div className="text-center py-6 text-gray-400 text-sm">No updates yet. Add the first daily update.</div>
           ) : (
             followUps.map((fu) => (
-              <div key={fu.id} className="bg-white/5 rounded-xl p-3 border border-white/10 space-y-2">
+              <div key={fu.id} className="bg-white/70 rounded-xl p-3 border border-amber-200/60 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-amber-400 font-semibold text-sm">{moment(fu.update_date).format("DD MMM YYYY")}</span>
-                  <span className="text-white/40 text-xs">by {fu.reported_by}</span>
+                  <span className="text-gray-400 text-xs">by {fu.reported_by}</span>
                 </div>
                 <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md border text-xs font-medium ${stageColor(fu.pipeline_stage)}`}>
                   {stageIcon(fu.pipeline_stage)}
                   {fu.pipeline_stage}
                 </div>
-                <div className="flex flex-wrap gap-2 text-xs text-white/60">
-                  {fu.contact_method && <span className="bg-white/5 px-2 py-0.5 rounded">{fu.contact_method}</span>}
-                  {fu.lead_response && <span className="bg-white/5 px-2 py-0.5 rounded">{fu.lead_response}</span>}
+                <div className="flex flex-wrap gap-2 text-xs text-gray-600">
+                  {fu.contact_method && <span className="bg-white/70 px-2 py-0.5 rounded">{fu.contact_method}</span>}
+                  {fu.lead_response && <span className="bg-white/70 px-2 py-0.5 rounded">{fu.lead_response}</span>}
                 </div>
-                {fu.notes && <p className="text-white/70 text-sm">{fu.notes}</p>}
+                {fu.notes && <p className="text-gray-700 text-sm">{fu.notes}</p>}
               </div>
             ))
           )}
