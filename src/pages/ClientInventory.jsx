@@ -31,11 +31,11 @@ export default function ClientInventory() {
         {/* Back + Title */}
         <div className="flex items-center gap-3 mb-8">
           <Link to="/ClientPortal">
-            <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white gap-1">
+            <Button variant="ghost" size="sm" className="text-slate-300 hover:text-gray-900 gap-1">
               <ArrowLeft className="w-4 h-4" /> Back
             </Button>
           </Link>
-          <h1 className="text-white text-3xl font-bold">Available Vehicles</h1>
+          <h1 className="text-gray-900 text-3xl font-bold">Available Vehicles</h1>
         </div>
 
         {/* Website CTA */}
@@ -56,7 +56,7 @@ export default function ClientInventory() {
               placeholder="Search make, model..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="bg-white/10 border-white/20 text-white placeholder:text-slate-400 pl-9"
+              className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400 pl-9"
             />
           </div>
           <div className="flex gap-2 flex-wrap">
@@ -67,7 +67,7 @@ export default function ClientInventory() {
                 onClick={() => setDealerFilter(s)}
                 variant={dealerFilter === s ? "default" : "outline"}
                 style={dealerFilter === s ? { background: "#C9A84C", color: "#000", border: "none" } : {}}
-                className={dealerFilter === s ? "" : "border-white/20 text-slate-300 hover:bg-white/10"}
+                className={dealerFilter === s ? "" : "border-amber-200/60 text-slate-300 hover:bg-white/70"}
               >
                 {s === "All" ? "All Stands" : s}
               </Button>
@@ -104,15 +104,15 @@ export default function ClientInventory() {
 function VehicleCard({ vehicle }) {
   const whatsappMsg = encodeURIComponent(`Hi! I'm interested in the ${vehicle.title || `${vehicle.year} ${vehicle.make} ${vehicle.model}`}. Please contact me.`);
   return (
-    <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-[#C9A84C55] transition-all duration-200 flex flex-col">
+    <div className="bg-white/70 border border-amber-200/60 rounded-2xl overflow-hidden hover:border-[#C9A84C55] transition-all duration-200 flex flex-col">
       <div className="h-48 bg-slate-800 flex items-center justify-center relative">
         {vehicle.images && vehicle.images[0]
           ? vehicle.website_slug
             ? (
               <a href={`https://www.koosandmike.co.za/vehicle/${vehicle.website_slug}`} target="_blank" rel="noreferrer" className="block w-full h-full group">
                 <img src={vehicle.images[0]} alt={vehicle.title} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity" />
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30">
-                  <ExternalLink className="w-8 h-8 text-white" />
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-gray-200/60">
+                  <ExternalLink className="w-8 h-8 text-gray-900" />
                 </div>
               </a>
             )
@@ -124,7 +124,7 @@ function VehicleCard({ vehicle }) {
         )}
       </div>
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="text-white font-bold text-base mb-1 leading-tight">
+        <h3 className="text-gray-900 font-bold text-base mb-1 leading-tight">
           {vehicle.title || `${vehicle.year} ${vehicle.make} ${vehicle.model}`}
         </h3>
         <p className="text-slate-400 text-xs mb-1">{vehicle.stand || ""}</p>
@@ -139,7 +139,7 @@ function VehicleCard({ vehicle }) {
             </Button>
           </a>
           <Link to="/ClientRegister" className="flex-1">
-            <Button size="sm" variant="outline" className="w-full border-white/20 text-white hover:bg-white/10 gap-1">
+            <Button size="sm" variant="outline" className="w-full border-amber-200/60 text-gray-900 hover:bg-white/70 gap-1">
               <Phone className="w-3 h-3" /> Enquire
             </Button>
           </Link>

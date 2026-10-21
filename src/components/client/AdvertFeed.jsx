@@ -22,17 +22,17 @@ function ImageCarousel({ images }) {
   const [idx, setIdx] = useState(0);
   if (!images || images.length === 0) return null;
   return (
-    <div className="relative w-full aspect-[4/3] bg-black rounded-xl overflow-hidden">
+    <div className="relative w-full aspect-[4/3] bg-white/70 rounded-xl overflow-hidden">
       <img src={images[idx]} alt="" className="w-full h-full object-cover" />
       {images.length > 1 && (
         <>
           <button onClick={() => setIdx(i => (i - 1 + images.length) % images.length)}
-            className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 flex items-center justify-center hover:bg-black/80">
-            <ChevronLeft className="w-4 h-4 text-white" />
+            className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-gray-400/60 flex items-center justify-center hover:bg-gray-500/60">
+            <ChevronLeft className="w-4 h-4 text-gray-900" />
           </button>
           <button onClick={() => setIdx(i => (i + 1) % images.length)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 flex items-center justify-center hover:bg-black/80">
-            <ChevronRight className="w-4 h-4 text-white" />
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-gray-400/60 flex items-center justify-center hover:bg-gray-500/60">
+            <ChevronRight className="w-4 h-4 text-gray-900" />
           </button>
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
             {images.map((_, i) => (
@@ -63,7 +63,7 @@ function VideoEmbed({ url }) {
   }
   if (isDirectVideo(url)) {
     return (
-      <video controls className="w-full rounded-xl aspect-video bg-black">
+      <video controls className="w-full rounded-xl aspect-video bg-white/70">
         <source src={url} />
       </video>
     );
@@ -97,7 +97,7 @@ function AdvertCard({ ad }) {
       <div className="p-5 space-y-4">
         {/* Title + Price */}
         <div>
-          <h3 className="text-white font-extrabold text-xl leading-tight">{ad.title}</h3>
+          <h3 className="text-gray-900 font-extrabold text-xl leading-tight">{ad.title}</h3>
           {ad.price && (
             <p className="font-bold text-2xl mt-1" style={{ color: GOLD }}>R {ad.price.toLocaleString()}</p>
           )}
@@ -110,7 +110,7 @@ function AdvertCard({ ad }) {
         </div>
 
         {/* Description */}
-        <div className="text-white/70 text-sm leading-relaxed whitespace-pre-line">
+        <div className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
           {(expanded ? descLines : preview).join("\n")}
           {hasMore && (
             <button onClick={() => setExpanded(e => !e)} className="block mt-1 text-xs font-semibold" style={{ color: GOLD }}>
@@ -122,14 +122,14 @@ function AdvertCard({ ad }) {
         {/* Video */}
         {ad.video_url && (
           <div>
-            <p className="text-xs text-white/30 uppercase tracking-wider mb-2 font-semibold">Video</p>
+            <p className="text-xs text-gray-400 uppercase tracking-wider mb-2 font-semibold">Video</p>
             <VideoEmbed url={ad.video_url} />
           </div>
         )}
 
         {/* CTA */}
         <a href={`https://wa.me/${waNumber}?text=${waMsg}`} target="_blank" rel="noreferrer">
-          <button className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm text-white transition-all hover:opacity-90"
+          <button className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm text-gray-900 transition-all hover:opacity-90"
             style={{ background: "#16a34a" }}>
             <MessageCircle className="w-4 h-4" /> WhatsApp About This Vehicle
           </button>
@@ -157,7 +157,7 @@ export default function AdvertFeed() {
     <section className="max-w-6xl mx-auto px-4 pb-12">
       <div className="rounded-2xl border p-8 text-center" style={{ borderColor: "#C9A84C22", background: "var(--glass)" }}>
         <p className="text-2xl mb-2">🚗</p>
-        <p className="text-white/50 text-sm">New featured vehicles coming soon — stay tuned!</p>
+        <p className="text-gray-500 text-sm">New featured vehicles coming soon — stay tuned!</p>
       </div>
     </section>
   );
@@ -165,8 +165,8 @@ export default function AdvertFeed() {
   return (
     <section className="max-w-6xl mx-auto px-4 pb-20">
       <div className="mb-6">
-        <h2 className="text-white text-2xl font-extrabold">🔥 Featured Vehicles</h2>
-        <p className="text-white/40 text-sm mt-1">Handpicked deals — contact us directly to enquire</p>
+        <h2 className="text-gray-900 text-2xl font-extrabold">🔥 Featured Vehicles</h2>
+        <p className="text-gray-400 text-sm mt-1">Handpicked deals — contact us directly to enquire</p>
       </div>
       <div className="grid md:grid-cols-2 gap-6">
         {adverts.map(ad => <AdvertCard key={ad.id} ad={ad} />)}

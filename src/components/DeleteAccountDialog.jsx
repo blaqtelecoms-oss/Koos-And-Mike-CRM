@@ -40,13 +40,13 @@ export default function DeleteAccountDialog() {
         {step === "confirm" && (
           <>
             <AlertDialogHeader>
-              <AlertDialogTitle className="text-white">Delete Account</AlertDialogTitle>
-              <AlertDialogDescription className="text-white/60">
+              <AlertDialogTitle className="text-gray-900">Delete Account</AlertDialogTitle>
+              <AlertDialogDescription className="text-gray-600">
                 Are you sure you want to delete your account? Your deletion request will be sent to the administrator for processing. You will be signed out immediately.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel className="border-white/20 text-white hover:bg-white/10" onClick={() => setStep("idle")}>
+              <AlertDialogCancel className="border-amber-200/60 text-white hover:bg-amber-50" onClick={() => setStep("idle")}>
                 Cancel
               </AlertDialogCancel>
               <Button onClick={handleRequestDeletion} className="bg-red-600 hover:bg-red-700 text-white">
@@ -59,8 +59,8 @@ export default function DeleteAccountDialog() {
         {step === "requested" && (
           <AlertDialogHeader className="items-center text-center pb-4">
             <CheckCircle2 className="w-12 h-12 text-green-400 mb-2" />
-            <AlertDialogTitle className="text-white">Request Submitted</AlertDialogTitle>
-            <AlertDialogDescription className="text-white/60">
+            <AlertDialogTitle className="text-gray-900">Request Submitted</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-600">
               Your account deletion request has been submitted. You will be signed out shortly.
             </AlertDialogDescription>
           </AlertDialogHeader>

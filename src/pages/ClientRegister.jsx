@@ -39,8 +39,8 @@ export default function ClientRegister() {
           <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="w-10 h-10 text-green-400" />
           </div>
-          <h2 className="text-white text-3xl font-bold mb-3">You're Registered!</h2>
-          <p className="text-slate-300 mb-2">Thank you, <strong className="text-white">{form.lead_name}</strong>.</p>
+          <h2 className="text-gray-900 text-3xl font-bold mb-3">You're Registered!</h2>
+          <p className="text-slate-300 mb-2">Thank you, <strong className="text-gray-900">{form.lead_name}</strong>.</p>
           <p className="text-slate-400 mb-8">Deon will contact you within 5–10 minutes via {form.contact_preference}.</p>
           <Button onClick={() => { setSubmitted(false); setForm({ lead_name: "", phone: "", email: "", car_interested: "", source: "Website", notes: "", contact_preference: "WhatsApp" }); }}
             className="text-black font-bold" style={{ background: "#C9A84C" }}>
@@ -59,28 +59,28 @@ export default function ClientRegister() {
             <UserPlus className="w-6 h-6" style={{ color: "#C9A84C" }} />
           </div>
           <div>
-            <h1 className="text-white text-3xl font-bold">Register My Interest</h1>
+            <h1 className="text-gray-900 text-3xl font-bold">Register My Interest</h1>
             <p className="text-slate-400 text-sm">We'll match you with the perfect vehicle from our dealers</p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="bg-white/70 border border-amber-200/60 rounded-2xl p-6 space-y-5">
           <div className="grid sm:grid-cols-2 gap-4">
             <FormField label="Full Name *">
               <Input required value={form.lead_name} onChange={e => set("lead_name", e.target.value)}
-                placeholder="Your full name" className="bg-white/10 border-white/20 text-white placeholder:text-slate-400" />
+                placeholder="Your full name" className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400" />
             </FormField>
             <FormField label="Phone Number *">
               <Input required value={form.phone} onChange={e => set("phone", e.target.value)}
-                placeholder="e.g. 082 000 0000" className="bg-white/10 border-white/20 text-white placeholder:text-slate-400" />
+                placeholder="e.g. 082 000 0000" className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400" />
             </FormField>
             <FormField label="Email Address">
               <Input type="email" value={form.email} onChange={e => set("email", e.target.value)}
-                placeholder="your@email.com" className="bg-white/10 border-white/20 text-white placeholder:text-slate-400" />
+                placeholder="your@email.com" className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400" />
             </FormField>
             <FormField label="Preferred Contact Method">
               <Select value={form.contact_preference} onValueChange={v => set("contact_preference", v)}>
-                <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                <SelectTrigger className="bg-white/70 border-amber-200/60 text-gray-900">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -94,12 +94,12 @@ export default function ClientRegister() {
 
           <FormField label="Car You're Interested In">
             <Input value={form.car_interested} onChange={e => set("car_interested", e.target.value)}
-              placeholder="e.g. 2020 Toyota Hilux, any SUV under R300k..." className="bg-white/10 border-white/20 text-white placeholder:text-slate-400" />
+              placeholder="e.g. 2020 Toyota Hilux, any SUV under R300k..." className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400" />
           </FormField>
 
           <FormField label="How did you hear about us?">
             <Select value={form.source} onValueChange={v => set("source", v)}>
-              <SelectTrigger className="bg-white/10 border-white/20 text-white">
+              <SelectTrigger className="bg-white/70 border-amber-200/60 text-gray-900">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -113,7 +113,7 @@ export default function ClientRegister() {
           <FormField label="Additional Notes">
             <Textarea value={form.notes} onChange={e => set("notes", e.target.value)}
               placeholder="Any specific requirements, budget, finance needed..." rows={3}
-              className="bg-white/10 border-white/20 text-white placeholder:text-slate-400" />
+              className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400" />
           </FormField>
 
           <Button type="submit" disabled={loading} className="w-full py-6 text-lg font-bold rounded-xl gap-2 text-black" style={{ background: "#C9A84C" }}>

@@ -75,10 +75,10 @@ export default function StaffLanding() {
           <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium mb-5 border" style={{ background: "#C9A84C18", borderColor: "#C9A84C44", color: GOLD }}>
             <Star className="w-4 h-4" /> Staff Access Only
           </div>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
             Welcome Back<br /><span style={{ color: GOLD }}>Staff Portal</span>
           </h2>
-          <p className="text-white/50 text-base">
+          <p className="text-gray-500 text-base">
             Select your name and enter your password to access your dashboard.
           </p>
         </div>
@@ -94,7 +94,7 @@ export default function StaffLanding() {
 
             {/* Name dropdown */}
             <div>
-              <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Your Name</label>
+              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Your Name</label>
               {loading ? (
                 <div className="flex justify-center py-4">
                   <div className="w-6 h-6 border-2 border-amber-600 border-t-amber-300 rounded-full animate-spin" />
@@ -104,7 +104,7 @@ export default function StaffLanding() {
                   <select
                     value={selectedId}
                     onChange={e => { setSelectedId(e.target.value); setError(""); }}
-                    className="w-full appearance-none px-4 py-3 pr-10 rounded-xl text-white outline-none text-sm font-medium"
+                    className="w-full appearance-none px-4 py-3 pr-10 rounded-xl text-gray-900 outline-none text-sm font-medium"
                     style={{
                       background: "var(--glass)",
                       border: `1px solid ${selectedId ? GOLD : "#C9A84C33"}`,
@@ -123,14 +123,14 @@ export default function StaffLanding() {
 
             {/* Password field */}
             <div>
-              <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Password</label>
+              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Password</label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={e => { setPassword(e.target.value); setError(""); }}
                   placeholder="Enter your password"
-                  className="w-full px-4 py-3 pr-12 rounded-xl text-white text-sm outline-none"
+                  className="w-full px-4 py-3 pr-12 rounded-xl text-gray-900 text-sm outline-none"
                   style={{
                     background: "var(--glass)",
                     border: `1px solid ${error ? "#ef4444" : password ? GOLD : "#C9A84C33"}`
@@ -148,7 +148,7 @@ export default function StaffLanding() {
                 </button>
               </div>
               {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
-              <p className="text-white/30 text-xs mt-2">Default password: <span style={{ color: GOLD }}>Leads2026</span></p>
+              <p className="text-gray-400 text-xs mt-2">Default password: <span style={{ color: GOLD }}>Leads2026</span></p>
             </div>
 
             <button
@@ -156,8 +156,8 @@ export default function StaffLanding() {
               disabled={!selectedId || !password || logging}
               className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all"
               style={{
-                background: selectedId && password && !logging ? GOLD : "#ffffff15",
-                color: selectedId && password && !logging ? "#000" : "#ffffff40",
+                background: selectedId && password && !logging ? GOLD : "var(--line)",
+                color: selectedId && password && !logging ? "#000" : "var(--mut)",
                 cursor: selectedId && password && !logging ? "pointer" : "not-allowed"
               }}
             >
@@ -172,7 +172,7 @@ export default function StaffLanding() {
 
         </form>
 
-        <p className="mt-6 text-white/20 text-xs text-center">
+        <p className="mt-6 text-gray-300 text-xs text-center">
           This portal is for Koos & Mike Cars staff only.
         </p>
       </main>

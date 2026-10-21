@@ -12,7 +12,7 @@ const SECTION = ({ title, icon, color = "#0ea5e9", children }) => (
   <div className="rounded-2xl border p-5 space-y-4" style={{ background: "var(--glass)", borderColor: color + "30" }}>
     <div className="flex items-center gap-2 border-b pb-3" style={{ borderColor: color + "20" }}>
       <span style={{ color }}>{icon}</span>
-      <h3 className="font-bold text-white text-lg">{title}</h3>
+      <h3 className="font-bold text-gray-900 text-lg">{title}</h3>
     </div>
     {children}
   </div>
@@ -27,35 +27,35 @@ const SCRIPT = ({ text }) => (
 
 const FIELD = ({ label, name, value, onChange, placeholder, type = "text" }) => (
   <div>
-    <Label className="text-white/70 text-xs mb-1 block">{label}</Label>
+    <Label className="text-gray-700 text-xs mb-1 block">{label}</Label>
     <Input
       type={type}
       name={name}
       value={value}
       onChange={onChange}
       placeholder={placeholder || label}
-      className="bg-white/5 border-white/10 text-white placeholder:text-white/20"
+      className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-gray-300"
     />
   </div>
 );
 
 const TEXTAREA_FIELD = ({ label, name, value, onChange, placeholder, rows = 2 }) => (
   <div>
-    <Label className="text-white/70 text-xs mb-1 block">{label}</Label>
+    <Label className="text-gray-700 text-xs mb-1 block">{label}</Label>
     <Textarea
       name={name}
       value={value}
       onChange={onChange}
       placeholder={placeholder || label}
       rows={rows}
-      className="bg-white/5 border-white/10 text-white placeholder:text-white/20 resize-none"
+      className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-gray-300 resize-none"
     />
   </div>
 );
 
 const YesNo = ({ label, name, value, onChange }) => (
   <div>
-    <Label className="text-white/70 text-xs mb-2 block">{label}</Label>
+    <Label className="text-gray-700 text-xs mb-2 block">{label}</Label>
     <div className="flex gap-3">
       {["Yes", "No"].map(opt => (
         <button
@@ -68,7 +68,7 @@ const YesNo = ({ label, name, value, onChange }) => (
             : { background: "transparent", borderColor: "var(--line)", color: "var(--mut)" }
           }
         >
-          <div className="w-4 h-4 rounded border-2 flex items-center justify-center" style={{ borderColor: value === opt ? (opt === "Yes" ? "#4ade80" : "#f87171") : "#ffffff30" }}>
+          <div className="w-4 h-4 rounded border-2 flex items-center justify-center" style={{ borderColor: value === opt ? (opt === "Yes" ? "#4ade80" : "#f87171") : "var(--mut)" }}>
             {value === opt && <div className="w-2 h-2 rounded-sm" style={{ background: opt === "Yes" ? "#4ade80" : "#f87171" }} />}
           </div>
           {opt}
@@ -286,18 +286,18 @@ ${form.additional_notes ? `<h2>Additional Notes</h2><div class="row"><div class=
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-sm border-b" style={{ background: "rgba(255,255,255,0.85)", borderColor: "#0ea5e920" }}>
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3">
-          <button onClick={() => window.history.back()} className="p-2 rounded-lg hover:bg-white/5">
+          <button onClick={() => window.history.back()} className="p-2 rounded-lg hover:bg-white/70">
             <ChevronLeft className="w-5 h-5 text-blue-400" />
           </button>
           <img src={LOGO_URL} alt="Call Centre" className="w-10 h-10 object-contain rounded-lg" />
           <div>
             <h1 className="font-bold text-blue-400 leading-none">Insurance Lead Script</h1>
-            <p className="text-xs text-white/30">Koos &amp; Mike Cars × Santam</p>
+            <p className="text-xs text-gray-400">Koos &amp; Mike Cars × Santam</p>
           </div>
           <div className="ml-auto flex items-center gap-2">
             <div className="text-right hidden sm:block">
-              <p className="text-xs text-white/30">Agent</p>
-              <p className="text-sm font-semibold text-white">{consultant?.name || "—"}</p>
+              <p className="text-xs text-gray-400">Agent</p>
+              <p className="text-sm font-semibold text-gray-900">{consultant?.name || "—"}</p>
             </div>
           </div>
         </div>
@@ -370,10 +370,10 @@ ${form.additional_notes ? `<h2>Additional Notes</h2><div class="row"><div class=
             </div>
           )}
           {form.has_insurance === "No" && (
-            <p className="text-sm text-white/40 italic">Customer does not have current insurance.</p>
+            <p className="text-sm text-gray-400 italic">Customer does not have current insurance.</p>
           )}
           {!form.has_insurance && (
-            <p className="text-sm text-white/30 italic">Answer the insurance question in the Introduction section first.</p>
+            <p className="text-sm text-gray-400 italic">Answer the insurance question in the Introduction section first.</p>
           )}
         </SECTION>
 
@@ -390,7 +390,7 @@ ${form.additional_notes ? `<h2>Additional Notes</h2><div class="row"><div class=
         <SECTION title="Driver's Licence" icon={<ClipboardList className="w-5 h-5" />} color="#06b6d4">
           <SCRIPT text={<>For the quotation, we'll also require a <strong>clear photo of your driver's licence</strong>. Would you be comfortable sending it via <strong>WhatsApp or Email</strong>?</>} />
           <div>
-            <Label className="text-white/70 text-xs mb-2 block">Preferred method to send licence</Label>
+            <Label className="text-gray-700 text-xs mb-2 block">Preferred method to send licence</Label>
             <div className="flex gap-3">
               {["WhatsApp", "Email", "Neither"].map(opt => (
                 <button key={opt} type="button"
@@ -443,7 +443,7 @@ ${form.additional_notes ? `<h2>Additional Notes</h2><div class="row"><div class=
                     : { background: "rgba(0,0,0,0.03)", borderColor: "var(--line)", color: "var(--mut)" }
                   }
                 >
-                  <div className="w-4 h-4 rounded border-2 flex items-center justify-center shrink-0" style={{ borderColor: checked ? "#4ade80" : "#ffffff30" }}>
+                  <div className="w-4 h-4 rounded border-2 flex items-center justify-center shrink-0" style={{ borderColor: checked ? "#4ade80" : "var(--mut)" }}>
                     {checked && <CheckCircle2 className="w-3 h-3 text-green-400" />}
                   </div>
                   {label}
@@ -467,7 +467,7 @@ ${form.additional_notes ? `<h2>Additional Notes</h2><div class="row"><div class=
 
         {/* ACTIONS */}
         <div className="rounded-2xl border p-5 space-y-4" style={{ background: "var(--glass)", borderColor: "#0ea5e930" }}>
-          <h3 className="font-bold text-white">Save &amp; Send</h3>
+          <h3 className="font-bold text-gray-900">Save &amp; Send</h3>
           <div className="flex flex-col sm:flex-row gap-3">
             <Button onClick={handleDownloadPdf} className="flex-1 gap-2" style={{ background: "#0ea5e9", color: "#fff" }}>
               <FileDown className="w-4 h-4" /> Download Form

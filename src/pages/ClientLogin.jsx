@@ -60,10 +60,10 @@ export default function ClientLogin() {
               <Star className="w-3 h-3" /> Trusted by thousands of South Africans
             </div>
 
-            <h2 className="text-white text-3xl font-extrabold mb-3">
+            <h2 className="text-gray-900 text-3xl font-extrabold mb-3">
               Welcome to the<br /><span style={{ color: GOLD }}>Client Portal</span>
             </h2>
-            <p className="text-white/60 text-sm mb-8 leading-relaxed">
+            <p className="text-gray-600 text-sm mb-8 leading-relaxed">
               Sign in or create a free account to browse our inventory, register your interest, submit a trade-in, or request a specific vehicle.
             </p>
 
@@ -75,7 +75,7 @@ export default function ClientLogin() {
               Sign In / Create Account
             </Button>
 
-            <p className="text-white/30 text-xs">
+            <p className="text-gray-400 text-xs">
               By signing in you agree to our terms of service.<br />
               This portal is for customers only.
             </p>

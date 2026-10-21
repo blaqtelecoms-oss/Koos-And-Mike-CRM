@@ -56,10 +56,10 @@ export default function ClientPortal() {
         <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium mb-6 border" style={{ background: "#C9A84C18", borderColor: "#C9A84C44", color: GOLD }}>
           <Star className="w-4 h-4" /> Quality Cars You Can Trust
         </div>
-        <h2 className="text-5xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
+        <h2 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
           Find Your Perfect<br /><span style={{ color: GOLD }}>Car Today</span>
         </h2>
-        <p className="text-white/70 text-xl max-w-2xl mx-auto mb-10">
+        <p className="text-gray-700 text-xl max-w-2xl mx-auto mb-10">
           Browse vehicles, register your interest, trade in your car, or let us find exactly what you're looking for — all in one place.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
@@ -91,11 +91,11 @@ export default function ClientPortal() {
                 <Users className="w-6 h-6 text-green-400" />
               </div>
               <div>
-                <p className="text-white font-bold">Join Our WhatsApp Group</p>
-                <p className="text-white/50 text-sm">Get first access to new stock, deals & updates directly on WhatsApp</p>
+                <p className="text-gray-900 font-bold">Join Our WhatsApp Group</p>
+                <p className="text-gray-500 text-sm">Get first access to new stock, deals & updates directly on WhatsApp</p>
               </div>
             </div>
-            <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm text-white flex-shrink-0"
+            <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm text-gray-900 flex-shrink-0"
               style={{ background: "#16a34a" }}>
               <MessageCircle className="w-4 h-4" /> Join Group
             </button>
@@ -112,7 +112,7 @@ export default function ClientPortal() {
           {/* Header bar */}
           <div className="px-6 py-4 border-b flex items-center gap-3" style={{ background: "#C9A84C12", borderColor: "#C9A84C33" }}>
             <ShieldCheck className="w-5 h-5" style={{ color: GOLD }} />
-            <span className="font-bold text-white text-sm">Verified on HelloPeter — South Africa's #1 Consumer Review Platform</span>
+            <span className="font-bold text-gray-900 text-sm">Verified on HelloPeter — South Africa's #1 Consumer Review Platform</span>
             <a href="https://www.hellopeter.com/koos-and-mike-used-vehicles" target="_blank" rel="noreferrer"
               className="ml-auto text-xs underline" style={{ color: GOLD }}>
               View All Reviews →
@@ -136,7 +136,7 @@ export default function ClientPortal() {
                 { stars: 3, pct: 0 },
               ].map(({ stars, pct }) => (
                 <div key={stars} className="flex items-center gap-3">
-                  <span className="text-xs text-white/50 w-8">{stars}★</span>
+                  <span className="text-xs text-gray-500 w-8">{stars}★</span>
                   <div className="flex-1 h-2 rounded-full" style={{ background: "rgba(0,0,0,0.06)" }}>
                     <div className="h-2 rounded-full" style={{ width: `${pct}%`, background: GOLD }} />
                   </div>
@@ -148,14 +148,14 @@ export default function ClientPortal() {
 
           {/* Review snippets */}
           <div className="px-6 pb-6 border-t" style={{ borderColor: "#C9A84C22" }}>
-            <p className="text-white/40 text-xs uppercase tracking-wider font-semibold py-4">What our customers say</p>
+            <p className="text-gray-400 text-xs uppercase tracking-wider font-semibold py-4">What our customers say</p>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {REVIEWS.map((r) => (
                 <div key={r.author} className="rounded-xl p-4 border" style={{ background: "#ffffff06", borderColor: "#C9A84C20" }}>
                   <div className="flex gap-0.5 mb-2">
                     {[1,2,3,4,5].map(i => <Star key={i} className="w-3 h-3 fill-current" style={{ color: GOLD }} />)}
                   </div>
-                  <p className="text-white/70 text-xs leading-relaxed mb-3">"{r.text}"</p>
+                  <p className="text-gray-700 text-xs leading-relaxed mb-3">"{r.text}"</p>
                   <p className="text-xs font-semibold" style={{ color: GOLD }}>— {r.author}</p>
                 </div>
               ))}
@@ -210,10 +210,10 @@ export default function ClientPortal() {
       <section className="max-w-6xl mx-auto px-4 pb-20">
         <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "#C9A84C33" }}>
           <div className="px-6 py-5 border-b" style={{ background: "#C9A84C12", borderColor: "#C9A84C33" }}>
-            <h3 className="text-white text-xl font-bold flex items-center gap-2">
+            <h3 className="text-gray-900 text-xl font-bold flex items-center gap-2">
               <Phone className="w-5 h-5" style={{ color: GOLD }} /> Talk to Our Sales Team
             </h3>
-            <p className="text-white/50 text-sm mt-1">Call or WhatsApp any of our consultants directly</p>
+            <p className="text-gray-500 text-sm mt-1">Call or WhatsApp any of our consultants directly</p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-x divide-y" style={{ borderColor: "#C9A84C15", background: "transparent" }}>
             {TEAM.map((member) => (
@@ -223,8 +223,8 @@ export default function ClientPortal() {
                   {member.name[0]}
                 </div>
                 <div>
-                  <p className="text-white font-semibold text-sm">{member.name}</p>
-                  <p className="text-white/50 text-xs mt-0.5">{member.phone}</p>
+                  <p className="text-gray-900 font-semibold text-sm">{member.name}</p>
+                  <p className="text-gray-500 text-xs mt-0.5">{member.phone}</p>
                 </div>
                 <div className="flex gap-2">
                   <a href={`tel:${member.phone.replace(/\s/g, "")}`}>
@@ -250,8 +250,8 @@ export default function ClientPortal() {
       <section className="max-w-6xl mx-auto px-4 pb-20">
         <div className="rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 border" style={{ background: "#C9A84C0D", borderColor: "#C9A84C33" }}>
           <div>
-            <h3 className="text-white text-2xl font-bold mb-2">Full Inventory Online</h3>
-            <p className="text-white/60">Visit our website for the complete, up-to-date vehicle listing.</p>
+            <h3 className="text-gray-900 text-2xl font-bold mb-2">Full Inventory Online</h3>
+            <p className="text-gray-600">Visit our website for the complete, up-to-date vehicle listing.</p>
           </div>
           <a href="https://www.koosandmike.co.za" target="_blank" rel="noreferrer">
             <Button className="gap-2 px-8 py-6 text-lg font-bold rounded-xl whitespace-nowrap text-black" style={{ background: GOLD }}>
@@ -272,9 +272,9 @@ function StatBox({ emoji, value, label, sub }) {
   return (
     <div className="p-5 text-center" style={{ background: "transparent" }}>
       <div className="text-2xl mb-1">{emoji}</div>
-      <div className="text-2xl font-extrabold text-white">{value}</div>
+      <div className="text-2xl font-extrabold text-gray-900">{value}</div>
       <div className="text-xs font-semibold mt-0.5" style={{ color: GOLD }}>{label}</div>
-      <div className="text-xs text-white/30 mt-0.5">{sub}</div>
+      <div className="text-xs text-gray-400 mt-0.5">{sub}</div>
     </div>
   );
 }
@@ -286,8 +286,8 @@ function ServiceCard({ icon, title, desc, link, href, cta, external }) {
       <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4" style={{ background: "#C9A84C15" }}>
         {icon}
       </div>
-      <h3 className="text-white font-bold text-lg mb-2">{title}</h3>
-      <p className="text-white/60 text-sm flex-1 mb-4">{desc}</p>
+      <h3 className="text-gray-900 font-bold text-lg mb-2">{title}</h3>
+      <p className="text-gray-600 text-sm flex-1 mb-4">{desc}</p>
       <div className="flex items-center font-semibold text-sm gap-1 transition-all" style={{ color: GOLD }}>
         {cta} <ArrowRight className="w-4 h-4" />
       </div>

@@ -62,17 +62,17 @@ function LeadCard({ lead, index }) {
           }}
         >
           <div className="flex items-start justify-between gap-2">
-            <p className="text-white font-semibold text-sm leading-tight">{lead.lead_name}</p>
+            <p className="text-gray-900 font-semibold text-sm leading-tight">{lead.lead_name}</p>
             <span className="px-1.5 py-0.5 rounded text-xs font-medium flex-shrink-0"
               style={{ background: sc + "20", color: sc }}>
               {lead.status}
             </span>
           </div>
           {lead.car_interested && (
-            <p className="text-white/40 text-xs mt-1 truncate">{lead.car_interested}</p>
+            <p className="text-gray-400 text-xs mt-1 truncate">{lead.car_interested}</p>
           )}
           {lead.assigned_consultant && (
-            <p className="text-white/30 text-xs mt-0.5">→ {lead.assigned_consultant}</p>
+            <p className="text-gray-400 text-xs mt-0.5">→ {lead.assigned_consultant}</p>
           )}
           <div className="flex gap-1.5 mt-2">
             {lead.phone && (
@@ -183,11 +183,11 @@ export default function LeadKanban() {
       {/* Controls */}
       <div className="flex items-center gap-3 flex-wrap">
         <div className="flex items-center gap-2">
-          <label className="text-white/50 text-sm">Consultant:</label>
+          <label className="text-gray-500 text-sm">Consultant:</label>
           <select
             value={filterConsultant}
             onChange={e => setFilterConsultant(e.target.value)}
-            className="px-3 py-1.5 rounded-lg text-white text-sm outline-none"
+            className="px-3 py-1.5 rounded-lg text-gray-900 text-sm outline-none"
             style={{ background: "var(--glass)", border: "1px solid #C9A84C33" }}
           >
             <option value="All">All Consultants</option>
@@ -196,12 +196,12 @@ export default function LeadKanban() {
         </div>
         <button
           onClick={loadData}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-all hover:bg-white/10"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-all hover:bg-white/70"
           style={{ color: GOLD, border: "1px solid #C9A84C33" }}
         >
           <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
-        <p className="text-white/30 text-xs ml-auto">{filteredLeads.length} leads · drag cards to move pipeline stage</p>
+        <p className="text-gray-400 text-xs ml-auto">{filteredLeads.length} leads · drag cards to move pipeline stage</p>
       </div>
 
       {/* Kanban Board */}
@@ -240,7 +240,7 @@ export default function LeadKanban() {
                       ))}
                       {provided.placeholder}
                       {stageLeads.length === 0 && !snapshot.isDraggingOver && (
-                        <p className="text-center text-white/15 text-xs mt-4">Drop here</p>
+                        <p className="text-center text-gray-300 text-xs mt-4">Drop here</p>
                       )}
                     </div>
                   )}

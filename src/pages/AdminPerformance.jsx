@@ -233,9 +233,9 @@ export default function AdminPerformance() {
           <div className="rounded-2xl p-5 border flex items-start gap-4" style={{ background: "#C9A84C15", borderColor: "#C9A84C55" }}>
             <Bell className="w-6 h-6 mt-0.5 shrink-0" style={{ color: GOLD }} />
             <div className="flex-1">
-              <p className="font-bold text-white">Good morning! 🌅 Time to review yesterday's performance.</p>
+              <p className="font-bold text-gray-900">Good morning! 🌅 Time to review yesterday's performance.</p>
               <p className="text-sm mt-1" style={{ color: "#C9A84C99" }}>
-                Yesterday ({moment().subtract(1, "day").format("DD MMM YYYY")}): <strong className="text-white">{totalNewLeads} new leads received</strong> — {totalCalled} called, {totalNotCalled} not yet contacted.
+                Yesterday ({moment().subtract(1, "day").format("DD MMM YYYY")}): <strong className="text-gray-900">{totalNewLeads} new leads received</strong> — {totalCalled} called, {totalNotCalled} not yet contacted.
                 {avgResponseAll !== null && ` Avg response (working hours): ${avgResponseAll} min.`}
               </p>
             </div>
@@ -245,15 +245,15 @@ export default function AdminPerformance() {
 
         {/* Date Selector */}
         <div className="flex items-center gap-4">
-          <h2 className="text-2xl font-bold text-white">Daily Performance Report</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Daily Performance Report</h2>
           <div className="flex items-center gap-2 ml-auto rounded-xl border overflow-hidden" style={{ borderColor: "#C9A84C33" }}>
             <button
               onClick={() => setSelectedDate(moment(selectedDate).subtract(1, "day").format("YYYY-MM-DD"))}
-              className="p-2 hover:bg-white/10 transition-colors"
+              className="p-2 hover:bg-white/70 transition-colors"
             >
               <ChevronLeft className="w-4 h-4 text-amber-400" />
             </button>
-            <div className="px-4 py-2 text-white text-sm font-medium" style={{ background: "var(--glass)" }}>
+            <div className="px-4 py-2 text-gray-900 text-sm font-medium" style={{ background: "var(--glass)" }}>
               {moment(selectedDate).format("dddd, DD MMM YYYY")}
               {isYesterday && <span className="ml-2 text-xs" style={{ color: GOLD }}>(Yesterday)</span>}
               {selectedDate === moment().format("YYYY-MM-DD") && <span className="ml-2 text-xs text-emerald-400">(Today)</span>}
@@ -261,7 +261,7 @@ export default function AdminPerformance() {
             <button
               onClick={() => setSelectedDate(moment(selectedDate).add(1, "day").format("YYYY-MM-DD"))}
               disabled={selectedDate >= moment().format("YYYY-MM-DD")}
-              className="p-2 hover:bg-white/10 transition-colors disabled:opacity-30"
+              className="p-2 hover:bg-white/70 transition-colors disabled:opacity-30"
             >
               <ChevronRight className="w-4 h-4 text-amber-400" />
             </button>
@@ -328,7 +328,7 @@ export default function AdminPerformance() {
             {followUpsOnDate.filter(f => ccAgentNames.includes(f.reported_by)).length > 0 && (
               <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "#3b82f622" }}>
                 <div className="px-6 py-4 border-b" style={{ background: "#3b82f610", borderColor: "#3b82f622" }}>
-                  <h3 className="text-white font-bold flex items-center gap-2">
+                  <h3 className="text-gray-900 font-bold flex items-center gap-2">
                     <Phone className="w-4 h-4 text-blue-400" />
                     Call Centre Activity — {moment(selectedDate).format("DD MMM YYYY")}
                   </h3>
@@ -350,16 +350,16 @@ export default function AdminPerformance() {
                             <td className="px-4 py-3">
                               <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-500/20 text-blue-400">{fu.reported_by}</span>
                             </td>
-                            <td className="px-4 py-3 text-white font-medium">{fu.lead_name || lead?.lead_name || "—"}</td>
-                            <td className="px-4 py-3 text-white/60">{fu.contact_method || "—"}</td>
-                            <td className="px-4 py-3 text-white/60">{fu.lead_response || "—"}</td>
-                            <td className="px-4 py-3 text-white/60">{fu.pipeline_stage || "—"}</td>
+                            <td className="px-4 py-3 text-gray-900 font-medium">{fu.lead_name || lead?.lead_name || "—"}</td>
+                            <td className="px-4 py-3 text-gray-600">{fu.contact_method || "—"}</td>
+                            <td className="px-4 py-3 text-gray-600">{fu.lead_response || "—"}</td>
+                            <td className="px-4 py-3 text-gray-600">{fu.pipeline_stage || "—"}</td>
                             <td className="px-4 py-3">
                               {lead?.assigned_consultant && lead.assigned_consultant !== "Unassigned"
                                 ? <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: "#C9A84C20", color: GOLD }}>{lead.assigned_consultant}</span>
-                                : <span className="text-white/30 text-xs">Unassigned</span>}
+                                : <span className="text-gray-400 text-xs">Unassigned</span>}
                             </td>
-                            <td className="px-4 py-3 text-white/40 text-xs max-w-xs truncate">{fu.notes || "—"}</td>
+                            <td className="px-4 py-3 text-gray-400 text-xs max-w-xs truncate">{fu.notes || "—"}</td>
                           </tr>
                         );
                       })}
@@ -385,25 +385,25 @@ export default function AdminPerformance() {
             {/* Add Staff Form */}
             {showAddForm && (
               <div className="rounded-2xl border p-6 space-y-4" style={{ borderColor: "#8b5cf630", background: "#8b5cf60A" }}>
-                <h3 className="text-white font-bold text-lg">Add New Staff Member</h3>
+                <h3 className="text-gray-900 font-bold text-lg">Add New Staff Member</h3>
                 <div className="space-y-3">
                   <div>
-                    <label className="text-white text-sm font-medium block mb-1">Name</label>
+                    <label className="text-gray-900 text-sm font-medium block mb-1">Name</label>
                     <input
                       type="text"
                       value={newConsultantName}
                       onChange={(e) => setNewConsultantName(e.target.value)}
                       placeholder="Enter staff name"
-                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-white"
+                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-gray-900"
                       style={{ borderColor: "#8b5cf630" }}
                     />
                   </div>
                   <div>
-                    <label className="text-white text-sm font-medium block mb-1">Role</label>
+                    <label className="text-gray-900 text-sm font-medium block mb-1">Role</label>
                     <select
                       value={newConsultantRole}
                       onChange={(e) => setNewConsultantRole(e.target.value)}
-                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-white"
+                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-gray-900"
                       style={{ borderColor: "#8b5cf630" }}
                     >
                       <option value="Sales">Sales Consultant</option>
@@ -411,35 +411,35 @@ export default function AdminPerformance() {
                     </select>
                   </div>
                   <div>
-                    <label className="text-white text-sm font-medium block mb-1">Email</label>
+                    <label className="text-gray-900 text-sm font-medium block mb-1">Email</label>
                     <input
                       type="email"
                       value={newConsultantEmail}
                       onChange={(e) => setNewConsultantEmail(e.target.value)}
                       placeholder="Enter email"
-                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-white"
+                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-gray-900"
                       style={{ borderColor: "#8b5cf630" }}
                     />
                   </div>
                   <div>
-                    <label className="text-white text-sm font-medium block mb-1">Phone Number</label>
+                    <label className="text-gray-900 text-sm font-medium block mb-1">Phone Number</label>
                     <input
                       type="text"
                       value={newConsultantPhone}
                       onChange={(e) => setNewConsultantPhone(e.target.value)}
                       placeholder="Enter phone number"
-                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-white"
+                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-gray-900"
                       style={{ borderColor: "#8b5cf630" }}
                     />
                   </div>
                   <div>
-                    <label className="text-white text-sm font-medium block mb-1">WhatsApp Number</label>
+                    <label className="text-gray-900 text-sm font-medium block mb-1">WhatsApp Number</label>
                     <input
                       type="text"
                       value={newConsultantWhatsapp}
                       onChange={(e) => setNewConsultantWhatsapp(e.target.value)}
                       placeholder="Enter WhatsApp number"
-                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-white"
+                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-gray-900"
                       style={{ borderColor: "#8b5cf630" }}
                     />
                   </div>
@@ -451,7 +451,7 @@ export default function AdminPerformance() {
                       onChange={(e) => setNewConsultantIsManager(e.target.checked)}
                       className="w-4 h-4"
                     />
-                    <label htmlFor="isManager" className="text-white text-sm font-medium">Is Manager</label>
+                    <label htmlFor="isManager" className="text-gray-900 text-sm font-medium">Is Manager</label>
                   </div>
                 </div>
                 <div className="flex gap-2">
@@ -494,45 +494,45 @@ export default function AdminPerformance() {
             {/* Edit Staff Form */}
             {editingStaff && (
               <div className="rounded-2xl border p-6 space-y-4" style={{ borderColor: "#8b5cf630", background: "#8b5cf60A" }}>
-                <h3 className="text-white font-bold text-lg">Edit Staff Member</h3>
+                <h3 className="text-gray-900 font-bold text-lg">Edit Staff Member</h3>
                 <div className="space-y-3">
                   <div>
-                    <label className="text-white text-sm font-medium block mb-1">Name</label>
+                    <label className="text-gray-900 text-sm font-medium block mb-1">Name</label>
                     <input
                       type="text"
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
-                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-white"
+                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-gray-900"
                       style={{ borderColor: "#8b5cf630" }}
                     />
                   </div>
                   <div>
-                    <label className="text-white text-sm font-medium block mb-1">Email</label>
+                    <label className="text-gray-900 text-sm font-medium block mb-1">Email</label>
                     <input
                       type="email"
                       value={editEmail}
                       onChange={(e) => setEditEmail(e.target.value)}
-                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-white"
+                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-gray-900"
                       style={{ borderColor: "#8b5cf630" }}
                     />
                   </div>
                   <div>
-                    <label className="text-white text-sm font-medium block mb-1">Phone Number</label>
+                    <label className="text-gray-900 text-sm font-medium block mb-1">Phone Number</label>
                     <input
                       type="text"
                       value={editPhone}
                       onChange={(e) => setEditPhone(e.target.value)}
-                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-white"
+                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-gray-900"
                       style={{ borderColor: "#8b5cf630" }}
                     />
                   </div>
                   <div>
-                    <label className="text-white text-sm font-medium block mb-1">WhatsApp Number</label>
+                    <label className="text-gray-900 text-sm font-medium block mb-1">WhatsApp Number</label>
                     <input
                       type="text"
                       value={editWhatsapp}
                       onChange={(e) => setEditWhatsapp(e.target.value)}
-                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-white"
+                      className="w-full rounded-lg px-4 py-2 bg-white/60 border text-gray-900"
                       style={{ borderColor: "#8b5cf630" }}
                     />
                   </div>
@@ -544,7 +544,7 @@ export default function AdminPerformance() {
                       onChange={(e) => setEditIsManager(e.target.checked)}
                       className="w-4 h-4"
                     />
-                    <label htmlFor="editIsManager" className="text-white text-sm font-medium">Is Manager</label>
+                    <label htmlFor="editIsManager" className="text-gray-900 text-sm font-medium">Is Manager</label>
                   </div>
                 </div>
                 <div className="flex gap-2">
@@ -582,21 +582,21 @@ export default function AdminPerformance() {
                 return (
                   <div key={role} className="rounded-2xl border overflow-hidden" style={{ borderColor: "#8b5cf622" }}>
                     <div className="px-6 py-4 border-b" style={{ background: "#8b5cf610", borderColor: "#8b5cf622" }}>
-                      <h3 className="text-white font-bold">{role === "Sales" ? "Sales Consultants" : "Call Centre Agents"} ({staffByRole.length})</h3>
+                      <h3 className="text-gray-900 font-bold">{role === "Sales" ? "Sales Consultants" : "Call Centre Agents"} ({staffByRole.length})</h3>
                     </div>
                     <div className="divide-y" style={{ borderColor: "#8b5cf618" }}>
                       {staffByRole.map(staff => (
-                        <div key={staff.id} className="px-6 py-4 hover:bg-white/5 transition-colors">
+                        <div key={staff.id} className="px-6 py-4 hover:bg-white/70 transition-colors">
                           <div className="flex items-start justify-between gap-4">
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-2">
-                                <p className="text-white font-semibold">{staff.name}</p>
+                                <p className="text-gray-900 font-semibold">{staff.name}</p>
                                 {staff.is_manager && <span className="text-xs bg-amber-600/30 text-amber-300 px-2 py-1 rounded">Manager</span>}
                               </div>
                               <div className="space-y-1 text-sm">
-                                {staff.email && <p className="text-white/60">{staff.email}</p>}
-                                {staff.phone && <p className="text-white/60">📞 {staff.phone}</p>}
-                                {staff.whatsapp_number && <p className="text-white/60">💬 {staff.whatsapp_number}</p>}
+                                {staff.email && <p className="text-gray-600">{staff.email}</p>}
+                                {staff.phone && <p className="text-gray-600">📞 {staff.phone}</p>}
+                                {staff.whatsapp_number && <p className="text-gray-600">💬 {staff.whatsapp_number}</p>}
                               </div>
                             </div>
                             <div className="flex gap-2">
@@ -654,7 +654,7 @@ export default function AdminPerformance() {
         {leadsOnDate.length > 0 && (
           <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "#C9A84C22" }}>
             <div className="px-6 py-4 border-b" style={{ background: "#C9A84C10", borderColor: "#C9A84C22" }}>
-              <h3 className="text-white font-bold flex items-center gap-2">
+              <h3 className="text-gray-900 font-bold flex items-center gap-2">
                 <Star className="w-4 h-4" style={{ color: GOLD }} />
                 Leads Received — {moment(selectedDate).format("DD MMM YYYY")} ({leadsOnDate.length})
               </h3>
@@ -677,9 +677,9 @@ export default function AdminPerformance() {
                       );
                       return (
                         <tr key={lead.id} style={{ background: i % 2 === 0 ? "rgba(246,198,53,0.04)" : "transparent", borderBottom: "1px solid rgba(201,168,76,0.1)" }}>
-                          <td className="px-4 py-3 text-white font-medium">{lead.lead_name}</td>
-                          <td className="px-4 py-3 text-white/60">{lead.phone}</td>
-                          <td className="px-4 py-3 text-white/60">{lead.car_interested || "—"}</td>
+                          <td className="px-4 py-3 text-gray-900 font-medium">{lead.lead_name}</td>
+                          <td className="px-4 py-3 text-gray-600">{lead.phone}</td>
+                          <td className="px-4 py-3 text-gray-600">{lead.car_interested || "—"}</td>
                           <td className="px-4 py-3">
                             <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: "#C9A84C20", color: GOLD }}>
                               {lead.assigned_consultant || "Unassigned"}
@@ -688,7 +688,7 @@ export default function AdminPerformance() {
                           <td className="px-4 py-3">
                             <StatusBadge status={lead.status} />
                           </td>
-                          <td className="px-4 py-3 text-white/60">
+                          <td className="px-4 py-3 text-gray-600">
                             {lead.response_time_minutes ? `${lead.response_time_minutes} min` : "—"}
                           </td>
                           <td className="px-4 py-3">
@@ -720,8 +720,8 @@ function KpiCard({ icon, label, value, color }) {
         <span style={{ color }}>{icon}</span>
       </div>
       <div>
-        <p className="text-xs text-white/40 font-medium uppercase tracking-wide">{label}</p>
-        <p className="text-3xl font-extrabold text-white mt-0.5">{value}</p>
+        <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">{label}</p>
+        <p className="text-3xl font-extrabold text-gray-900 mt-0.5">{value}</p>
       </div>
     </div>
   );
@@ -740,12 +740,12 @@ function ConsultantCard({ stats }) {
           {stats.consultant[0]}
         </div>
         <div className="flex-1">
-          <p className="text-white font-bold text-lg">{stats.consultant}</p>
+          <p className="text-gray-900 font-bold text-lg">{stats.consultant}</p>
           <p className="text-xs" style={{ color: "#C9A84C88" }}>Sales Consultant</p>
         </div>
         <div className="text-right">
           <p className="text-2xl font-extrabold" style={{ color: "#C9A84C" }}>{stats.totalSold}</p>
-          <p className="text-xs text-white/40">Total Sold</p>
+          <p className="text-xs text-gray-400">Total Sold</p>
         </div>
       </div>
 
@@ -761,14 +761,14 @@ function ConsultantCard({ stats }) {
         {stats.avgResponse !== null && (
           <div className="flex items-center gap-2 rounded-xl px-4 py-3 border" style={{ background: "#a78bfa15", borderColor: "#a78bfa30" }}>
             <Clock className="w-4 h-4 text-purple-400" />
-            <span className="text-white/70 text-sm">Avg response time: <strong className="text-white">{stats.avgResponse} min</strong></span>
+            <span className="text-gray-700 text-sm">Avg response time: <strong className="text-gray-900">{stats.avgResponse} min</strong></span>
           </div>
         )}
 
         {/* Call Rate Progress */}
         <div>
           <div className="flex justify-between text-xs mb-1">
-            <span className="text-white/50">Contact Rate</span>
+            <span className="text-gray-500">Contact Rate</span>
             <span className="font-semibold" style={{ color: callRate > 70 ? "#22c55e" : callRate > 40 ? "#C9A84C" : "#ef4444" }}>{callRate}%</span>
           </div>
           <div className="w-full h-2 rounded-full" style={{ background: "rgba(0,0,0,0.06)" }}>
@@ -787,7 +787,7 @@ function MiniStat({ label, value, color }) {
   return (
     <div className="rounded-xl p-3 border text-center" style={{ background: color + "0D", borderColor: color + "30" }}>
       <p className="text-2xl font-extrabold" style={{ color }}>{value}</p>
-      <p className="text-xs text-white/40 mt-0.5">{label}</p>
+      <p className="text-xs text-gray-400 mt-0.5">{label}</p>
     </div>
   );
 }
@@ -822,14 +822,14 @@ function PortalLinks() {
     <div className="rounded-2xl border p-5 space-y-4" style={{ borderColor: "#C9A84C33", background: "#C9A84C08" }}>
       <div className="flex items-center gap-2">
         <Link className="w-4 h-4" style={{ color: "#C9A84C" }} />
-        <h3 className="font-bold text-white text-sm">Portal Links</h3>
-        <span className="text-xs text-white/30 ml-1">Share these with your staff</span>
+        <h3 className="font-bold text-gray-900 text-sm">Portal Links</h3>
+        <span className="text-xs text-gray-400 ml-1">Share these with your staff</span>
       </div>
       <div className="space-y-3">
         {/* Staff (Sales) Portal */}
         <div className="flex items-center gap-3 rounded-xl border px-4 py-3" style={{ background: "var(--glass)", borderColor: "#C9A84C22" }}>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-white/50 mb-0.5">Sales Staff Portal</p>
+            <p className="text-xs font-semibold text-gray-500 mb-0.5">Sales Staff Portal</p>
             <p className="text-sm font-mono text-amber-300 truncate">{staffUrl}</p>
           </div>
           <button
@@ -843,7 +843,7 @@ function PortalLinks() {
         {/* Call Centre Portal */}
         <div className="flex items-center gap-3 rounded-xl border px-4 py-3" style={{ background: "var(--glass)", borderColor: "#3b82f622" }}>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-white/50 mb-0.5">Call Centre Portal</p>
+            <p className="text-xs font-semibold text-gray-500 mb-0.5">Call Centre Portal</p>
             <p className="text-sm font-mono text-blue-300 truncate">{ccUrl}</p>
           </div>
           <button
@@ -865,16 +865,16 @@ function CCAgentCard({ stats }) {
     <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "#3b82f622" }}>
       {/* Header */}
       <div className="px-5 py-4 border-b flex items-center gap-3" style={{ background: "#3b82f612", borderColor: "#3b82f622" }}>
-        <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg text-white" style={{ background: "#3b82f6" }}>
+        <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg text-gray-900" style={{ background: "#3b82f6" }}>
           {stats.agent[0]}
         </div>
         <div className="flex-1">
-          <p className="text-white font-bold text-lg">{stats.agent}</p>
+          <p className="text-gray-900 font-bold text-lg">{stats.agent}</p>
           <p className="text-xs text-blue-400/70">Call Centre Agent</p>
         </div>
         <div className="text-right">
           <p className="text-2xl font-extrabold text-blue-400">{stats.calledCount}</p>
-          <p className="text-xs text-white/40">Calls Made</p>
+          <p className="text-xs text-gray-400">Calls Made</p>
         </div>
       </div>
 
@@ -883,19 +883,19 @@ function CCAgentCard({ stats }) {
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-xl p-3 border text-center" style={{ background: "#3b82f60D", borderColor: "#3b82f630" }}>
             <p className="text-2xl font-extrabold text-blue-400">{stats.uniqueLeads}</p>
-            <p className="text-xs text-white/40 mt-0.5">Leads Handled</p>
+            <p className="text-xs text-gray-400 mt-0.5">Leads Handled</p>
           </div>
           <div className="rounded-xl p-3 border text-center" style={{ background: "#22c55e0D", borderColor: "#22c55e30" }}>
             <p className="text-2xl font-extrabold text-green-400">{stats.responses.interested}</p>
-            <p className="text-xs text-white/40 mt-0.5">Interested</p>
+            <p className="text-xs text-gray-400 mt-0.5">Interested</p>
           </div>
           <div className="rounded-xl p-3 border text-center" style={{ background: "#ef44440D", borderColor: "#ef444430" }}>
             <p className="text-2xl font-extrabold text-red-400">{stats.responses.noAnswer}</p>
-            <p className="text-xs text-white/40 mt-0.5">No Answer</p>
+            <p className="text-xs text-gray-400 mt-0.5">No Answer</p>
           </div>
           <div className="rounded-xl p-3 border text-center" style={{ background: "#6b72800D", borderColor: "#6b728030" }}>
-            <p className="text-2xl font-extrabold text-white/50">{stats.responses.notInterested}</p>
-            <p className="text-xs text-white/40 mt-0.5">Not Interested</p>
+            <p className="text-2xl font-extrabold text-gray-500">{stats.responses.notInterested}</p>
+            <p className="text-xs text-gray-400 mt-0.5">Not Interested</p>
           </div>
         </div>
 
@@ -906,7 +906,7 @@ function CCAgentCard({ stats }) {
             </p>
             {allocations.map(([consultant, count]) => (
               <div key={consultant} className="flex items-center justify-between">
-                <span className="text-white/70 text-sm">{consultant}</span>
+                <span className="text-gray-700 text-sm">{consultant}</span>
                 <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "#C9A84C20", color: GOLD }}>{count}</span>
               </div>
             ))}
@@ -914,7 +914,7 @@ function CCAgentCard({ stats }) {
         )}
 
         {allocations.length === 0 && (
-          <div className="text-center py-2 text-white/30 text-xs">No allocations logged today</div>
+          <div className="text-center py-2 text-gray-400 text-xs">No allocations logged today</div>
         )}
       </div>
     </div>

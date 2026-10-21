@@ -157,8 +157,8 @@ export default function CallCentrePortal() {
       <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
           {/* Welcome */}
           <div>
-            <h2 className="text-3xl font-extrabold text-white">Welcome, <span style={{ color: BLUE }}>{consultant.name}</span> 👋</h2>
-            <p className="text-white/50 mt-1">Call leads, capture outcomes, and allocate to sales consultants</p>
+            <h2 className="text-3xl font-extrabold text-gray-900">Welcome, <span style={{ color: BLUE }}>{consultant.name}</span> 👋</h2>
+            <p className="text-gray-500 mt-1">Call leads, capture outcomes, and allocate to sales consultants</p>
           </div>
 
           {/* Insurance Script Link */}
@@ -168,8 +168,8 @@ export default function CallCentrePortal() {
                 <Shield className="w-6 h-6 text-blue-400" />
               </div>
               <div>
-                <p className="font-bold text-white">Insurance Lead Script</p>
-                <p className="text-xs text-white/40">Open the Santam insurance call flow & digital form</p>
+                <p className="font-bold text-gray-900">Insurance Lead Script</p>
+                <p className="text-xs text-gray-400">Open the Santam insurance call flow & digital form</p>
               </div>
               <div className="ml-auto px-3 py-1 rounded-full text-xs font-semibold" style={{ background: "#0ea5e922", color: "#38bdf8" }}>Open →</div>
             </div>
@@ -187,15 +187,15 @@ export default function CallCentrePortal() {
             <div className="flex items-center gap-2">
               <PhoneMissed className="w-4 h-4 text-red-400" />
               <h3 className="text-sm font-bold text-red-400">No Answer Today</h3>
-              <span className="ml-auto text-xs text-white/30">{moment().format("D MMM YYYY")}</span>
+              <span className="ml-auto text-xs text-gray-400">{moment().format("D MMM YYYY")}</span>
             </div>
             {noAnswerSummary.length === 0 ? (
-              <p className="text-xs text-white/30">No "No Answer" calls logged yet today.</p>
+              <p className="text-xs text-gray-400">No "No Answer" calls logged yet today.</p>
             ) : (
               <div className="flex flex-wrap gap-2">
                 {noAnswerSummary.map(([name, count]) => (
                   <div key={name} className="flex items-center gap-2 px-3 py-2 rounded-xl border" style={{ background: "#ef444415", borderColor: "#ef444430" }}>
-                    <span className="text-sm font-semibold text-white">{name}</span>
+                    <span className="text-sm font-semibold text-gray-900">{name}</span>
                     <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: "#ef444430", color: "#f87171" }}>{count}</span>
                   </div>
                 ))}
@@ -206,12 +206,12 @@ export default function CallCentrePortal() {
           {/* Search + Filter */}
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input
                 placeholder="Search name, phone, car..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="pl-9 bg-white/5 border-white/10 text-white"
+                className="pl-9 bg-white/70 border-amber-200/60 text-gray-900"
               />
             </div>
             <div className="flex gap-2 flex-wrap">
@@ -229,7 +229,7 @@ export default function CallCentrePortal() {
           {/* Leads List */}
           <div className="space-y-3">
             {filteredLeads.length === 0 && (
-              <div className="text-center py-12 text-white/30">No leads match your filter.</div>
+              <div className="text-center py-12 text-gray-400">No leads match your filter.</div>
             )}
             {filteredLeads.map(lead => (
               <LeadRow
@@ -263,14 +263,14 @@ function LeadRow({ lead, onCall }) {
   const c = statusColors[lead.status] || "#6b7280";
 
   return (
-    <div className="rounded-2xl border p-4 flex flex-col sm:flex-row sm:items-center gap-3" style={{ background: "var(--glass)", borderColor: isUnassigned ? "#ef444430" : "#ffffff10" }}>
+    <div className="rounded-2xl border p-4 flex flex-col sm:flex-row sm:items-center gap-3" style={{ background: "var(--glass)", borderColor: isUnassigned ? "#ef444430" : "var(--line)" }}>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-white font-semibold">{lead.lead_name}</span>
+          <span className="text-gray-900 font-semibold">{lead.lead_name}</span>
           <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: c + "22", color: c }}>{lead.status}</span>
           {isUnassigned && <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/30">Unassigned</span>}
         </div>
-        <div className="flex items-center gap-3 mt-1 text-sm text-white/50 flex-wrap">
+        <div className="flex items-center gap-3 mt-1 text-sm text-gray-500 flex-wrap">
           <span className="flex items-center gap-1"><Phone className="w-3 h-3" />{lead.phone}</span>
           {lead.car_interested && <span className="flex items-center gap-1"><Car className="w-3 h-3" />{lead.car_interested}</span>}
           <span>{moment(lead.created_date).fromNow()}</span>
@@ -441,8 +441,8 @@ function StatCard({ label, value, color, icon }) {
         <span style={{ color }}>{icon}</span>
       </div>
       <div>
-        <p className="text-xs text-white/40 font-medium">{label}</p>
-        <p className="text-2xl font-extrabold text-white">{value}</p>
+        <p className="text-xs text-gray-400 font-medium">{label}</p>
+        <p className="text-2xl font-extrabold text-gray-900">{value}</p>
       </div>
     </div>
   );

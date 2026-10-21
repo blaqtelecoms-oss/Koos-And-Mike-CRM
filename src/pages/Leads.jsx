@@ -280,18 +280,18 @@ export default function Leads() {
             const matched = findMatchingVehicle(vehicleDialogLead.car_interested);
             return matched?.images?.length > 0 ? (
               <div className="space-y-3">
-                <div className="aspect-[16/10] bg-black/30 rounded-lg overflow-hidden">
+                <div className="aspect-[16/10] bg-gray-200/60 rounded-lg overflow-hidden">
                   <img src={matched.images[0]} alt={matched.title} className="w-full h-full object-cover" />
                 </div>
-                <p className="text-white/60 text-sm">{matched.title}</p>
+                <p className="text-gray-600 text-sm">{matched.title}</p>
                 {matched.price && <p className="text-amber-400 font-semibold">R {matched.price.toLocaleString()}</p>}
                 {matched.images.length > 1 && (
                   <div className="grid grid-cols-4 gap-2">
-                    {matched.images.slice(1, 5).map((img, i) => <img key={i} src={img} alt={`${matched.title} ${i+2}`} className="aspect-square object-cover rounded-lg border border-white/10" />)}
+                    {matched.images.slice(1, 5).map((img, i) => <img key={i} src={img} alt={`${matched.title} ${i+2}`} className="aspect-square object-cover rounded-lg border border-amber-200/60" />)}
                   </div>
                 )}
               </div>
-            ) : <p className="text-white/50 text-center py-8">No image available for this vehicle.</p>;
+            ) : <p className="text-gray-500 text-center py-8">No image available for this vehicle.</p>;
           })()}
         </DialogContent>
       </Dialog>

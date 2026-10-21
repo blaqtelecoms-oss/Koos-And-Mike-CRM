@@ -41,8 +41,8 @@ export default function ClientCarRequest() {
           <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: "#C9A84C20" }}>
             <CheckCircle2 className="w-10 h-10" style={{ color: "#C9A84C" }} />
           </div>
-          <h2 className="text-white text-3xl font-bold mb-3">Request Submitted!</h2>
-          <p className="text-slate-300 mb-2">Thank you, <strong className="text-white">{form.requester_name}</strong>.</p>
+          <h2 className="text-gray-900 text-3xl font-bold mb-3">Request Submitted!</h2>
+          <p className="text-slate-300 mb-2">Thank you, <strong className="text-gray-900">{form.requester_name}</strong>.</p>
           <p className="text-slate-400 mb-8">We'll search our dealer network and contact you via {form.contact_preference} as soon as we find a match.</p>
           <Button onClick={() => { setSubmitted(false); setForm({ requester_name: "", phone: "", email: "", contact_preference: "WhatsApp", make: "", model: "", year_from: "", year_to: "", max_price: "", colour_preference: "", finance_required: false, additional_requirements: "" }); }}
             className="text-black font-bold" style={{ background: "#C9A84C" }}>
@@ -61,31 +61,31 @@ export default function ClientCarRequest() {
             <Car className="w-6 h-6" style={{ color: "#C9A84C" }} />
           </div>
           <div>
-            <h1 className="text-white text-3xl font-bold">Request a Car</h1>
+            <h1 className="text-gray-900 text-3xl font-bold">Request a Car</h1>
             <p className="text-slate-400 text-sm">Can't find what you're looking for? We'll find it for you!</p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="bg-white/70 border border-amber-200/60 rounded-2xl p-6 space-y-6">
           {/* Contact Info */}
           <div>
-            <h3 className="text-white font-semibold mb-4 border-b border-white/10 pb-2">Your Contact Details</h3>
+            <h3 className="text-gray-900 font-semibold mb-4 border-b border-amber-200/60 pb-2">Your Contact Details</h3>
             <div className="grid sm:grid-cols-2 gap-4">
               <FormField label="Full Name *">
                 <Input required value={form.requester_name} onChange={e => set("requester_name", e.target.value)}
-                  placeholder="Your full name" className="bg-white/10 border-white/20 text-white placeholder:text-slate-400" />
+                  placeholder="Your full name" className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400" />
               </FormField>
               <FormField label="Phone Number *">
                 <Input required value={form.phone} onChange={e => set("phone", e.target.value)}
-                  placeholder="082 000 0000" className="bg-white/10 border-white/20 text-white placeholder:text-slate-400" />
+                  placeholder="082 000 0000" className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400" />
               </FormField>
               <FormField label="Email Address">
                 <Input type="email" value={form.email} onChange={e => set("email", e.target.value)}
-                  placeholder="your@email.com" className="bg-white/10 border-white/20 text-white placeholder:text-slate-400" />
+                  placeholder="your@email.com" className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400" />
               </FormField>
               <FormField label="Preferred Contact Method">
                 <Select value={form.contact_preference} onValueChange={v => set("contact_preference", v)}>
-                  <SelectTrigger className="bg-white/10 border-white/20 text-white"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="bg-white/70 border-amber-200/60 text-gray-900"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="WhatsApp">WhatsApp</SelectItem>
                     <SelectItem value="Call">Phone Call</SelectItem>
@@ -98,31 +98,31 @@ export default function ClientCarRequest() {
 
           {/* Vehicle Requirements */}
           <div>
-            <h3 className="text-white font-semibold mb-4 border-b border-white/10 pb-2">What Are You Looking For?</h3>
+            <h3 className="text-gray-900 font-semibold mb-4 border-b border-amber-200/60 pb-2">What Are You Looking For?</h3>
             <div className="grid sm:grid-cols-2 gap-4">
               <FormField label="Preferred Make">
                 <Input value={form.make} onChange={e => set("make", e.target.value)}
-                  placeholder="e.g. Toyota, VW, Ford..." className="bg-white/10 border-white/20 text-white placeholder:text-slate-400" />
+                  placeholder="e.g. Toyota, VW, Ford..." className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400" />
               </FormField>
               <FormField label="Preferred Model">
                 <Input value={form.model} onChange={e => set("model", e.target.value)}
-                  placeholder="e.g. Hilux, Polo..." className="bg-white/10 border-white/20 text-white placeholder:text-slate-400" />
+                  placeholder="e.g. Hilux, Polo..." className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400" />
               </FormField>
               <FormField label="Year From">
                 <Input type="number" value={form.year_from} onChange={e => set("year_from", e.target.value)}
-                  placeholder="e.g. 2018" min="1990" max="2026" className="bg-white/10 border-white/20 text-white placeholder:text-slate-400" />
+                  placeholder="e.g. 2018" min="1990" max="2026" className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400" />
               </FormField>
               <FormField label="Year To">
                 <Input type="number" value={form.year_to} onChange={e => set("year_to", e.target.value)}
-                  placeholder="e.g. 2023" min="1990" max="2026" className="bg-white/10 border-white/20 text-white placeholder:text-slate-400" />
+                  placeholder="e.g. 2023" min="1990" max="2026" className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400" />
               </FormField>
               <FormField label="Maximum Budget (R)">
                 <Input type="number" value={form.max_price} onChange={e => set("max_price", e.target.value)}
-                  placeholder="e.g. 350000" className="bg-white/10 border-white/20 text-white placeholder:text-slate-400" />
+                  placeholder="e.g. 350000" className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400" />
               </FormField>
               <FormField label="Colour Preference">
                 <Input value={form.colour_preference} onChange={e => set("colour_preference", e.target.value)}
-                  placeholder="e.g. White, any colour..." className="bg-white/10 border-white/20 text-white placeholder:text-slate-400" />
+                  placeholder="e.g. White, any colour..." className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400" />
               </FormField>
             </div>
           </div>
@@ -132,7 +132,7 @@ export default function ClientCarRequest() {
               id="finance"
               checked={form.finance_required}
               onCheckedChange={v => set("finance_required", v)}
-              className="border-white/30"
+              className="border-amber-300/60"
             />
             <label htmlFor="finance" className="text-slate-300 text-sm cursor-pointer">
               I will need finance / vehicle financing
@@ -142,7 +142,7 @@ export default function ClientCarRequest() {
           <FormField label="Additional Requirements">
             <Textarea value={form.additional_requirements} onChange={e => set("additional_requirements", e.target.value)}
               placeholder="Automatic/manual, diesel/petrol, tow bar, any other requirements..." rows={3}
-              className="bg-white/10 border-white/20 text-white placeholder:text-slate-400" />
+              className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400" />
           </FormField>
 
           <Button type="submit" disabled={loading} className="w-full py-6 text-lg font-bold rounded-xl gap-2 text-black" style={{ background: "#C9A84C" }}>

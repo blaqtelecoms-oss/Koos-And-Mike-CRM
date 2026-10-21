@@ -163,8 +163,8 @@ export default function SalesPortal() {
     <div className="km-admin-page space-y-8 min-h-screen" style={{ background: "var(--app-canvas)" }}>
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-white">Sales Portal</h1>
-          <p className="text-white/60 mt-1">Manage consultants and track the pipeline</p>
+          <h1 className="text-3xl font-bold text-gray-900">Sales Portal</h1>
+          <p className="text-gray-600 mt-1">Manage consultants and track the pipeline</p>
         </div>
         <div className="flex items-center gap-2">
           {/* View toggle */}
@@ -194,7 +194,7 @@ export default function SalesPortal() {
         const salesConsultants = consultants.filter(c => c.role === "Sales" && c.active !== false);
         return (
           <div>
-            <h2 className="text-sm font-semibold text-white/50 uppercase tracking-wider mb-3">Consultant Performance</h2>
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Consultant Performance</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
               {salesConsultants.map(c => {
                 const consultantLeads = leads.filter(l => l.assigned_consultant === c.name);
@@ -202,31 +202,31 @@ export default function SalesPortal() {
                 const noAnswerCount = consultantLeads.filter(l => l.status === "No Answer").length;
                 const totalActive = consultantLeads.filter(l => !["Sold", "Lost"].includes(l.status)).length;
                 return (
-                  <div key={c.id} className="rounded-xl border border-white/10 bg-white/5 p-4">
+                  <div key={c.id} className="rounded-xl border border-amber-200/60 bg-white/70 p-4">
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-black" style={{ background: GOLD }}>
                         {c.name.charAt(0)}
                       </div>
                       <div>
-                        <p className="text-white font-semibold text-sm leading-tight">{c.name}</p>
-                        <p className="text-white/40 text-xs">{totalActive} active leads</p>
+                        <p className="text-gray-900 font-semibold text-sm leading-tight">{c.name}</p>
+                        <p className="text-gray-400 text-xs">{totalActive} active leads</p>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div className="rounded-lg p-2 text-center" style={{ background: "#3b82f615", border: "1px solid #3b82f630" }}>
                         <p className="text-xl font-bold" style={{ color: "#60a5fa" }}>{newCount}</p>
-                        <p className="text-xs text-white/50 mt-0.5">New</p>
+                        <p className="text-xs text-gray-500 mt-0.5">New</p>
                       </div>
                       <div className="rounded-lg p-2 text-center" style={{ background: noAnswerCount > 0 ? "#f9731615" : "#ffffff08", border: noAnswerCount > 0 ? "1px solid #f9731630" : "1px solid #ffffff10" }}>
-                        <p className="text-xl font-bold" style={{ color: noAnswerCount > 0 ? "#fb923c" : "#ffffff40" }}>{noAnswerCount}</p>
-                        <p className="text-xs text-white/50 mt-0.5">No Answer</p>
+                        <p className="text-xl font-bold" style={{ color: noAnswerCount > 0 ? "#fb923c" : "var(--mut)" }}>{noAnswerCount}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">No Answer</p>
                       </div>
                     </div>
                   </div>
                 );
               })}
               {salesConsultants.length === 0 && (
-                <p className="text-white/30 text-sm col-span-full">No active sales consultants</p>
+                <p className="text-gray-400 text-sm col-span-full">No active sales consultants</p>
               )}
             </div>
           </div>
@@ -238,14 +238,14 @@ export default function SalesPortal() {
 
       {view === "team" && <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Consultants List */}
-        <Card className="lg:col-span-1 border border-white/10 bg-white/5">
+        <Card className="lg:col-span-1 border border-amber-200/60 bg-white/70">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg">Team Members</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2 max-h-96 overflow-y-auto">
               {consultants.length === 0 ? (
-                <p className="text-white/40 text-sm">No consultants yet</p>
+                <p className="text-gray-400 text-sm">No consultants yet</p>
               ) : (
                 consultants.map(c => (
                   <button
@@ -255,11 +255,11 @@ export default function SalesPortal() {
                     className="w-full text-left p-3 rounded-lg border transition-all"
                     style={{
                       background: selectedConsultant?.id === c.id ? GOLD + "20" : "#ffffff05",
-                      borderColor: selectedConsultant?.id === c.id ? GOLD : "#ffffff10"
+                      borderColor: selectedConsultant?.id === c.id ? GOLD : "var(--line)"
                     }}
                   >
-                    <p className="font-medium text-white text-sm">{c.name}</p>
-                    <p className="text-xs text-white/40">{c.role}</p>
+                    <p className="font-medium text-gray-900 text-sm">{c.name}</p>
+                    <p className="text-xs text-gray-400">{c.role}</p>
                     <div className="flex gap-1 mt-2">
                       <span className="px-2 py-0.5 rounded text-xs" style={{ background: c.active ? "#22c55e20" : "#ef444420", color: c.active ? "#22c55e" : "#ef4444" }}>
                         {c.active ? "Active" : "Inactive"}
@@ -276,7 +276,7 @@ export default function SalesPortal() {
         </Card>
 
         {/* Form Section */}
-        <Card className="lg:col-span-2 border border-white/10 bg-white/5">
+        <Card className="lg:col-span-2 border border-amber-200/60 bg-white/70">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg">
               {isAdding ? "Add New Consultant" : isEditing ? "Edit Consultant" : selectedConsultant ? selectedConsultant.name : "Select a consultant"}
@@ -294,7 +294,7 @@ export default function SalesPortal() {
                 {(isAdding || isEditing) ? (
                   <>
                     <div>
-                      <label className="block text-white text-sm font-medium mb-2">Name</label>
+                      <label className="block text-gray-900 text-sm font-medium mb-2">Name</label>
                       <Input
                         value={formData.name || ""}
                         onChange={(e) => handleInputChange("name", e.target.value)}
@@ -303,7 +303,7 @@ export default function SalesPortal() {
                     </div>
 
                     <div>
-                      <label className="block text-white text-sm font-medium mb-2">Email</label>
+                      <label className="block text-gray-900 text-sm font-medium mb-2">Email</label>
                       <Input
                         type="email"
                         value={formData.email || ""}
@@ -313,7 +313,7 @@ export default function SalesPortal() {
                     </div>
 
                     <div>
-                      <label className="block text-white text-sm font-medium mb-2">Phone</label>
+                      <label className="block text-gray-900 text-sm font-medium mb-2">Phone</label>
                       <Input
                         value={formData.phone || ""}
                         onChange={(e) => handleInputChange("phone", e.target.value)}
@@ -322,7 +322,7 @@ export default function SalesPortal() {
                     </div>
 
                     <div>
-                      <label className="block text-white text-sm font-medium mb-2">WhatsApp Number</label>
+                      <label className="block text-gray-900 text-sm font-medium mb-2">WhatsApp Number</label>
                       <Input
                         value={formData.whatsapp_number || ""}
                         onChange={(e) => handleInputChange("whatsapp_number", e.target.value)}
@@ -331,11 +331,11 @@ export default function SalesPortal() {
                     </div>
 
                     <div>
-                      <label className="block text-white text-sm font-medium mb-2">Role</label>
+                      <label className="block text-gray-900 text-sm font-medium mb-2">Role</label>
                       <select
                         value={formData.role || "Sales"}
                         onChange={(e) => handleInputChange("role", e.target.value)}
-                        className="w-full rounded-lg border border-white/10 bg-white/5 text-white px-3 py-2"
+                        className="w-full rounded-lg border border-amber-200/60 bg-white/70 text-gray-900 px-3 py-2"
                       >
                         <option value="Sales">Sales</option>
                         <option value="Call Centre">Call Centre</option>
@@ -343,7 +343,7 @@ export default function SalesPortal() {
                     </div>
 
                     <div className="flex gap-4">
-                      <label className="flex items-center gap-2 text-white text-sm cursor-pointer">
+                      <label className="flex items-center gap-2 text-gray-900 text-sm cursor-pointer">
                         <input
                           type="checkbox"
                           checked={formData.is_manager || false}
@@ -352,7 +352,7 @@ export default function SalesPortal() {
                         />
                         Is Manager
                       </label>
-                      <label className="flex items-center gap-2 text-white text-sm cursor-pointer">
+                      <label className="flex items-center gap-2 text-gray-900 text-sm cursor-pointer">
                         <input
                           type="checkbox"
                           checked={formData.active !== false}
@@ -361,7 +361,7 @@ export default function SalesPortal() {
                         />
                         Active
                       </label>
-                      <label className="flex items-center gap-2 text-white text-sm cursor-pointer">
+                      <label className="flex items-center gap-2 text-gray-900 text-sm cursor-pointer">
                         <input
                           type="checkbox"
                           checked={formData.available !== false}
@@ -389,23 +389,23 @@ export default function SalesPortal() {
                       <>
                         <div className="space-y-3">
                           <div>
-                            <p className="text-white/60 text-sm">Email</p>
-                            <p className="text-white font-medium">{selectedConsultant.email || "—"}</p>
+                            <p className="text-gray-600 text-sm">Email</p>
+                            <p className="text-gray-900 font-medium">{selectedConsultant.email || "—"}</p>
                           </div>
                           <div>
-                            <p className="text-white/60 text-sm">Phone</p>
-                            <p className="text-white font-medium">{selectedConsultant.phone || "—"}</p>
+                            <p className="text-gray-600 text-sm">Phone</p>
+                            <p className="text-gray-900 font-medium">{selectedConsultant.phone || "—"}</p>
                           </div>
                           <div>
-                            <p className="text-white/60 text-sm">WhatsApp</p>
-                            <p className="text-white font-medium">{selectedConsultant.whatsapp_number || "—"}</p>
+                            <p className="text-gray-600 text-sm">WhatsApp</p>
+                            <p className="text-gray-900 font-medium">{selectedConsultant.whatsapp_number || "—"}</p>
                           </div>
                           <div>
-                            <p className="text-white/60 text-sm">Role</p>
-                            <p className="text-white font-medium">{selectedConsultant.role}</p>
+                            <p className="text-gray-600 text-sm">Role</p>
+                            <p className="text-gray-900 font-medium">{selectedConsultant.role}</p>
                           </div>
                           <div className="flex gap-3 pt-2">
-                            <span className="px-3 py-1 rounded text-xs font-medium" style={{ background: selectedConsultant.is_manager ? "#a855f720" : "#ffffff10", color: selectedConsultant.is_manager ? "#a855f7" : "#ffffff66" }}>
+                            <span className="px-3 py-1 rounded text-xs font-medium" style={{ background: selectedConsultant.is_manager ? "#a855f720" : "var(--line)", color: selectedConsultant.is_manager ? "#a855f7" : "#ffffff66" }}>
                               {selectedConsultant.is_manager ? "Manager" : "Team Member"}
                             </span>
                             <span className="px-3 py-1 rounded text-xs font-medium" style={{ background: selectedConsultant.active ? "#22c55e20" : "#ef444420", color: selectedConsultant.active ? "#22c55e" : "#ef4444" }}>
@@ -413,8 +413,8 @@ export default function SalesPortal() {
                             </span>
                           </div>
                           <div>
-                            <p className="text-white/60 text-sm">Assigned Leads</p>
-                            <p className="text-white font-medium">{leads.filter(l => l.assigned_consultant === selectedConsultant.name).length}</p>
+                            <p className="text-gray-600 text-sm">Assigned Leads</p>
+                            <p className="text-gray-900 font-medium">{leads.filter(l => l.assigned_consultant === selectedConsultant.name).length}</p>
                           </div>
                         </div>
 
@@ -446,15 +446,15 @@ export default function SalesPortal() {
                     ) : (
                       <>
                         <div className="space-y-3 max-h-96 overflow-y-auto">
-                          <p className="text-white/60 text-sm font-medium">Unassigned Leads ({leads.filter(l => !l.assigned_consultant).length})</p>
+                          <p className="text-gray-600 text-sm font-medium">Unassigned Leads ({leads.filter(l => !l.assigned_consultant).length})</p>
                           {leads.filter(l => !l.assigned_consultant).length === 0 ? (
-                            <p className="text-white/40 text-sm">No unassigned leads</p>
+                            <p className="text-gray-400 text-sm">No unassigned leads</p>
                           ) : (
                             leads.filter(l => !l.assigned_consultant).map(lead => (
-                              <div key={lead.id} className="p-3 rounded-lg border border-white/10 bg-white/5 flex items-center justify-between">
+                              <div key={lead.id} className="p-3 rounded-lg border border-amber-200/60 bg-white/70 flex items-center justify-between">
                                 <div className="flex-1">
-                                  <p className="text-white font-medium text-sm">{lead.lead_name}</p>
-                                  <p className="text-xs text-white/40">{lead.phone}</p>
+                                  <p className="text-gray-900 font-medium text-sm">{lead.lead_name}</p>
+                                  <p className="text-xs text-gray-400">{lead.phone}</p>
                                 </div>
                                 <Button
                                    onClick={async () => {
@@ -486,7 +486,7 @@ export default function SalesPortal() {
                 ) : null}
               </div>
             ) : (
-              <p className="text-white/40 text-sm">Select a consultant from the list or add a new one</p>
+              <p className="text-gray-400 text-sm">Select a consultant from the list or add a new one</p>
             )}
           </CardContent>
         </Card>

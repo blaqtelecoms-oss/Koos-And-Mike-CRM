@@ -61,12 +61,12 @@ export default function ChangePasswordDialog({ consultantId, open, onClose, forc
             <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "#C9A84C18" }}>
               <KeyRound className="w-5 h-5" style={{ color: GOLD }} />
             </div>
-            <DialogTitle className="text-white text-lg">
+            <DialogTitle className="text-gray-900 text-lg">
               {forced ? "Set Your Password" : "Change Password"}
             </DialogTitle>
           </div>
           {forced && (
-            <p className="text-white/50 text-sm">
+            <p className="text-gray-500 text-sm">
               You're using the default password. Please set a personal password before continuing.
             </p>
           )}
@@ -74,35 +74,35 @@ export default function ChangePasswordDialog({ consultantId, open, onClose, forc
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-2">
           <div>
-            <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">New Password</label>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">New Password</label>
             <div className="relative">
               <input
                 type={showNew ? "text" : "password"}
                 value={newPassword}
                 onChange={e => { setNewPassword(e.target.value); setError(""); }}
                 placeholder="Min. 6 characters"
-                className="w-full px-4 py-3 pr-12 rounded-xl text-white text-sm outline-none"
+                className="w-full px-4 py-3 pr-12 rounded-xl text-gray-900 text-sm outline-none"
                 style={{ background: "var(--glass)", border: `1px solid ${newPassword ? GOLD : "#C9A84C33"}` }}
               />
               <button type="button" onClick={() => setShowNew(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2">
-                {showNew ? <EyeOff className="w-4 h-4 text-white/30" /> : <Eye className="w-4 h-4 text-white/30" />}
+                {showNew ? <EyeOff className="w-4 h-4 text-gray-400" /> : <Eye className="w-4 h-4 text-gray-400" />}
               </button>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Confirm Password</label>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Confirm Password</label>
             <div className="relative">
               <input
                 type={showConfirm ? "text" : "password"}
                 value={confirmPassword}
                 onChange={e => { setConfirmPassword(e.target.value); setError(""); }}
                 placeholder="Repeat your new password"
-                className="w-full px-4 py-3 pr-12 rounded-xl text-white text-sm outline-none"
+                className="w-full px-4 py-3 pr-12 rounded-xl text-gray-900 text-sm outline-none"
                 style={{ background: "var(--glass)", border: `1px solid ${confirmPassword ? GOLD : "#C9A84C33"}` }}
               />
               <button type="button" onClick={() => setShowConfirm(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2">
-                {showConfirm ? <EyeOff className="w-4 h-4 text-white/30" /> : <Eye className="w-4 h-4 text-white/30" />}
+                {showConfirm ? <EyeOff className="w-4 h-4 text-gray-400" /> : <Eye className="w-4 h-4 text-gray-400" />}
               </button>
             </div>
           </div>
@@ -115,7 +115,7 @@ export default function ChangePasswordDialog({ consultantId, open, onClose, forc
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 py-3 rounded-xl border text-sm font-semibold text-white/50 hover:bg-white/5 transition-all"
+                className="flex-1 py-3 rounded-xl border text-sm font-semibold text-gray-500 hover:bg-white/70 transition-all"
                 style={{ borderColor: "#ffffff20" }}
               >
                 Cancel
@@ -126,8 +126,8 @@ export default function ChangePasswordDialog({ consultantId, open, onClose, forc
               disabled={loading || !newPassword || !confirmPassword}
               className="flex-1 py-3 rounded-xl font-semibold text-sm transition-all"
               style={{
-                background: !loading && newPassword && confirmPassword ? GOLD : "#ffffff15",
-                color: !loading && newPassword && confirmPassword ? "#000" : "#ffffff40"
+                background: !loading && newPassword && confirmPassword ? GOLD : "var(--line)",
+                color: !loading && newPassword && confirmPassword ? "#000" : "var(--mut)"
               }}
             >
               {loading ? "Saving..." : "Save Password"}

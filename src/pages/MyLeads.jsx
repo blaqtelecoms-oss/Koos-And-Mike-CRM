@@ -308,7 +308,7 @@ export default function MyLeads() {
             <img src="https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png" alt="K&M" className="w-9 h-9 object-contain" />
             <div>
               <h1 className="font-bold text-sm leading-none" style={{ color: GOLD }}>Koos & Mike Cars</h1>
-              <p className="text-xs text-white/40">{consultant?.name || authUser?.full_name} · {consultant?.role || "Staff"}</p>
+              <p className="text-xs text-gray-400">{consultant?.name || authUser?.full_name} · {consultant?.role || "Staff"}</p>
             </div>
           </div>
           <div className="flex items-center gap-1">
@@ -330,12 +330,12 @@ export default function MyLeads() {
                 }
               </button>
             )}
-            <button onClick={() => setShowChangePassword(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors text-xs" style={{ color: "#C9A84C99" }}>
+            <button onClick={() => setShowChangePassword(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-white/70 transition-colors text-xs" style={{ color: "#C9A84C99" }}>
               <KeyRound className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Password</span>
             </button>
-            <button onClick={handleLogout} className="p-2 rounded-lg hover:bg-white/10 transition-colors" title="Sign out">
-              <LogOut className="w-4 h-4 text-white/50" />
+            <button onClick={handleLogout} className="p-2 rounded-lg hover:bg-white/70 transition-colors" title="Sign out">
+              <LogOut className="w-4 h-4 text-gray-500" />
             </button>
           </div>
         </div>
@@ -374,8 +374,8 @@ export default function MyLeads() {
               { label: "Sold", value: displayLeads.filter(l => l.status === "Sold").length },
             ].map(stat => (
               <div key={stat.label} className="rounded-xl p-3 border text-center" style={{ background: "rgba(0,0,0,0.03)", borderColor: "#C9A84C22" }}>
-                <p className="text-xl font-bold text-white">{stat.value}</p>
-                <p className="text-xs text-white/50 mt-0.5">{stat.label}</p>
+                <p className="text-xl font-bold text-gray-900">{stat.value}</p>
+                <p className="text-xs text-gray-500 mt-0.5">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -387,7 +387,7 @@ export default function MyLeads() {
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
           placeholder={activeTab === "Vehicles" ? "Search vehicles..." : "Search by name or phone..."}
-          className="w-full px-4 py-2.5 rounded-xl text-white text-sm outline-none mb-4"
+          className="w-full px-4 py-2.5 rounded-xl text-gray-900 text-sm outline-none mb-4"
           style={{ background: "var(--glass)", border: "1px solid #C9A84C22" }}
         />
 
@@ -400,7 +400,7 @@ export default function MyLeads() {
                 onClick={() => setStatusFilter(s)}
                 className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
                 style={{
-                  background: statusFilter === s ? GOLD : "#ffffff10",
+                  background: statusFilter === s ? GOLD : "var(--line)",
                   color: statusFilter === s ? "#000" : "#ffffff70"
                 }}
               >
@@ -414,8 +414,8 @@ export default function MyLeads() {
         {activeTab !== "Vehicles" && activeTab !== "Tasks" && (
           filteredLeads.length === 0 ? (
             <div className="text-center py-16">
-              <Users className="w-12 h-12 mx-auto text-white/20 mb-3" />
-              <p className="text-white/40">{activeTab === "My Leads" ? "No leads assigned to you yet" : "No leads found"}</p>
+              <Users className="w-12 h-12 mx-auto text-gray-300 mb-3" />
+              <p className="text-gray-400">{activeTab === "My Leads" ? "No leads assigned to you yet" : "No leads found"}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -426,34 +426,34 @@ export default function MyLeads() {
                     key={lead.id}
                     onClick={() => handleSelectLead(lead)}
                     className="rounded-xl p-4 border flex items-center gap-4 cursor-pointer hover:border-amber-600/40 transition-all"
-                    style={{ background: "#ffffff06", borderColor: selectedLead?.id === lead.id ? GOLD : "#ffffff10" }}
+                    style={{ background: "#ffffff06", borderColor: selectedLead?.id === lead.id ? GOLD : "var(--line)" }}
                   >
                     <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "#C9A84C20" }}>
                       <span className="text-amber-400 font-bold text-sm">{lead.lead_name?.charAt(0) || "?"}</span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <p className="text-white font-semibold text-sm">{lead.lead_name}</p>
+                        <p className="text-gray-900 font-semibold text-sm">{lead.lead_name}</p>
                         <span className="px-2 py-0.5 rounded text-xs font-medium" style={{ background: sc.bg, color: sc.color }}>{lead.status}</span>
                         {lead.assigned_consultant && activeTab === "All Leads" && (
-                          <span className="text-xs text-white/30">{lead.assigned_consultant}</span>
+                          <span className="text-xs text-gray-400">{lead.assigned_consultant}</span>
                         )}
                       </div>
-                      <p className="text-white/40 text-xs mt-0.5">{lead.car_interested || "No car specified"} · {lead.phone}</p>
-                      <p className="text-white/25 text-xs">{moment(lead.created_date).fromNow()}</p>
+                      <p className="text-gray-400 text-xs mt-0.5">{lead.car_interested || "No car specified"} · {lead.phone}</p>
+                      <p className="text-gray-400 text-xs">{moment(lead.created_date).fromNow()}</p>
                     </div>
                     <div className="flex gap-2 flex-shrink-0 items-center">
                       {lead.phone && (
                         <>
-                          <button onClick={(e) => handleCall(lead.phone, e)} className="p-2 rounded-lg transition-colors hover:bg-white/10" title="Call">
+                          <button onClick={(e) => handleCall(lead.phone, e)} className="p-2 rounded-lg transition-colors hover:bg-white/70" title="Call">
                             <Phone className="w-4 h-4 text-amber-400" />
                           </button>
-                          <button onClick={(e) => handleWhatsApp(lead.phone, e)} className="p-2 rounded-lg transition-colors hover:bg-white/10" title="WhatsApp">
+                          <button onClick={(e) => handleWhatsApp(lead.phone, e)} className="p-2 rounded-lg transition-colors hover:bg-white/70" title="WhatsApp">
                             <MessageCircle className="w-4 h-4 text-green-400" />
                           </button>
                         </>
                       )}
-                      <ChevronRight className="w-4 h-4 text-white/20" />
+                      <ChevronRight className="w-4 h-4 text-gray-300" />
                     </div>
                   </div>
                 );
@@ -466,27 +466,27 @@ export default function MyLeads() {
         {activeTab === "Tasks" && (
           tasks.length === 0 ? (
             <div className="text-center py-16">
-              <CheckSquare className="w-12 h-12 mx-auto text-white/20 mb-3" />
-              <p className="text-white/40">No tasks found</p>
+              <CheckSquare className="w-12 h-12 mx-auto text-gray-300 mb-3" />
+              <p className="text-gray-400">No tasks found</p>
             </div>
           ) : (
             <div className="space-y-3">
               {tasks.map(t => (
                 <div key={t.id} className="rounded-xl p-4 border flex items-start gap-3" style={{ background: "#ffffff06", borderColor: "var(--line)" }}>
-                  <div className={`w-5 h-5 rounded-full flex-shrink-0 mt-0.5 border-2 flex items-center justify-center ${t.completed ? "bg-amber-500 border-amber-500" : "border-white/30"}`}>
+                  <div className={`w-5 h-5 rounded-full flex-shrink-0 mt-0.5 border-2 flex items-center justify-center ${t.completed ? "bg-amber-500 border-amber-500" : "border-amber-300/60"}`}>
                     {t.completed && <Check className="w-3 h-3 text-black" />}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className={`text-sm font-semibold ${t.completed ? "line-through text-white/40" : "text-white"}`}>{t.description}</p>
+                      <p className={`text-sm font-semibold ${t.completed ? "line-through text-gray-400" : "text-gray-900"}`}>{t.description}</p>
                       <span className="px-2 py-0.5 rounded text-xs" style={{ background: "#C9A84C20", color: "#C9A84C" }}>{t.task_type}</span>
                     </div>
                     <div className="flex gap-3 mt-1 flex-wrap">
-                      <p className="text-xs text-white/30">{t.task_date}</p>
-                      {t.assigned_to && <p className="text-xs text-white/40">→ {t.assigned_to}</p>}
-                      {t.platform && t.platform !== "N/A" && <p className="text-xs text-white/30">{t.platform}</p>}
+                      <p className="text-xs text-gray-400">{t.task_date}</p>
+                      {t.assigned_to && <p className="text-xs text-gray-400">→ {t.assigned_to}</p>}
+                      {t.platform && t.platform !== "N/A" && <p className="text-xs text-gray-400">{t.platform}</p>}
                     </div>
-                    {t.notes && <p className="text-xs text-white/30 mt-1">{t.notes}</p>}
+                    {t.notes && <p className="text-xs text-gray-400 mt-1">{t.notes}</p>}
                   </div>
                 </div>
               ))}
@@ -498,8 +498,8 @@ export default function MyLeads() {
         {activeTab === "Vehicles" && (
           filteredVehicles.length === 0 ? (
             <div className="text-center py-16">
-              <Car className="w-12 h-12 mx-auto text-white/20 mb-3" />
-              <p className="text-white/40">No available vehicles</p>
+              <Car className="w-12 h-12 mx-auto text-gray-300 mb-3" />
+              <p className="text-gray-400">No available vehicles</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -509,12 +509,12 @@ export default function MyLeads() {
                     <img src={v.images[0]} alt={v.title} className="w-full h-40 object-cover" />
                   )}
                   <div className="p-4">
-                    <p className="text-white font-semibold text-sm">{v.title}</p>
+                    <p className="text-gray-900 font-semibold text-sm">{v.title}</p>
                     <p className="text-amber-400 font-bold mt-1">R {v.price?.toLocaleString()}</p>
                     <div className="flex gap-2 mt-2 flex-wrap">
                       <span className="px-2 py-0.5 rounded text-xs" style={{ background: "#22c55e20", color: "#22c55e" }}>{v.status}</span>
-                      {v.stand && <span className="px-2 py-0.5 rounded text-xs text-white/40" style={{ background: "rgba(0,0,0,0.06)" }}>{v.stand}</span>}
-                      {v.mileage && <span className="text-xs text-white/40">{v.mileage?.toLocaleString()} km</span>}
+                      {v.stand && <span className="px-2 py-0.5 rounded text-xs text-gray-400" style={{ background: "rgba(0,0,0,0.06)" }}>{v.stand}</span>}
+                      {v.mileage && <span className="text-xs text-gray-400">{v.mileage?.toLocaleString()} km</span>}
                     </div>
                   </div>
                 </div>
@@ -529,9 +529,9 @@ export default function MyLeads() {
         <div className="fixed inset-0 z-50 flex" style={{ background: "rgba(0,0,0,0.7)" }} onClick={() => { setSelectedLead(null); setShowFollowUp(false); setFollowUpHistory([]); }}>
           <div className="ml-auto w-full max-w-md h-full overflow-y-auto flex flex-col" style={{ background: "var(--glass)", borderLeft: `1px solid #C9A84C33` }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: "#C9A84C22" }}>
-              <h2 className="text-white font-bold text-lg">{selectedLead.lead_name}</h2>
-              <button onClick={() => { setSelectedLead(null); setShowFollowUp(false); setFollowUpHistory([]); }} className="p-2 rounded-lg hover:bg-white/10">
-                <X className="w-5 h-5 text-white/60" />
+              <h2 className="text-gray-900 font-bold text-lg">{selectedLead.lead_name}</h2>
+              <button onClick={() => { setSelectedLead(null); setShowFollowUp(false); setFollowUpHistory([]); }} className="p-2 rounded-lg hover:bg-white/70">
+                <X className="w-5 h-5 text-gray-600" />
               </button>
             </div>
 
@@ -570,8 +570,8 @@ export default function MyLeads() {
                   { label: "Notes", value: selectedLead.notes },
                 ].filter(f => f.value).map(f => (
                   <div key={f.label}>
-                    <p className="text-white/40 text-xs">{f.label}</p>
-                    <p className="text-white">{f.value}</p>
+                    <p className="text-gray-400 text-xs">{f.label}</p>
+                    <p className="text-gray-900">{f.value}</p>
                   </div>
                 ))}
               </div>
@@ -592,44 +592,44 @@ export default function MyLeads() {
 
               {/* Log follow-up */}
               {!showFollowUp ? (
-                <button onClick={() => setShowFollowUp(true)} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm border transition-all hover:bg-white/5" style={{ borderColor: "#C9A84C33", color: GOLD }}>
+                <button onClick={() => setShowFollowUp(true)} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm border transition-all hover:bg-white/70" style={{ borderColor: "#C9A84C33", color: GOLD }}>
                   <ClipboardList className="w-4 h-4" /> Log Follow-Up
                 </button>
               ) : (
                 <div className="rounded-xl border p-4 space-y-3" style={{ borderColor: "#C9A84C33", background: "#C9A84C08" }}>
-                  <p className="text-white font-semibold text-sm">Log Follow-Up</p>
+                  <p className="text-gray-900 font-semibold text-sm">Log Follow-Up</p>
 
                   <div>
-                    <label className="text-xs text-white/40 block mb-1">Contact Method</label>
-                    <select value={followUpData.contact_method || ""} onChange={e => setFollowUpData(p => ({ ...p, contact_method: e.target.value }))} className="w-full px-3 py-2 rounded-lg text-white text-sm outline-none" style={{ background: "var(--glass)", border: "1px solid #C9A84C33" }}>
+                    <label className="text-xs text-gray-400 block mb-1">Contact Method</label>
+                    <select value={followUpData.contact_method || ""} onChange={e => setFollowUpData(p => ({ ...p, contact_method: e.target.value }))} className="w-full px-3 py-2 rounded-lg text-gray-900 text-sm outline-none" style={{ background: "var(--glass)", border: "1px solid #C9A84C33" }}>
                       <option value="">— Select —</option>
                       {CONTACT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
                     </select>
                   </div>
 
                   <div>
-                    <label className="text-xs text-white/40 block mb-1">Lead Response</label>
-                    <select value={followUpData.lead_response || ""} onChange={e => setFollowUpData(p => ({ ...p, lead_response: e.target.value }))} className="w-full px-3 py-2 rounded-lg text-white text-sm outline-none" style={{ background: "var(--glass)", border: "1px solid #C9A84C33" }}>
+                    <label className="text-xs text-gray-400 block mb-1">Lead Response</label>
+                    <select value={followUpData.lead_response || ""} onChange={e => setFollowUpData(p => ({ ...p, lead_response: e.target.value }))} className="w-full px-3 py-2 rounded-lg text-gray-900 text-sm outline-none" style={{ background: "var(--glass)", border: "1px solid #C9A84C33" }}>
                       <option value="">— Select —</option>
                       {LEAD_RESPONSES.map(r => <option key={r} value={r}>{r}</option>)}
                     </select>
                   </div>
 
                   <div>
-                    <label className="text-xs text-white/40 block mb-1">Pipeline Stage *</label>
-                    <select value={followUpData.pipeline_stage || ""} onChange={e => setFollowUpData(p => ({ ...p, pipeline_stage: e.target.value }))} className="w-full px-3 py-2 rounded-lg text-white text-sm outline-none" style={{ background: "var(--glass)", border: "1px solid #C9A84C33" }}>
+                    <label className="text-xs text-gray-400 block mb-1">Pipeline Stage *</label>
+                    <select value={followUpData.pipeline_stage || ""} onChange={e => setFollowUpData(p => ({ ...p, pipeline_stage: e.target.value }))} className="w-full px-3 py-2 rounded-lg text-gray-900 text-sm outline-none" style={{ background: "var(--glass)", border: "1px solid #C9A84C33" }}>
                       <option value="">— Select —</option>
                       {PIPELINE_STAGES.map(s => <option key={s} value={s}>{s}</option>)}
                     </select>
                   </div>
 
                   <div>
-                    <label className="text-xs text-white/40 block mb-1">Notes</label>
-                    <textarea value={followUpData.notes || ""} onChange={e => setFollowUpData(p => ({ ...p, notes: e.target.value }))} rows={3} className="w-full px-3 py-2 rounded-lg text-white text-sm outline-none resize-none" style={{ background: "var(--glass)", border: "1px solid #C9A84C33" }} placeholder="Add notes..." />
+                    <label className="text-xs text-gray-400 block mb-1">Notes</label>
+                    <textarea value={followUpData.notes || ""} onChange={e => setFollowUpData(p => ({ ...p, notes: e.target.value }))} rows={3} className="w-full px-3 py-2 rounded-lg text-gray-900 text-sm outline-none resize-none" style={{ background: "var(--glass)", border: "1px solid #C9A84C33" }} placeholder="Add notes..." />
                   </div>
 
                   <div className="flex gap-2">
-                    <button onClick={() => { setShowFollowUp(false); setFollowUpData({}); }} className="flex-1 py-2 rounded-lg border text-sm font-semibold text-white/50 hover:bg-white/5 transition-all" style={{ borderColor: "var(--line)" }}>
+                    <button onClick={() => { setShowFollowUp(false); setFollowUpData({}); }} className="flex-1 py-2 rounded-lg border text-sm font-semibold text-gray-500 hover:bg-white/70 transition-all" style={{ borderColor: "var(--line)" }}>
                       Cancel
                     </button>
                     <button onClick={handleSaveFollowUp} disabled={savingFollowUp || !followUpData.pipeline_stage} className="flex-1 py-2 rounded-xl font-semibold text-sm transition-all" style={{ background: followUpData.pipeline_stage ? GOLD : "var(--line)", color: followUpData.pipeline_stage ? "#000" : "var(--mut)" }}>
@@ -641,28 +641,28 @@ export default function MyLeads() {
 
               {/* Follow-up History */}
               <div>
-                <p className="text-white/50 text-xs font-semibold uppercase tracking-wider mb-3">Update History</p>
+                <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">Update History</p>
                 {loadingHistory ? (
                   <div className="flex justify-center py-4">
                     <div className="w-5 h-5 border-2 border-amber-600 border-t-amber-300 rounded-full animate-spin" />
                   </div>
                 ) : followUpHistory.length === 0 ? (
-                  <p className="text-white/25 text-xs text-center py-4">No follow-ups logged yet</p>
+                  <p className="text-gray-400 text-xs text-center py-4">No follow-ups logged yet</p>
                 ) : (
                   <div className="space-y-2">
                     {followUpHistory.map(fu => (
                       <div key={fu.id} className="rounded-lg p-3 border" style={{ background: "rgba(0,0,0,0.03)", borderColor: "var(--line)" }}>
                         <div className="flex items-center justify-between mb-1.5">
                           <span className="text-xs font-semibold" style={{ color: GOLD }}>{fu.pipeline_stage}</span>
-                          <span className="text-xs text-white/30">{fu.update_date}</span>
+                          <span className="text-xs text-gray-400">{fu.update_date}</span>
                         </div>
                         <div className="flex gap-2 flex-wrap mb-1">
-                          {fu.contact_method && <span className="text-xs text-white/50">{fu.contact_method}</span>}
-                          {fu.contact_method && fu.lead_response && <span className="text-xs text-white/30">·</span>}
-                          {fu.lead_response && <span className="text-xs text-white/50">{fu.lead_response}</span>}
+                          {fu.contact_method && <span className="text-xs text-gray-500">{fu.contact_method}</span>}
+                          {fu.contact_method && fu.lead_response && <span className="text-xs text-gray-400">·</span>}
+                          {fu.lead_response && <span className="text-xs text-gray-500">{fu.lead_response}</span>}
                         </div>
-                        {fu.notes && <p className="text-xs text-white/40">{fu.notes}</p>}
-                        <p className="text-xs text-white/20 mt-1">by {fu.reported_by}</p>
+                        {fu.notes && <p className="text-xs text-gray-400">{fu.notes}</p>}
+                        <p className="text-xs text-gray-300 mt-1">by {fu.reported_by}</p>
                       </div>
                     ))}
                   </div>

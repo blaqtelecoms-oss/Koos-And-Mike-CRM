@@ -151,7 +151,7 @@ export default function Vehicles() {
                 ))}
                 <label className="aspect-square border-2 border-dashed border-amber-600/40 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-amber-500 transition-colors">
                   <input type="file" accept="image/*" multiple className="hidden" onChange={handleImageUpload} disabled={uploading} />
-                  {uploading ? <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-amber-500" /> : <><Upload className="w-6 h-6 text-amber-500/60" /><span className="text-xs text-white/40 mt-1">Upload</span></>}
+                  {uploading ? <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-amber-500" /> : <><Upload className="w-6 h-6 text-amber-500/60" /><span className="text-xs text-gray-400 mt-1">Upload</span></>}
                 </label>
               </div>
             </div>
