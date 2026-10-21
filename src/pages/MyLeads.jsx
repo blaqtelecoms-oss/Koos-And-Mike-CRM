@@ -282,14 +282,14 @@ export default function MyLeads() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0D0D0D" }}>
+      <div className="km-admin-page min-h-screen flex items-center justify-center" style={{ background: "#0D0D0D" }}>
         <div className="w-10 h-10 border-4 border-amber-700 border-t-amber-400 rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#0D0D0D" }}>
+    <div className="km-admin-page min-h-screen" style={{ background: "#0D0D0D" }}>
       {/* Pull-to-refresh indicator */}
       {(pullIndicator > 0 || refreshing) && (
         <div className="flex justify-center py-2" style={{ background: "#0D0D0D" }}>

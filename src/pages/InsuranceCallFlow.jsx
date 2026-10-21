@@ -280,7 +280,7 @@ ${form.additional_notes ? `<h2>Additional Notes</h2><div class="row"><div class=
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#0D0D0D" }}>
+    <div className="km-admin-page min-h-screen" style={{ background: "#0D0D0D" }}>
       <div className="h-1 w-full" style={{ background: "linear-gradient(90deg, #0ea5e9, #38bdf8)" }} />
 
       {/* Header */}

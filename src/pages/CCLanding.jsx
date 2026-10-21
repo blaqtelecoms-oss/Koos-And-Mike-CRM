@@ -58,7 +58,7 @@ export default function CCLanding() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#0D0D0D" }}>
+    <div className="km-admin-page min-h-screen flex flex-col" style={{ background: "#0D0D0D" }}>
       <div className="h-1 w-full" style={{ background: BLUE }} />
 
       <header className="border-b py-4 px-6" style={{ borderColor: "#3b82f622", background: "#111111" }}>

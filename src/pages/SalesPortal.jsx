@@ -160,7 +160,7 @@ export default function SalesPortal() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="km-admin-page space-y-8 min-h-screen" style={{ background: "var(--app-canvas)" }}>
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-3xl font-bold text-white">Sales Portal</h1>

@@ -53,7 +53,7 @@ export default function StaffLanding() {
   const selectedConsultant = consultants.find(c => c.id === selectedId);
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#0D0D0D" }}>
+    <div className="km-admin-page min-h-screen flex flex-col" style={{ background: "#0D0D0D" }}>
       <div className="h-1 w-full" style={{ background: GOLD }} />
 
       <header className="border-b py-4 px-6" style={{ borderColor: "#C9A84C22", background: "#111111" }}>
