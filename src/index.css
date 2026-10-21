@@ -4,39 +4,39 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ===== Design Tokens ===== */
+/* ===== Design Tokens (Dark glassmorphism with gold accents — default) ===== */
 :root {
-  --bg: #e9e7e1;
-  --ink: #14130f;
-  --mut: #8a8572;
+  --bg: #0f0e0a;
+  --ink: #f7f3e4;
+  --mut: #a39d84;
   --gold: #f6c635;
   --gold-light: #ffe082;
   --gold-deep: #f59e0b;
-  --glass: rgba(255,255,255,.62);
-  --glass-border: rgba(255,255,255,.9);
-  --line: rgba(120,105,50,.14);
-  --shadow: 0 10px 30px rgba(150,125,30,.12);
-  --app-canvas: linear-gradient(135deg, #fffef9 0%, #fff6d6 55%, #fde9a0 130%);
+  --glass: rgba(255,255,255,.06);
+  --glass-border: rgba(255,255,255,.1);
+  --line: rgba(255,224,130,.12);
+  --shadow: 0 10px 30px rgba(0,0,0,.4);
+  --app-canvas: linear-gradient(135deg, #1d1b14, #2a2412 60%, #3d3213 130%);
 
-  /* shadcn-compatible HSL tokens (kept for UI components that still use them) */
-  --background: 42 18% 90%;
-  --foreground: 40 10% 8%;
-  --card: 0 0% 100%;
-  --card-foreground: 40 10% 8%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 40 10% 8%;
+  /* shadcn-compatible HSL tokens (dark mode) */
+  --background: 40 20% 6%;
+  --foreground: 45 30% 94%;
+  --card: 40 15% 10%;
+  --card-foreground: 45 30% 94%;
+  --popover: 40 15% 8%;
+  --popover-foreground: 45 30% 94%;
   --primary: 42 91% 57%;
   --primary-foreground: 40 10% 8%;
-  --secondary: 42 30% 88%;
-  --secondary-foreground: 42 50% 30%;
-  --muted: 42 20% 92%;
-  --muted-foreground: 42 10% 45%;
+  --secondary: 42 20% 12%;
+  --secondary-foreground: 42 50% 70%;
+  --muted: 40 15% 12%;
+  --muted-foreground: 42 15% 60%;
   --accent: 42 91% 57%;
   --accent-foreground: 40 10% 8%;
   --destructive: 0 72% 51%;
   --destructive-foreground: 0 0% 98%;
-  --border: 42 15% 82%;
-  --input: 42 15% 85%;
+  --border: 42 15% 18%;
+  --input: 42 15% 15%;
   --ring: 42 91% 57%;
   --radius: 0.5rem;
   --chart-1: 42 91% 57%;
@@ -47,33 +47,6 @@
   --sidebar-bg: linear-gradient(170deg, #26241b, #0b0a07 70%);
   --sidebar-foreground: #cfc8ae;
   --sidebar-active: linear-gradient(145deg, #ffd45e, #f59e0b);
-}
-
-/* Dark mode — matches the reference design (dark glassmorphism with gold accents) */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0f0e0a;
-    --ink: #f7f3e4;
-    --mut: #a39d84;
-    --glass: rgba(255,255,255,.06);
-    --glass-border: rgba(255,255,255,.1);
-    --line: rgba(255,224,130,.12);
-    --shadow: 0 10px 30px rgba(0,0,0,.4);
-    --app-canvas: linear-gradient(135deg, #1d1b14, #2a2412 60%, #3d3213 130%);
-
-    --background: 40 20% 6%;
-    --foreground: 45 30% 94%;
-    --card: 40 15% 10%;
-    --card-foreground: 45 30% 94%;
-    --popover: 40 15% 8%;
-    --popover-foreground: 45 30% 94%;
-    --muted: 40 15% 12%;
-    --muted-foreground: 42 15% 60%;
-    --border: 42 15% 18%;
-    --input: 42 15% 15%;
-    --secondary: 42 20% 12%;
-    --secondary-foreground: 42 50% 70%;
-  }
 }
 
 /* ===== Base ===== */

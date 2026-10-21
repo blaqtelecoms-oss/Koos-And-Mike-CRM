@@ -6,12 +6,12 @@ import AdminPasswordGate from "@/components/AdminPasswordGate";
 
 const GOLD = "#f6c635";
 const GOLD_DEEP = "#f59e0b";
-const INK = "#14130f";
-const MUT = "#8a8572";
-const GLASS = "rgba(255,255,255,0.62)";
-const GLASS_BORDER = "rgba(255,255,255,0.9)";
-const CANVAS = "linear-gradient(135deg, #fffef9 0%, #fff6d6 55%, #fde9a0 130%)";
-const SHADOW = "0 10px 30px rgba(150,125,30,0.12)";
+const INK = "#f7f3e4";
+const MUT = "#a39d84";
+const GLASS = "rgba(255,255,255,0.06)";
+const GLASS_BORDER = "rgba(255,255,255,0.1)";
+const CANVAS = "linear-gradient(135deg, #1d1b14, #2a2412 60%, #3d3213 130%)";
+const SHADOW = "0 10px 30px rgba(0,0,0,0.4)";
 
 export default function Landing() {
   const navigate = useNavigate();
