@@ -22,8 +22,8 @@ export default function PipelineRing({ total, filled }) {
     <svg viewBox="0 0 200 200" width="100%">
       <defs>
         <linearGradient id="km-yg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#ffd54f" />
-          <stop offset="1" stopColor="#f59e0b" />
+          <stop offset="0" stopColor="#ffb84d" />
+          <stop offset="1" stopColor="#ff9d00" />
         </linearGradient>
       </defs>
       {tickEls}

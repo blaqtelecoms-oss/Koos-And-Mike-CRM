@@ -26,8 +26,8 @@ export default function StatusPill({ status }) {
       className="km-status"
       style={{
         "--c": c,
-        background: `color-mix(in srgb, ${c} 15%, transparent)`,
-        color: `color-mix(in srgb, ${c} 75%, var(--ink))`,
+        background: `color-mix(in srgb, ${c} 18%, transparent)`,
+        color: c,
       }}
     >
       {status}

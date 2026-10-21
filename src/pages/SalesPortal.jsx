@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Plus, Edit2, Trash2, X, Check, Users, KeyRound, Columns, List, TrendingUp, PhoneMissed, UserCheck } from "lucide-react";
 import LeadKanban from "@/components/sales/LeadKanban";
 
-const GOLD = "#C9A84C";
+const GOLD = "#ff9d00";
 
 export default function SalesPortal() {
   const navigate = useNavigate();

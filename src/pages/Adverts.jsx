@@ -9,7 +9,7 @@ import GlassCard from "@/components/premium/GlassCard";
 import StatusPill from "@/components/premium/StatusPill";
 import EmptyState from "@/components/premium/EmptyState";
 
-const GOLD = "#C9A84C";
+const GOLD = "#ff9d00";
 
 export default function Adverts() {
   const qc = useQueryClient();
@@ -69,30 +69,30 @@ export default function Adverts() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label style={{ fontSize: 12, color: "var(--mut)", display: "block", marginBottom: 4 }}>Vehicle Title *</label>
-                <Input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g. 2019 VW Crafter 2.0 TDI LWB" required className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-gray-300" />
+                <Input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g. 2019 VW Crafter 2.0 TDI LWB" required />
               </div>
               <div>
                 <label style={{ fontSize: 12, color: "var(--mut)", display: "block", marginBottom: 4 }}>Price (R)</label>
-                <Input type="number" value={form.price || ""} onChange={e => setForm(f => ({ ...f, price: Number(e.target.value) }))} placeholder="749900" className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-gray-300" />
+                <Input type="number" value={form.price || ""} onChange={e => setForm(f => ({ ...f, price: Number(e.target.value) }))} placeholder="749900" />
               </div>
             </div>
             <div>
               <label style={{ fontSize: 12, color: "var(--mut)", display: "block", marginBottom: 4 }}>Advert Description *</label>
-              <Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Full advert text with highlights, features, disclaimers..." required rows={6} className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-gray-300 resize-none" />
+              <Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Full advert text with highlights, features, disclaimers..." required rows={6} className="resize-none" />
             </div>
             <div>
               <label style={{ fontSize: 12, color: "var(--mut)", display: "block", marginBottom: 4 }}>WhatsApp Contact Number</label>
-              <Input value={form.whatsapp_number || ""} onChange={e => setForm(f => ({ ...f, whatsapp_number: e.target.value }))} placeholder="27789657049" className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-gray-300" />
+              <Input value={form.whatsapp_number || ""} onChange={e => setForm(f => ({ ...f, whatsapp_number: e.target.value }))} placeholder="27789657049" />
             </div>
             <div>
               <label style={{ fontSize: 12, color: "var(--mut)", display: "block", marginBottom: 8 }}>Photos & Video</label>
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                <label className="flex items-center gap-2 cursor-pointer w-fit px-4 py-2 rounded-lg border text-sm font-semibold transition-all hover:bg-white/70" style={{ borderColor: "#C9A84C44", color: GOLD }}>
+                <label className="flex items-center gap-2 cursor-pointer w-fit px-4 py-2 rounded-lg border text-sm font-semibold transition-all hover:bg-white/5" style={{ borderColor: "rgba(255,157,0,.3)", color: GOLD }}>
                   <Upload className="w-4 h-4" />
                   {uploading === "images" ? "Uploading..." : "Upload Photos"}
                   <input type="file" accept="image/*" multiple className="hidden" onChange={handleImageUpload} disabled={!!uploading} />
                 </label>
-                <label className="flex items-center gap-2 cursor-pointer w-fit px-4 py-2 rounded-lg border text-sm font-semibold transition-all hover:bg-white/70" style={{ borderColor: "#3b82f644", color: "#3b82f6" }}>
+                <label className="flex items-center gap-2 cursor-pointer w-fit px-4 py-2 rounded-lg border text-sm font-semibold transition-all hover:bg-white/5" style={{ borderColor: "rgba(59,130,246,.3)", color: "#3b82f6" }}>
                   <Video className="w-4 h-4" />
                   {uploading === "video" ? "Uploading..." : (form.video_url ? "Replace Video" : "Upload Video")}
                   <input type="file" accept="video/*" className="hidden" onChange={handleVideoUpload} disabled={!!uploading} />
@@ -102,9 +102,9 @@ export default function Adverts() {
               {form.images?.length > 0 && (
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
                   {form.images.map((url, i) => (
-                    <div key={i} className="relative w-24 h-20 rounded-lg overflow-hidden border" style={{ borderColor: "#C9A84C33" }}>
+                    <div key={i} className="relative w-24 h-20 rounded-lg overflow-hidden border" style={{ borderColor: "rgba(255,157,0,.2)" }}>
                       <img src={url} className="w-full h-full object-cover" />
-                      <button type="button" onClick={() => removeImage(i)} className="absolute top-1 right-1 w-5 h-5 rounded-full bg-gray-400/60 flex items-center justify-center hover:bg-red-600"><X className="w-3 h-3 text-gray-900" /></button>
+                      <button type="button" onClick={() => removeImage(i)} className="absolute top-1 right-1 w-5 h-5 rounded-full bg-white/10 flex items-center justify-center hover:bg-red-600"><X className="w-3 h-3 text-white" /></button>
                     </div>
                   ))}
                 </div>
@@ -119,8 +119,8 @@ export default function Adverts() {
               </label>
             </div>
             <div style={{ display: "flex", gap: 10, paddingTop: 8 }}>
-              <Button type="button" variant="outline" onClick={() => { setShowForm(false); setForm(defaultForm()); }} className="border-amber-200/60 text-gray-600 hover:bg-white/70">Cancel</Button>
-              <Button type="submit" disabled={createMut.isPending} className="text-black font-bold" style={{ background: GOLD }}>{createMut.isPending ? "Saving..." : "Create Advert"}</Button>
+              <Button type="button" variant="outline" onClick={() => { setShowForm(false); setForm(defaultForm()); }} className="hover:bg-white/5">Cancel</Button>
+              <Button type="submit" disabled={createMut.isPending} className="text-black font-bold border-0" style={{ background: GOLD }}>{createMut.isPending ? "Saving..." : "Create Advert"}</Button>
             </div>
           </form>
         </GlassCard>

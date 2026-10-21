@@ -17,8 +17,8 @@ export default function LeadsChart({ data, callout }) {
       <LineChart data={data} margin={{ top: 10, right: 10, bottom: 5, left: -20 }}>
         <defs>
           <linearGradient id="km-area" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#f6c635" stopOpacity={0.4} />
-            <stop offset="100%" stopColor="#f6c635" stopOpacity={0} />
+            <stop offset="0%" stopColor="#ff9d00" stopOpacity={0.3} />
+            <stop offset="100%" stopColor="#ff9d00" stopOpacity={0} />
           </linearGradient>
         </defs>
         <CartesianGrid stroke="currentColor" strokeOpacity={0.08} vertical={false} />
@@ -36,13 +36,13 @@ export default function LeadsChart({ data, callout }) {
         />
         <Tooltip
           contentStyle={{
-            background: "var(--ink)",
-            border: "none",
+            background: "#1a1a1a",
+            border: "1px solid rgba(255,255,255,.1)",
             borderRadius: 12,
             color: "#fff",
             fontSize: 11,
           }}
-          labelStyle={{ color: "#fff" }}
+          labelStyle={{ color: "#a3a3a3" }}
         />
         <Area
           type="monotone"
@@ -53,10 +53,10 @@ export default function LeadsChart({ data, callout }) {
         <Line
           type="monotone"
           dataKey="leads"
-          stroke="#f6c635"
+          stroke="#ff9d00"
           strokeWidth={3}
           dot={false}
-          activeDot={{ r: 6, fill: "#fff", stroke: "#f6c635", strokeWidth: 3 }}
+          activeDot={{ r: 6, fill: "#fff", stroke: "#ff9d00", strokeWidth: 3 }}
         />
         <Line
           type="monotone"
@@ -83,7 +83,7 @@ export default function LeadsChart({ data, callout }) {
                       width={104}
                       height={24}
                       rx={12}
-                      fill="var(--ink)"
+                      fill="#1a1a1a"
                     />
                     <text
                       x={viewBox.x}

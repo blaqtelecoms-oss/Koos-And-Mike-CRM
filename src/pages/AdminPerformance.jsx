@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import moment from "moment";
 
-const GOLD = "#C9A84C";
+const GOLD = "#ff9d00";
 
 const PIPELINE_STAGES = [
   "Initial Contact", "Engaged", "Test Drive Booked", "Test Drive Done",
