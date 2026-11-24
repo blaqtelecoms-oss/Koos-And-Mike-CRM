@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Plus, Search, Phone, Mail, Car, Filter, Edit, ClipboardList, Clock, RefreshCw, MoreHorizontal } from "lucide-react";
+import { Plus, Search, Phone, Mail, Car, Filter, Edit, ClipboardList, Clock, RefreshCw, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import moment from "moment";
 import LeadFollowUpDialog from "@/components/leads/LeadFollowUpDialog";
 import CallDialog from "@/components/leads/CallDialog";
@@ -39,6 +39,8 @@ export default function Leads() {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterConsultant, setFilterConsultant] = useState("all");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(100);
   const [followUpLead, setFollowUpLead] = useState(null);
   const [callingLead, setCallingLead] = useState(null);
   const [whatsappLead, setWhatsappLead] = useState(null);
@@ -126,6 +128,12 @@ export default function Leads() {
     const matchesDealer = filterConsultant === "all" || lead.assigned_consultant === filterConsultant;
     return matchesSearch && matchesStatus && matchesDealer;
   });
+
+  const totalPages = Math.max(1, Math.ceil(filteredLeads.length / pageSize));
+  const safePage = Math.min(page, totalPages);
+  const pagedLeads = filteredLeads.slice((safePage - 1) * pageSize, safePage * pageSize);
+
+  useEffect(() => { setPage(1); }, [search, filterStatus, filterConsultant, pageSize]);
 
   const getEmailReceivedDate = (lead) => lead.email_received_date || null;
 
@@ -217,17 +225,27 @@ export default function Leads() {
 
       {/* Leads table */}
       <GlassCard>
-        <div className="km-card-header">All Leads</div>
+        <div className="km-card-header">
+          <div>
+            All Leads
+            {filteredLeads.length > 0 && (
+              <div style={{ fontSize: 11, color: "var(--mut)", fontWeight: 400 }}>
+                Showing {(safePage - 1) * pageSize + 1}–{Math.min(safePage * pageSize, filteredLeads.length)} of {filteredLeads.length.toLocaleString()}
+              </div>
+            )}
+          </div>
+        </div>
         {filteredLeads.length === 0 ? (
           <div className="km-empty">No leads found. Try adjusting your search or filters.</div>
         ) : (
+          <>
           <div className="km-table-wrap">
             <table className="km-table">
               <thead>
                 <tr><th>Lead</th><th>Interest</th><th>Status</th><th></th></tr>
               </thead>
               <tbody>
-                {filteredLeads.map(lead => {
+                {pagedLeads.map(lead => {
                   const platform = getPlatformFromNotes(lead.notes);
                   return (
                     <tr key={lead.id}>
@@ -281,6 +299,51 @@ export default function Leads() {
               </tbody>
             </table>
           </div>
+
+          {/* Pagination */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--line)" }}>
+            <button
+              className="km-icon-btn"
+              onClick={() => setPage(Math.max(1, safePage - 1))}
+              disabled={safePage <= 1}
+              aria-label="Previous page"
+              style={{ cursor: safePage <= 1 ? "not-allowed" : "pointer", opacity: safePage <= 1 ? 0.4 : 1 }}
+            >
+              <ChevronLeft style={{ width: 16, height: 16 }} />
+            </button>
+            <span style={{ fontSize: 12, color: "var(--mut)" }}>Page</span>
+            <Input
+              type="number"
+              min={1}
+              max={totalPages}
+              value={safePage}
+              onChange={(e) => { const v = Number(e.target.value); if (Number.isInteger(v) && v >= 1 && v <= totalPages) setPage(v); }}
+              aria-label="Page number"
+              style={{ width: 64, height: 34, textAlign: "center", background: "var(--glass)", border: "1px solid var(--glass-border)", borderRadius: 10, fontSize: 12.5 }}
+            />
+            <span style={{ fontSize: 12, color: "var(--mut)" }}>of {totalPages}</span>
+            <button
+              className="km-icon-btn"
+              onClick={() => setPage(Math.min(totalPages, safePage + 1))}
+              disabled={safePage >= totalPages}
+              aria-label="Next page"
+              style={{ cursor: safePage >= totalPages ? "not-allowed" : "pointer", opacity: safePage >= totalPages ? 0.4 : 1 }}
+            >
+              <ChevronRight style={{ width: 16, height: 16 }} />
+            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginLeft: "auto" }}>
+              <Select value={String(pageSize)} onValueChange={(v) => setPageSize(Number(v))}>
+                <SelectTrigger style={{ width: 120, height: 34, background: "var(--glass)", border: "1px solid var(--glass-border)", borderRadius: 10, fontSize: 12 }}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {[50, 100, 200, 500].map(n => <SelectItem key={n} value={String(n)}>{n} rows</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <span style={{ fontSize: 12, color: "var(--mut)", whiteSpace: "nowrap" }}>{filteredLeads.length.toLocaleString()} records</span>
+            </div>
+          </div>
+          </>
         )}
       </GlassCard>
 
