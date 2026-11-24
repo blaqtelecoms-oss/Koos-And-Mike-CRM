@@ -54,6 +54,7 @@ import Tasks from './pages/Tasks';
 import SocialPosts from './pages/SocialPosts';
 import TradeIns from './pages/TradeIns';
 import CarRequests from './pages/CarRequests';
+import WhatsApp from './pages/WhatsApp';
 import __Layout from './Layout.jsx';
 
 
@@ -65,6 +66,7 @@ export const PAGES = {
     "SocialPosts": SocialPosts,
     "TradeIns": TradeIns,
     "CarRequests": CarRequests,
+    "WhatsApp": WhatsApp,
 }
 
 export const pagesConfig = {

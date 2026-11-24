@@ -17,6 +17,7 @@ const TABLES = {
   TradeIn: 'trade_ins',
   DailyTask: 'daily_tasks',
   LeadFollowUp: 'lead_follow_ups',
+  WhatsAppMessage: 'whatsapp_messages',
   SocialPost: 'social_posts',
   PushSubscription: 'push_subscriptions',
   User: 'profiles',

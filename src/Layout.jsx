@@ -3,7 +3,7 @@ import { createPageUrl } from "./utils";
 import {
   LayoutGrid, Users, Car, CheckSquare, Share2,
   Menu, X, LogOut, RefreshCcw, Search, BarChart3,
-  ShieldCheck, Megaphone, Bell, Plus, Trash2
+  ShieldCheck, Megaphone, Bell, Plus, Trash2, MessageCircle
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { api } from "@/api/supabaseClient";
@@ -11,7 +11,7 @@ import DeleteAccountDialog from "@/components/DeleteAccountDialog";
 import Avatar from "@/components/premium/Avatar";
 import ThemeToggle from "@/components/ThemeToggle";
 
-const TOP_LEVEL_PAGES = ["Dashboard", "Leads", "Vehicles", "Tasks", "SocialPosts", "TradeIns", "CarRequests", "Adverts"];
+const TOP_LEVEL_PAGES = ["Dashboard", "Leads", "WhatsApp", "Vehicles", "Tasks", "SocialPosts", "TradeIns", "CarRequests", "Adverts"];
 
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -31,6 +31,7 @@ export default function Layout({ children, currentPageName }) {
   const navigation = [
     { name: "Dashboard", page: "Dashboard", icon: LayoutGrid },
     { name: "Leads", page: "Leads", icon: Users, badge: newLeadsCount },
+    { name: "WhatsApp", page: "WhatsApp", icon: MessageCircle },
     { name: "Vehicles", page: "Vehicles", icon: Car },
     { name: "Daily Tasks", page: "Tasks", icon: CheckSquare },
     { name: "Social Posts", page: "SocialPosts", icon: Share2 },
