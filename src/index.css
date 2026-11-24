@@ -209,14 +209,15 @@ body:has(.km-app) {
 
 .km-nav-item:hover { background: rgba(255,255,255,.06); color: #fff; }
 
-.km-nav-item.active {
-  background: var(--sidebar-active);
-  color: #1c1400;
-  font-weight: 600;
-  box-shadow: 0 8px 20px rgba(255,157,0,.3), inset 0 1px 0 rgba(255,255,255,.3);
+.km-nav-item.active,
+.km-nav-item.active:hover {
+  background: var(--gold);
+  color: #000;
+  font-weight: 700;
+  box-shadow: 0 6px 16px rgba(255,157,0,.22), inset 0 1px 0 rgba(255,255,255,.35);
 }
 
-.km-nav-item.active svg { color: #1c1400; }
+.km-nav-item.active svg { color: #000; stroke-width: 2; }
 
 .km-nav-badge {
   margin-left: auto;
@@ -226,7 +227,7 @@ body:has(.km-app) {
   border-radius: 10px;
   background: rgba(255,255,255,.12);
 }
-.km-nav-item.active .km-nav-badge { background: rgba(0,0,0,.15); }
+.km-nav-item.active .km-nav-badge { background: rgba(0,0,0,.18); color: #000; }
 
 /* ===== Top bar pills ===== */
 .km-topbar {
@@ -744,6 +745,9 @@ button, a, [role="button"] {
 [data-theme="light"] .km-sidebar { color: #f3f3f3; }
 [data-theme="light"] .km-nav-item { color: #a3a3a3; }
 [data-theme="light"] .km-nav-item:hover { color: #fff; }
+[data-theme="light"] .km-nav-item.active,
+[data-theme="light"] .km-nav-item.active:hover { color: #000; }
+[data-theme="light"] .km-nav-item.active svg { color: #000; }
 [data-theme="light"] .km-user-card b { color: #fff; }
 [data-theme="light"] .km-admin-page .bg-white\/70,
 [data-theme="light"] .km-admin-page .bg-white\/60,

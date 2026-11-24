@@ -168,15 +168,15 @@ export default function SalesPortal() {
         </div>
         <div className="flex items-center gap-2">
           {/* View toggle */}
-          <div className="flex rounded-lg overflow-hidden border" style={{ borderColor: "#C9A84C33" }}>
+          <div className="flex rounded-lg overflow-hidden border" style={{ borderColor: "var(--glass-border)" }}>
             <button onClick={() => setView("team")}
               className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold transition-all"
-              style={{ background: view === "team" ? GOLD : "transparent", color: view === "team" ? "#000" : "var(--gold)" }}>
+              style={{ background: view === "team" ? GOLD : "transparent", color: view === "team" ? "#000" : "var(--mut)" }}>
               <List className="w-4 h-4" /> Team
             </button>
             <button onClick={() => setView("kanban")}
               className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold transition-all"
-              style={{ background: view === "kanban" ? GOLD : "transparent", color: view === "kanban" ? "#000" : "var(--gold)" }}>
+              style={{ background: view === "kanban" ? GOLD : "transparent", color: view === "kanban" ? "#000" : "var(--mut)" }}>
               <Columns className="w-4 h-4" /> Kanban
             </button>
           </div>
@@ -202,24 +202,24 @@ export default function SalesPortal() {
                 const noAnswerCount = consultantLeads.filter(l => l.status === "No Answer").length;
                 const totalActive = consultantLeads.filter(l => !["Sold", "Lost"].includes(l.status)).length;
                 return (
-                  <div key={c.id} className="rounded-xl border border-amber-200/60 bg-white/70 p-4">
+                  <div key={c.id} className="rounded-xl border p-4" style={{ background: "var(--glass)", borderColor: "var(--glass-border)" }}>
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-black" style={{ background: GOLD }}>
                         {c.name.charAt(0)}
                       </div>
                       <div>
                         <p className="text-gray-900 font-semibold text-sm leading-tight">{c.name}</p>
-                        <p className="text-gray-400 text-xs">{totalActive} active leads</p>
+                        <p className="text-xs" style={{ color: "var(--mut)" }}>{totalActive} active leads</p>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
-                      <div className="rounded-lg p-2 text-center" style={{ background: "#3b82f615", border: "1px solid #3b82f630" }}>
-                        <p className="text-xl font-bold" style={{ color: "#60a5fa" }}>{newCount}</p>
-                        <p className="text-xs text-gray-500 mt-0.5">New</p>
+                      <div className="rounded-lg p-2 text-center" style={{ background: "var(--line)" }}>
+                        <p className="text-xl font-bold" style={{ color: "var(--ink)" }}>{newCount}</p>
+                        <p className="text-xs mt-0.5" style={{ color: "var(--mut)" }}>New</p>
                       </div>
-                      <div className="rounded-lg p-2 text-center" style={{ background: noAnswerCount > 0 ? "#f9731615" : "#ffffff08", border: noAnswerCount > 0 ? "1px solid #f9731630" : "1px solid #ffffff10" }}>
-                        <p className="text-xl font-bold" style={{ color: noAnswerCount > 0 ? "#fb923c" : "var(--mut)" }}>{noAnswerCount}</p>
-                        <p className="text-xs text-gray-500 mt-0.5">No Answer</p>
+                      <div className="rounded-lg p-2 text-center" style={{ background: "var(--line)" }}>
+                        <p className="text-xl font-bold" style={{ color: "var(--ink)" }}>{noAnswerCount}</p>
+                        <p className="text-xs mt-0.5" style={{ color: "var(--mut)" }}>No Answer</p>
                       </div>
                     </div>
                   </div>
@@ -238,7 +238,7 @@ export default function SalesPortal() {
 
       {view === "team" && <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Consultants List */}
-        <Card className="lg:col-span-1 border border-amber-200/60 bg-white/70">
+        <Card className="lg:col-span-1">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg">Team Members</CardTitle>
           </CardHeader>
@@ -261,10 +261,10 @@ export default function SalesPortal() {
                     <p className="font-medium text-gray-900 text-sm">{c.name}</p>
                     <p className="text-xs text-gray-400">{c.role}</p>
                     <div className="flex gap-1 mt-2">
-                      <span className="px-2 py-0.5 rounded text-xs" style={{ background: c.active ? "#22c55e20" : "#ef444420", color: c.active ? "#22c55e" : "#ef4444" }}>
+                      <span className="px-2 py-0.5 rounded text-xs font-medium" style={{ background: c.active ? "rgba(255,157,0,.14)" : "var(--line)", color: c.active ? GOLD : "var(--mut)" }}>
                         {c.active ? "Active" : "Inactive"}
                       </span>
-                      <span className="px-2 py-0.5 rounded text-xs" style={{ background: c.available ? "#3b82f620" : "#ef444420", color: c.available ? "#3b82f6" : "#ef4444" }}>
+                      <span className="px-2 py-0.5 rounded text-xs font-medium" style={{ background: c.available ? "rgba(255,157,0,.14)" : "var(--line)", color: c.available ? GOLD : "var(--mut)" }}>
                         {c.available ? "Available" : "Unavailable"}
                       </span>
                     </div>
@@ -276,7 +276,7 @@ export default function SalesPortal() {
         </Card>
 
         {/* Form Section */}
-        <Card className="lg:col-span-2 border border-amber-200/60 bg-white/70">
+        <Card className="lg:col-span-2">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg">
               {isAdding ? "Add New Consultant" : isEditing ? "Edit Consultant" : selectedConsultant ? selectedConsultant.name : "Select a consultant"}
@@ -335,7 +335,7 @@ export default function SalesPortal() {
                       <select
                         value={formData.role || "Sales"}
                         onChange={(e) => handleInputChange("role", e.target.value)}
-                        className="w-full rounded-lg border border-amber-200/60 bg-white/70 text-gray-900 px-3 py-2"
+                        className="w-full rounded-lg border bg-white/70 text-gray-900 px-3 py-2"
                       >
                         <option value="Sales">Sales</option>
                         <option value="Call Centre">Call Centre</option>
@@ -405,10 +405,10 @@ export default function SalesPortal() {
                             <p className="text-gray-900 font-medium">{selectedConsultant.role}</p>
                           </div>
                           <div className="flex gap-3 pt-2">
-                            <span className="px-3 py-1 rounded text-xs font-medium" style={{ background: selectedConsultant.is_manager ? "#a855f720" : "var(--line)", color: selectedConsultant.is_manager ? "#a855f7" : "#ffffff66" }}>
+                            <span className="px-3 py-1 rounded text-xs font-medium" style={{ background: selectedConsultant.is_manager ? "rgba(255,157,0,.14)" : "var(--line)", color: selectedConsultant.is_manager ? GOLD : "var(--mut)" }}>
                               {selectedConsultant.is_manager ? "Manager" : "Team Member"}
                             </span>
-                            <span className="px-3 py-1 rounded text-xs font-medium" style={{ background: selectedConsultant.active ? "#22c55e20" : "#ef444420", color: selectedConsultant.active ? "#22c55e" : "#ef4444" }}>
+                            <span className="px-3 py-1 rounded text-xs font-medium" style={{ background: selectedConsultant.active ? "rgba(255,157,0,.14)" : "var(--line)", color: selectedConsultant.active ? GOLD : "var(--mut)" }}>
                               {selectedConsultant.active ? "Active" : "Inactive"}
                             </span>
                           </div>
@@ -433,7 +433,7 @@ export default function SalesPortal() {
                             <Users className="w-4 h-4" />
                             Allocate Leads
                           </Button>
-                          <Button onClick={handleResetPassword} variant="outline" className="flex-1 gap-2 text-amber-400 border-amber-400/30 hover:bg-amber-500/10">
+                          <Button onClick={handleResetPassword} variant="outline" className="flex-1 gap-2">
                             <KeyRound className="w-4 h-4" />
                             Reset Password
                           </Button>
@@ -451,7 +451,7 @@ export default function SalesPortal() {
                             <p className="text-gray-400 text-sm">No unassigned leads</p>
                           ) : (
                             leads.filter(l => !l.assigned_consultant).map(lead => (
-                              <div key={lead.id} className="p-3 rounded-lg border border-amber-200/60 bg-white/70 flex items-center justify-between">
+                              <div key={lead.id} className="p-3 rounded-lg border flex items-center justify-between" style={{ background: "var(--glass)", borderColor: "var(--glass-border)" }}>
                                 <div className="flex-1">
                                   <p className="text-gray-900 font-medium text-sm">{lead.lead_name}</p>
                                   <p className="text-xs text-gray-400">{lead.phone}</p>
