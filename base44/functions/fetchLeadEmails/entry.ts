@@ -5,10 +5,24 @@ const IMAP_CONFIG = {
   host: "mail.blaqmedia.co.za",
   port: 993,
   username: "leads@blaqmedia.co.za",
-  password: Deno.env.get("LEADS_EMAIL_PASSWORD"),
 };
 
-async function connectIMAP(sinceDate = null) {
+// Secrets resolve per request on the Base44 backend, so they must be read
+// inside the handler — a module-level read returns undefined in production.
+async function getSecret(name) {
+  try {
+    const { secrets } = await import("base44:runtime");
+    const value = secrets?.get?.(name);
+    if (value) return value;
+  } catch (_) {
+    // Runtimes without base44:runtime fall back to Deno.env below.
+  }
+  return Deno.env.get(name) || "";
+}
+
+const quoteIMAP = (value) => String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+
+async function connectIMAP(password, sinceDate = null) {
   const socket = tls.connect({
     host: IMAP_CONFIG.host,
     port: IMAP_CONFIG.port,
@@ -43,11 +57,10 @@ async function connectIMAP(sinceDate = null) {
   function sendCommand(cmd, tag) {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
-        if (waitingResolver === resolve) {
-          waitingResolver = null;
-          waitingTag = null;
-          reject(new Error(`Timeout waiting for ${tag} response`));
-        }
+        waitingResolver = null;
+        waitingTag = null;
+        socket.destroy();
+        reject(new Error(`Timeout waiting for ${tag} response`));
       }, 30000);
 
       waitingResolver = (result) => {
@@ -72,7 +85,7 @@ async function connectIMAP(sinceDate = null) {
 
   // Login
   const loginResult = await sendCommand(
-    `A1 LOGIN "${IMAP_CONFIG.username}" "${IMAP_CONFIG.password}"`,
+    `A1 LOGIN "${quoteIMAP(IMAP_CONFIG.username)}" "${quoteIMAP(password)}"`,
     "A1"
   );
   if (!loginResult.response.includes("A1 OK")) {
@@ -91,8 +104,9 @@ async function connectIMAP(sinceDate = null) {
   const match = searchResult.response.match(/\* SEARCH([\d\s]*)/);
   const messageIds = match && match[1].trim() ? match[1].trim().split(/\s+/) : [];
 
+  // Take the newest messages so a busy day can never hide fresh leads.
   const limit = sinceDate ? 50 : 10;
-  const ids = messageIds.slice(0, limit);
+  const ids = messageIds.slice(-limit);
 
   if (ids.length > 0) {
     // Batch FETCH all emails in one command (BODY.PEEK[] avoids auto-marking as SEEN)
@@ -139,6 +153,12 @@ function decodeQuotedPrintable(str) {
 
 function stripHtml(html) {
   return html
+    // Drop non-visible blocks first: newsletter HTML is mostly CSS, which
+    // would otherwise fill the parsed body and truncate the real lead details.
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<head[\s\S]*?<\/head>/gi, ' ')
+    .replace(/<!--[\s\S]*?-->/g, ' ')
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/tr>/gi, '\n')
     .replace(/<\/td>/gi, '\t')
@@ -218,9 +238,14 @@ Deno.serve(async (req) => {
       if (refMatch) processedEmailIds.add(refMatch[1]);
     }
 
+    const emailPassword = (await getSecret("LEADS_EMAIL_PASSWORD")).trim();
+    if (!emailPassword) {
+      return Response.json({ error: "LEADS_EMAIL_PASSWORD is not configured for this app", processed: 0 });
+    }
+
     let emails = [];
     try {
-      emails = await connectIMAP(sinceDate);
+      emails = await connectIMAP(emailPassword, sinceDate);
     } catch (err) {
       return Response.json({ error: "IMAP extraction failed: " + err.message, processed: 0 });
     }
@@ -268,12 +293,42 @@ Deno.serve(async (req) => {
         if (refMatch) result.lead_ref = refMatch[1].trim();
         const msgMatch = body.match(/Message[:\s]+([^\n\r]+(?:\n(?![A-Z][a-z]+:)[^\n\r]+)*)/i);
         if (msgMatch) result.notes = msgMatch[1].trim();
+
+        // AutoTrader-style enquiries list the customer in an unlabelled block:
+        //   User Details:
+        //   Riaan Kriegler
+        //   riaankriegler@gmail.com
+        //   0842482222
+        if (!result.lead_name || !result.phone || !result.email) {
+          const details = body.match(/User Details:?\s*\n+([\s\S]{0,400})/i);
+          if (details) {
+            const block = details[1];
+            if (!result.email) {
+              const emailMatch = block.match(/[\w.+-]+@[\w-]+\.[\w.-]+/);
+              if (emailMatch) result.email = emailMatch[0].trim();
+            }
+            if (!result.phone) {
+              const phoneMatch = block.match(/(?:\+27|0)\s?\d{2}[\s-]?\d{3}[\s-]?\d{4}/);
+              if (phoneMatch) result.phone = phoneMatch[0].replace(/\s+/g, '');
+            }
+            if (!result.lead_name) {
+              const lines = block.split(/\n+/).map(l => l.trim()).filter(Boolean);
+              const nameLine = lines.find(l => !l.includes('@') && !/\d{3,}/.test(l) && /^[A-Za-z][A-Za-z'’.-]+(?:\s+[A-Za-z][A-Za-z'’.-]+)+$/.test(l));
+              if (nameLine) result.lead_name = nameLine;
+            }
+          }
+        }
+
         return result;
       }
 
       const regexResult = regexExtract(body);
 
-      const parsed = await base44.asServiceRole.integrations.Core.InvokeLLM({
+      // A single failed LLM call must not abort the remaining emails; the
+      // regex extraction below still covers the common platform formats.
+      let parsed: Record<string, any> = {};
+      try {
+        parsed = (await base44.asServiceRole.integrations.Core.InvokeLLM({
         prompt: `You are parsing a car dealership lead notification email. Extract the enquirer's contact information.
 
 Email Subject: ${subject}
@@ -308,7 +363,10 @@ Return ONLY valid JSON.`,
             lead_ref: { type: "string" }
           }
         }
-      });
+        })) || {};
+      } catch (_) {
+        parsed = {};
+      }
 
       if (regexResult.lead_name) parsed.lead_name = regexResult.lead_name;
       if (regexResult.phone) parsed.phone = regexResult.phone;
