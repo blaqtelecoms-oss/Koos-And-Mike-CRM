@@ -21,6 +21,7 @@ import CallCentrePortal from './pages/CallCentrePortal';
 import CCLanding from './pages/CCLanding';
 import Adverts from './pages/Adverts';
 import InsuranceCallFlow from './pages/InsuranceCallFlow';
+import ThemeToggle from '@/components/ThemeToggle';
 
 import { useEffect } from 'react';
 
@@ -31,6 +32,15 @@ const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
 const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   <Layout currentPageName={currentPageName}>{children}</Layout>
   : <>{children}</>;
+
+const ADMIN_PATHS = [...Object.keys(Pages).map((p) => `/${p}`), '/Adverts', '/AdminPerformance', '/SalesPortal'];
+
+// Standalone portals get a floating theme switch; admin pages use the top bar one
+const PortalThemeToggle = () => {
+  const location = useLocation();
+  const isAdmin = ADMIN_PATHS.some((p) => location.pathname === p || location.pathname.startsWith(`${p}/`));
+  return isAdmin ? null : <ThemeToggle floating />;
+};
 
 // Redirects authenticated users to the right portal based on role
 const RoleBasedRedirect = () => {
@@ -110,8 +120,8 @@ const AuthenticatedApp = () => {
       <Route path="/Adverts" element={<LayoutWrapper currentPageName="Adverts"><Adverts /></LayoutWrapper>} />
       <Route path="/staff" element={<StaffLanding />} />
       <Route path="/MyLeads" element={<MyLeads />} />
-      <Route path="/AdminPerformance" element={<AdminPerformance />} />
-      <Route path="/SalesPortal" element={<SalesPortal />} />
+      <Route path="/AdminPerformance" element={<LayoutWrapper currentPageName="AdminPerformance"><AdminPerformance /></LayoutWrapper>} />
+      <Route path="/SalesPortal" element={<LayoutWrapper currentPageName="SalesPortal"><SalesPortal /></LayoutWrapper>} />
       <Route path="/CallCentrePortal" element={<CallCentrePortal />} />
       <Route path="/CCLanding" element={<CCLanding />} />
       <Route path="/InsuranceCallFlow" element={<InsuranceCallFlow />} />
@@ -128,6 +138,7 @@ function App() {
       <QueryClientProvider client={queryClientInstance}>
         <Router>
           <AuthenticatedApp />
+          <PortalThemeToggle />
         </Router>
         <Toaster />
       </QueryClientProvider>

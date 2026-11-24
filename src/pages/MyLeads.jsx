@@ -5,10 +5,10 @@ import moment from "moment";
 import ChangePasswordDialog from "@/components/staff/ChangePasswordDialog";
 import VehicleImage from "@/components/VehicleImage";
 
-const GOLD = "#C9A84C";
+const GOLD = "var(--gold)";
 
 const STATUS_COLORS = {
-  "New": { bg: "#C9A84C20", color: "#C9A84C" },
+  "New": { bg: "#C9A84C20", color: "var(--gold)" },
   "Contacted": { bg: "#3b82f620", color: "#3b82f6" },
   "Test Drive": { bg: "#a855f720", color: "#a855f7" },
   "Approved": { bg: "#22c55e20", color: "#22c55e" },
@@ -493,7 +493,7 @@ export default function MyLeads() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className={`text-sm font-semibold ${t.completed ? "line-through text-gray-400" : "text-gray-900"}`}>{t.description}</p>
-                      <span className="px-2 py-0.5 rounded text-xs" style={{ background: "#C9A84C20", color: "#C9A84C" }}>{t.task_type}</span>
+                      <span className="px-2 py-0.5 rounded text-xs" style={{ background: "#C9A84C20", color: "var(--gold)" }}>{t.task_type}</span>
                     </div>
                     <div className="flex gap-3 mt-1 flex-wrap">
                       <p className="text-xs text-gray-400">{t.task_date}</p>

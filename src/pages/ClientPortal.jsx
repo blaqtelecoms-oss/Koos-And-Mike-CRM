@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import AdvertFeed from "@/components/client/AdvertFeed";
 
-const GOLD = "#C9A84C";
+const GOLD = "var(--gold)";
 
 const TEAM = [
   { name: "Koos", phone: "069 007 4746", wa: "27690074746" },

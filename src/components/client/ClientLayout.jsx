@@ -2,7 +2,7 @@ import { MessageCircle, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
 
-const GOLD = "#C9A84C";
+const GOLD = "var(--gold)";
 
 const navItems = [
   { label: "Home", path: "/ClientPortal" },

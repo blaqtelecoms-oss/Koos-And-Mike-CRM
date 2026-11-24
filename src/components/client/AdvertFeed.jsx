@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "@/api/supabaseClient";
 import { MessageCircle, ChevronLeft, ChevronRight, Play, CheckCircle } from "lucide-react";
 
-const GOLD = "#C9A84C";
+const GOLD = "var(--gold)";
 
 function getYouTubeId(url) {
   if (!url) return null;

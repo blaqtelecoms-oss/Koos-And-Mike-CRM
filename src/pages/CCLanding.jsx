@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Star, ChevronDown, Eye, EyeOff, ArrowRight, Phone } from "lucide-react";
 import { api } from "@/api/supabaseClient";
 
-const BLUE = "#3b82f6";
+const BLUE = "#ff9d00";
 
 export default function CCLanding() {
   const [consultants, setConsultants] = useState([]);
@@ -61,7 +61,7 @@ export default function CCLanding() {
     <div className="km-admin-page min-h-screen flex flex-col" style={{ background: "var(--app-canvas)" }}>
       <div className="h-1 w-full" style={{ background: BLUE }} />
 
-      <header className="border-b py-4 px-6" style={{ borderColor: "#3b82f622", background: "rgba(255,255,255,0.85)" }}>
+      <header className="border-b py-4 px-6" style={{ borderColor: "#ff9d0022", background: "var(--glass)" }}>
         <div className="max-w-3xl mx-auto flex items-center gap-3">
           <img
             src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo.png"
@@ -70,14 +70,14 @@ export default function CCLanding() {
           />
           <div>
             <h1 className="font-bold text-base leading-none" style={{ color: BLUE }}>Koos & Mike Cars</h1>
-            <p className="text-xs" style={{ color: "#3b82f666" }}>Call Centre Portal</p>
+            <p className="text-xs" style={{ color: "#ff9d0066" }}>Call Centre Portal</p>
           </div>
         </div>
       </header>
 
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-12">
         <div className="text-center mb-10 max-w-xl">
-          <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium mb-5 border" style={{ background: "#3b82f618", borderColor: "#3b82f644", color: BLUE }}>
+          <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium mb-5 border" style={{ background: "#ff9d0018", borderColor: "#ff9d0044", color: BLUE }}>
             <Phone className="w-4 h-4" /> Call Centre Access
           </div>
           <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
@@ -91,9 +91,9 @@ export default function CCLanding() {
         <form onSubmit={handleLogin} className="w-full max-w-md space-y-4">
           <div
             className="rounded-2xl p-8 border space-y-5"
-            style={{ background: "rgba(0,0,0,0.03)", borderColor: "#3b82f633" }}
+            style={{ background: "rgba(0,0,0,0.03)", borderColor: "#ff9d0033" }}
           >
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: "#3b82f618" }}>
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: "#ff9d0018" }}>
               <Phone className="w-7 h-7" style={{ color: BLUE }} />
             </div>
 
@@ -102,7 +102,7 @@ export default function CCLanding() {
               <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Your Name</label>
               {loading ? (
                 <div className="flex justify-center py-4">
-                  <div className="w-6 h-6 border-2 border-blue-600 border-t-blue-300 rounded-full animate-spin" />
+                  <div className="w-6 h-6 border-2 border-amber-500 border-t-amber-200 rounded-full animate-spin" />
                 </div>
               ) : (
                 <div className="relative">
@@ -112,7 +112,7 @@ export default function CCLanding() {
                     className="w-full appearance-none px-4 py-3 pr-10 rounded-xl text-gray-900 outline-none text-sm font-medium"
                     style={{
                       background: "var(--glass)",
-                      border: `1px solid ${selectedId ? BLUE : "#3b82f633"}`,
+                      border: `1px solid ${selectedId ? BLUE : "#ff9d0033"}`,
                       color: selectedId ? "#fff" : "#ffffff66"
                     }}
                   >
@@ -138,7 +138,7 @@ export default function CCLanding() {
                   className="w-full px-4 py-3 pr-12 rounded-xl text-gray-900 text-sm outline-none"
                   style={{
                     background: "var(--glass)",
-                    border: `1px solid ${error ? "#ef4444" : password ? BLUE : "#3b82f633"}`
+                    border: `1px solid ${error ? "#ef4444" : password ? BLUE : "#ff9d0033"}`
                   }}
                 />
                 <button
@@ -180,7 +180,7 @@ export default function CCLanding() {
         </p>
       </main>
 
-      <footer className="border-t py-5 text-center text-xs" style={{ borderColor: "#3b82f622", color: "var(--mut)" }}>
+      <footer className="border-t py-5 text-center text-xs" style={{ borderColor: "#ff9d0022", color: "var(--mut)" }}>
         © 2026 Koos & Mike Cars · Call Centre Portal
       </footer>
     </div>

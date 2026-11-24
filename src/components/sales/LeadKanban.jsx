@@ -3,7 +3,7 @@ import { api } from "@/api/supabaseClient";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { MessageCircle, Phone, RefreshCw } from "lucide-react";
 
-const GOLD = "#C9A84C";
+const GOLD = "var(--gold)";
 
 const PIPELINE_STAGES = [
   "Initial Contact",
@@ -24,7 +24,7 @@ const STAGE_COLORS = {
   "Engaged": "#8b5cf6",
   "Test Drive Booked": "#f59e0b",
   "Test Drive Done": "#f97316",
-  "With Sales Department": "#C9A84C",
+  "With Sales Department": "var(--gold)",
   "With Finance": "#06b6d4",
   "Application Submitted": "#6366f1",
   "Application Approved": "#22c55e",
@@ -34,7 +34,7 @@ const STAGE_COLORS = {
 };
 
 const STATUS_COLORS = {
-  New: "#C9A84C",
+  New: "var(--gold)",
   Contacted: "#3b82f6",
   "Test Drive": "#a855f7",
   Approved: "#22c55e",

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Star, ChevronDown, Eye, EyeOff, ArrowRight, Lock } from "lucide-react";
 import { api } from "@/api/supabaseClient";
 
-const GOLD = "#C9A84C";
+const GOLD = "var(--gold)";
 
 export default function StaffLanding() {
   const [consultants, setConsultants] = useState([]);
@@ -56,7 +56,7 @@ export default function StaffLanding() {
     <div className="km-admin-page min-h-screen flex flex-col" style={{ background: "var(--app-canvas)" }}>
       <div className="h-1 w-full" style={{ background: GOLD }} />
 
-      <header className="border-b py-4 px-6" style={{ borderColor: "#C9A84C22", background: "rgba(255,255,255,0.85)" }}>
+      <header className="border-b py-4 px-6" style={{ borderColor: "var(--glass-border)", background: "var(--glass)" }}>
         <div className="max-w-3xl mx-auto flex items-center gap-3">
           <img
             src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo.png"

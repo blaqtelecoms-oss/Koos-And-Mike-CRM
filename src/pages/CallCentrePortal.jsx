@@ -12,8 +12,8 @@ import {
 } from "lucide-react";
 import moment from "moment";
 
-const GOLD = "#C9A84C";
-const BLUE = "#3b82f6";
+const GOLD = "var(--gold)";
+const BLUE = "#ff9d00";
 const PIPELINE_STAGES = [
   "Initial Contact", "Engaged", "Test Drive Booked", "Test Drive Done",
   "With Sales Department", "With Finance", "Application Submitted",
@@ -111,7 +111,7 @@ export default function CallCentrePortal() {
 
   if (loading || !consultant) return (
     <div className="km-admin-page fixed inset-0 flex items-center justify-center" style={{ background: "var(--app-canvas)" }}>
-      <div className="w-10 h-10 border-4 border-blue-700 border-t-blue-400 rounded-full animate-spin" />
+      <div className="w-10 h-10 border-4 border-amber-600 border-t-blue-400 rounded-full animate-spin" />
     </div>
   );
 
@@ -120,13 +120,13 @@ export default function CallCentrePortal() {
       <div className="h-1 w-full" style={{ background: BLUE }} />
 
       {/* Header */}
-      <header className="border-b sticky top-0 z-50 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.85)", borderColor: "#3b82f622" }}>
+      <header className="border-b sticky top-0 z-50 backdrop-blur-sm" style={{ background: "var(--glass)", borderColor: "#ff9d0022" }}>
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo.png" alt="K&M" className="w-10 h-10 object-contain" />
             <div>
               <h1 className="font-bold text-lg leading-none" style={{ color: BLUE }}>Call Centre Portal</h1>
-              <p className="text-xs" style={{ color: "#3b82f650" }}>Koos & Mike Cars</p>
+              <p className="text-xs" style={{ color: "#ff9d0050" }}>Koos & Mike Cars</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -165,7 +165,7 @@ export default function CallCentrePortal() {
           <a href="/InsuranceCallFlow">
             <div className="rounded-2xl border p-4 flex items-center gap-4 hover:opacity-90 transition-opacity cursor-pointer" style={{ background: "#0ea5e915", borderColor: "#0ea5e940" }}>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ background: "#0ea5e922" }}>
-                <Shield className="w-6 h-6 text-blue-400" />
+                <Shield className="w-6 h-6 text-amber-500" />
               </div>
               <div>
                 <p className="font-bold text-gray-900">Insurance Lead Script</p>
@@ -178,7 +178,7 @@ export default function CallCentrePortal() {
           {/* Quick Stats */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <StatCard label="Unassigned Leads" value={unassignedCount} color="#ef4444" icon={<AlertCircle className="w-5 h-5" />} />
-            <StatCard label="New Today" value={newTodayCount} color="#3b82f6" icon={<Clock className="w-5 h-5" />} />
+            <StatCard label="New Today" value={newTodayCount} color="#ff9d00" icon={<Clock className="w-5 h-5" />} />
             <StatCard label="Total Leads" value={leads.length} color={GOLD} icon={<UserCheck className="w-5 h-5" />} />
           </div>
 
@@ -218,8 +218,8 @@ export default function CallCentrePortal() {
               {[["unassigned", "Unassigned"], ["new", "New"], ["active", "Active"], ["all", "All"]].map(([v, l]) => (
                 <button key={v} onClick={() => setFilterStatus(v)} className="px-3 py-2 rounded-lg text-xs font-semibold border transition-all"
                   style={filterStatus === v
-                    ? { background: "#3b82f6", color: "#fff", borderColor: "transparent" }
-                    : { background: "transparent", color: "#3b82f6", borderColor: "#3b82f640" }}>
+                    ? { background: "#ff9d00", color: "#fff", borderColor: "transparent" }
+                    : { background: "transparent", color: "#ff9d00", borderColor: "#ff9d0040" }}>
                   {l}
                 </button>
               ))}
@@ -259,7 +259,7 @@ export default function CallCentrePortal() {
 
 function LeadRow({ lead, onCall }) {
   const isUnassigned = !lead.assigned_consultant || lead.assigned_consultant === "Unassigned";
-  const statusColors = { "New": "#3b82f6", "Contacted": "#eab308", "Test Drive": "#a855f7", "Approved": "#22c55e", "Sold": "#10b981", "Lost": "#ef4444" };
+  const statusColors = { "New": "#ff9d00", "Contacted": "#eab308", "Test Drive": "#a855f7", "Approved": "#22c55e", "Sold": "#10b981", "Lost": "#ef4444" };
   const c = statusColors[lead.status] || "#6b7280";
 
   return (
@@ -285,7 +285,7 @@ function LeadRow({ lead, onCall }) {
             <MessageCircle className="w-4 h-4 text-green-400" />
           </button>
         </a>
-        <Button size="sm" onClick={onCall} className="bg-blue-600 hover:bg-blue-700 text-white gap-1">
+        <Button size="sm" onClick={onCall} className="bg-amber-500 hover:bg-amber-600 text-white gap-1">
           <Phone className="w-3.5 h-3.5" /> Log Call
         </Button>
       </div>
@@ -332,7 +332,7 @@ function CallLogDialog({ lead, agent, allConsultants, onClose, onSaved }) {
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Phone className="w-4 h-4 text-blue-400" />
+            <Phone className="w-4 h-4 text-amber-500" />
             Log Call — {lead.lead_name}
           </DialogTitle>
         </DialogHeader>
@@ -341,7 +341,7 @@ function CallLogDialog({ lead, agent, allConsultants, onClose, onSaved }) {
           {/* Call now buttons */}
           <div className="flex gap-2">
             <a href={`tel:${lead.phone}`} className="flex-1">
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 gap-2">
+              <Button className="w-full bg-amber-500 hover:bg-amber-600 gap-2">
                 <Phone className="w-4 h-4" /> Call {lead.phone}
               </Button>
             </a>
@@ -424,7 +424,7 @@ function CallLogDialog({ lead, agent, allConsultants, onClose, onSaved }) {
 
           <div className="flex gap-3 pt-2">
             <Button variant="outline" onClick={onClose} className="flex-1">Cancel</Button>
-            <Button onClick={handleSave} disabled={saving} className="flex-1 bg-blue-600 hover:bg-blue-700">
+            <Button onClick={handleSave} disabled={saving} className="flex-1 bg-amber-500 hover:bg-amber-600">
               {saving ? "Saving..." : <><CheckCircle2 className="w-4 h-4 mr-1" /> Save & Allocate</>}
             </Button>
           </div>

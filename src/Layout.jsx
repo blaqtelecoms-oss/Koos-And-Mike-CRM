@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { api } from "@/api/supabaseClient";
 import DeleteAccountDialog from "@/components/DeleteAccountDialog";
 import Avatar from "@/components/premium/Avatar";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const TOP_LEVEL_PAGES = ["Dashboard", "Leads", "Vehicles", "Tasks", "SocialPosts", "TradeIns", "CarRequests", "Adverts"];
 
@@ -160,6 +161,7 @@ export default function Layout({ children, currentPageName }) {
             <Avatar name={user?.full_name || user?.email || "?"} size={28} />
             <span>{firstName}</span>
           </div>
+          <ThemeToggle />
         </div>
 
         {/* Page content */}

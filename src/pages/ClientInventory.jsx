@@ -41,9 +41,9 @@ export default function ClientInventory() {
 
         {/* Website CTA */}
         <div className="rounded-xl p-4 mb-8 flex flex-col sm:flex-row items-center justify-between gap-3 border" style={{ background: "#C9A84C15", borderColor: "#C9A84C44" }}>
-          <p className="text-sm" style={{ color: "#C9A84C" }}>🌐 For the full up-to-date inventory, visit our website</p>
+          <p className="text-sm" style={{ color: "var(--gold)" }}>🌐 For the full up-to-date inventory, visit our website</p>
           <a href="https://www.koosandmike.co.za" target="_blank" rel="noreferrer">
-            <Button size="sm" className="gap-2 text-black font-bold" style={{ background: "#C9A84C" }}>
+            <Button size="sm" className="gap-2 text-black font-bold" style={{ background: "var(--gold)" }}>
               <ExternalLink className="w-4 h-4" /> koosandmike.co.za
             </Button>
           </a>
@@ -67,7 +67,7 @@ export default function ClientInventory() {
                 size="sm"
                 onClick={() => setDealerFilter(s)}
                 variant={dealerFilter === s ? "default" : "outline"}
-                style={dealerFilter === s ? { background: "#C9A84C", color: "#000", border: "none" } : {}}
+                style={dealerFilter === s ? { background: "var(--gold)", color: "#000", border: "none" } : {}}
                 className={dealerFilter === s ? "" : "border-amber-200/60 text-slate-300 hover:bg-white/70"}
               >
                 {s === "All" ? "All Stands" : s}
@@ -85,7 +85,7 @@ export default function ClientInventory() {
             <Car className="w-16 h-16 mx-auto mb-4 opacity-30" />
             <p className="text-lg">No vehicles found matching your search.</p>
             <a href="https://www.koosandmike.co.za" target="_blank" rel="noreferrer" className="inline-block mt-4">
-              <Button className="gap-2 text-black font-bold" style={{ background: "#C9A84C" }}>
+              <Button className="gap-2 text-black font-bold" style={{ background: "var(--gold)" }}>
                 <ExternalLink className="w-4 h-4" /> Check Full Website
               </Button>
             </a>
@@ -131,7 +131,7 @@ function VehicleCard({ vehicle }) {
         <p className="text-slate-400 text-xs mb-1">{vehicle.stand || ""}</p>
         {vehicle.mileage && <p className="text-slate-400 text-xs mb-3">{vehicle.mileage.toLocaleString()} km</p>}
         {vehicle.price && (
-          <p className="font-bold text-xl mb-4" style={{ color: "#C9A84C" }}>R {vehicle.price.toLocaleString()}</p>
+          <p className="font-bold text-xl mb-4" style={{ color: "var(--gold)" }}>R {vehicle.price.toLocaleString()}</p>
         )}
         <div className="flex gap-2 mt-auto">
           <a href={`https://wa.me/27000000000?text=${whatsappMsg}`} target="_blank" rel="noreferrer" className="flex-1">

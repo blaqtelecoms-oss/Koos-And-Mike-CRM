@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Eye, EyeOff, KeyRound } from "lucide-react";
 import { api } from "@/api/supabaseClient";
 
-const GOLD = "#C9A84C";
+const GOLD = "var(--gold)";
 
 export default function ChangePasswordDialog({ consultantId, open, onClose, forced = false }) {
   const [newPassword, setNewPassword] = useState("");

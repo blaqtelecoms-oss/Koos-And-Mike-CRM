@@ -4,7 +4,7 @@ import { api } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Car, Star, MessageCircle } from "lucide-react";
 
-const GOLD = "#C9A84C";
+const GOLD = "var(--gold)";
 
 export default function ClientLogin() {
   const navigate = useNavigate();

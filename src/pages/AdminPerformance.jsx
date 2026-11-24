@@ -195,33 +195,22 @@ export default function AdminPerformance() {
 
   if (loading) {
     return (
-      <div className="km-admin-page fixed inset-0 flex items-center justify-center" style={{ background: "var(--app-canvas)" }}>
+      <div className="flex items-center justify-center h-96">
         <div className="w-10 h-10 border-4 border-amber-700 border-t-amber-400 rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="km-admin-page min-h-screen" style={{ background: "var(--app-canvas)" }}>
-      <div className="h-1 w-full" style={{ background: GOLD }} />
-
-      {/* Header */}
-      <header className="border-b sticky top-0 z-50 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.85)", borderColor: "#C9A84C22" }}>
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo.png" alt="K&M" className="w-10 h-10 object-contain" />
-            <div>
-              <h1 className="font-bold text-lg leading-none" style={{ color: GOLD }}>Admin Performance Monitor</h1>
-              <p className="text-xs" style={{ color: "#C9A84C66" }}>Koos & Mike Cars · Internal Only</p>
-            </div>
-          </div>
-          <Button variant="ghost" size="sm" className="text-amber-400 hover:text-amber-300 gap-2" onClick={() => api.auth.logout()}>
-            <LogOut className="w-4 h-4" /> Logout
-          </Button>
+    <div>
+      <div className="km-hero">
+        <div>
+          <h1 className="km-h1">Performance Monitor</h1>
+          <div className="km-sub">Koos & Mike Cars · Internal only</div>
         </div>
-      </header>
+      </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
+      <div className="space-y-8">
 
         {/* Portal Links — only for Blaq Telecoms admin */}
         {user?.email?.toLowerCase().includes("blaq") && (
@@ -270,7 +259,7 @@ export default function AdminPerformance() {
 
         {/* Summary KPIs */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <KpiCard icon={<Users className="w-6 h-6" />} label="New Leads" value={totalNewLeads} color="#C9A84C" />
+          <KpiCard icon={<Users className="w-6 h-6" />} label="New Leads" value={totalNewLeads} color="var(--gold)" />
           <KpiCard icon={<Phone className="w-6 h-6" />} label="Leads Called" value={totalCalled} color="#22c55e" />
           <KpiCard icon={<PhoneOff className="w-6 h-6" />} label="Not Contacted" value={totalNotCalled} color="#ef4444" />
           <KpiCard icon={<Clock className="w-6 h-6" />} label="Avg Response" value={avgResponseAll !== null ? `${avgResponseAll}m` : "N/A"} color="#a78bfa" />
@@ -736,7 +725,7 @@ function ConsultantCard({ stats }) {
     <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "#C9A84C22" }}>
       {/* Header */}
       <div className="px-5 py-4 border-b flex items-center gap-3" style={{ background: "#C9A84C12", borderColor: "#C9A84C22" }}>
-        <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg text-black" style={{ background: "#C9A84C" }}>
+        <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg text-black" style={{ background: "var(--gold)" }}>
           {stats.consultant[0]}
         </div>
         <div className="flex-1">
@@ -744,7 +733,7 @@ function ConsultantCard({ stats }) {
           <p className="text-xs" style={{ color: "#C9A84C88" }}>Sales Consultant</p>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-extrabold" style={{ color: "#C9A84C" }}>{stats.totalSold}</p>
+          <p className="text-2xl font-extrabold" style={{ color: "var(--gold)" }}>{stats.totalSold}</p>
           <p className="text-xs text-gray-400">Total Sold</p>
         </div>
       </div>
@@ -752,7 +741,7 @@ function ConsultantCard({ stats }) {
       {/* Stats */}
       <div className="p-5 space-y-4" style={{ background: "transparent" }}>
         <div className="grid grid-cols-2 gap-3">
-          <MiniStat label="New Leads" value={stats.newLeads} color="#C9A84C" />
+          <MiniStat label="New Leads" value={stats.newLeads} color="var(--gold)" />
           <MiniStat label="Follow-Ups Logged" value={stats.followUpCount} color="#a78bfa" />
           <MiniStat label="Leads Called" value={stats.calledCount} color="#22c55e" />
           <MiniStat label="Not Contacted" value={stats.notCalledCount} color="#ef4444" />
@@ -769,12 +758,12 @@ function ConsultantCard({ stats }) {
         <div>
           <div className="flex justify-between text-xs mb-1">
             <span className="text-gray-500">Contact Rate</span>
-            <span className="font-semibold" style={{ color: callRate > 70 ? "#22c55e" : callRate > 40 ? "#C9A84C" : "#ef4444" }}>{callRate}%</span>
+            <span className="font-semibold" style={{ color: callRate > 70 ? "#22c55e" : callRate > 40 ? "var(--gold)" : "#ef4444" }}>{callRate}%</span>
           </div>
           <div className="w-full h-2 rounded-full" style={{ background: "rgba(0,0,0,0.06)" }}>
             <div className="h-2 rounded-full transition-all" style={{
               width: `${callRate}%`,
-              background: callRate > 70 ? "#22c55e" : callRate > 40 ? "#C9A84C" : "#ef4444"
+              background: callRate > 70 ? "#22c55e" : callRate > 40 ? "var(--gold)" : "#ef4444"
             }} />
           </div>
         </div>
@@ -821,7 +810,7 @@ function PortalLinks() {
   return (
     <div className="rounded-2xl border p-5 space-y-4" style={{ borderColor: "#C9A84C33", background: "#C9A84C08" }}>
       <div className="flex items-center gap-2">
-        <Link className="w-4 h-4" style={{ color: "#C9A84C" }} />
+        <Link className="w-4 h-4" style={{ color: "var(--gold)" }} />
         <h3 className="font-bold text-gray-900 text-sm">Portal Links</h3>
         <span className="text-xs text-gray-400 ml-1">Share these with your staff</span>
       </div>
@@ -835,7 +824,7 @@ function PortalLinks() {
           <button
             onClick={() => copy(staffUrl, setCopiedStaff)}
             className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
-            style={{ background: copiedStaff ? "#22c55e22" : "#C9A84C22", color: copiedStaff ? "#4ade80" : "#C9A84C", border: `1px solid ${copiedStaff ? "#22c55e44" : "#C9A84C44"}` }}
+            style={{ background: copiedStaff ? "#22c55e22" : "#C9A84C22", color: copiedStaff ? "#4ade80" : "var(--gold)", border: `1px solid ${copiedStaff ? "#22c55e44" : "#C9A84C44"}` }}
           >
             {copiedStaff ? <><Check className="w-3.5 h-3.5" /> Copied</> : <><Copy className="w-3.5 h-3.5" /> Copy</>}
           </button>

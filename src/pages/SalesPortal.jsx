@@ -160,23 +160,23 @@ export default function SalesPortal() {
   }
 
   return (
-    <div className="km-admin-page space-y-8 min-h-screen" style={{ background: "var(--app-canvas)" }}>
+    <div className="space-y-8">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Sales Portal</h1>
-          <p className="text-gray-600 mt-1">Manage consultants and track the pipeline</p>
+          <h1 className="km-h1">Sales Portal</h1>
+          <p className="km-sub">Manage consultants and track the pipeline</p>
         </div>
         <div className="flex items-center gap-2">
           {/* View toggle */}
           <div className="flex rounded-lg overflow-hidden border" style={{ borderColor: "#C9A84C33" }}>
             <button onClick={() => setView("team")}
               className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold transition-all"
-              style={{ background: view === "team" ? GOLD : "transparent", color: view === "team" ? "#000" : "#C9A84C" }}>
+              style={{ background: view === "team" ? GOLD : "transparent", color: view === "team" ? "#000" : "var(--gold)" }}>
               <List className="w-4 h-4" /> Team
             </button>
             <button onClick={() => setView("kanban")}
               className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold transition-all"
-              style={{ background: view === "kanban" ? GOLD : "transparent", color: view === "kanban" ? "#000" : "#C9A84C" }}>
+              style={{ background: view === "kanban" ? GOLD : "transparent", color: view === "kanban" ? "#000" : "var(--gold)" }}>
               <Columns className="w-4 h-4" /> Kanban
             </button>
           </div>

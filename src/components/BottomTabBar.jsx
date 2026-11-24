@@ -29,7 +29,7 @@ export default function BottomTabBar() {
               key={path}
               to={path}
               className="flex-1 flex flex-col items-center justify-center gap-1 transition-colors"
-              style={{ color: isActive ? "#C9A84C" : "var(--mut)" }}
+              style={{ color: isActive ? "var(--gold)" : "var(--mut)" }}
             >
               <Icon className="w-5 h-5" />
               <span className="text-[10px] font-semibold tracking-wide">{label}</span>
