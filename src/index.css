@@ -52,7 +52,7 @@
 /* ===== Base ===== */
 * { box-sizing: border-box; }
 
-html, body { height: 100%; }
+html, body, #root { height: 100%; }
 
 body {
   margin: 0;
@@ -128,6 +128,7 @@ body:has(.km-app) {
 
 .km-nav-scroll {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   margin: 20px -4px 12px;
   padding: 0 4px;
@@ -583,6 +584,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 /* ===== Responsive ===== */
 @media (max-width: 900px) {
   body:has(.km-app) { overflow: auto; height: auto; }
+  #root { height: auto; min-height: 100%; }
   .km-app {
     grid-template-columns: 1fr;
     grid-template-rows: auto;
