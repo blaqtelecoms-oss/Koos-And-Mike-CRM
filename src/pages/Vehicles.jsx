@@ -109,24 +109,24 @@ export default function Vehicles() {
               <div style={{ position: "absolute", top: 8, right: 8 }}><StatusPill status={vehicle.status} /></div>
             </div>
             <div style={{ paddingTop: 12 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                <div>
-                  <div style={{ fontWeight: 600, color: "var(--ink)", fontSize: 14, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{vehicle.title}</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: "var(--gold-deep)" }}>{formatPrice(vehicle.price)}</div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div style={{ fontWeight: 600, color: "var(--ink)", fontSize: 14, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={vehicle.title}>{vehicle.title}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "var(--gold-deep)", whiteSpace: "nowrap" }}>{formatPrice(vehicle.price)}</div>
                 </div>
-                <div style={{ display: "flex", gap: 4 }}>
+                <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
                   <button onClick={() => handleEdit(vehicle)} style={{ background: "none", border: 0, cursor: "pointer", color: "var(--mut)", padding: 4 }}><Edit style={{ width: 16, height: 16 }} /></button>
                   <button onClick={() => handleDelete(vehicle.id)} style={{ background: "none", border: 0, cursor: "pointer", color: "var(--mut)", padding: 4 }}><Trash2 style={{ width: 16, height: 16 }} /></button>
                 </div>
               </div>
-              <div style={{ fontSize: 12, color: "var(--mut)", marginTop: 8 }}>
+              <div style={{ fontSize: 12, color: "var(--mut)", marginTop: 8, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {vehicle.stand && <span>Stand: {vehicle.stand}</span>}
                 {vehicle.mileage && <span> · {vehicle.mileage.toLocaleString()} km</span>}
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, paddingTop: 8, borderTop: "1px solid var(--line)" }}>
+              <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", columnGap: 8, rowGap: 2, marginTop: 8, paddingTop: 8, borderTop: "1px solid var(--line)" }}>
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: vehicle.uploaded_to_website ? "var(--gold)" : "var(--mut)", opacity: vehicle.uploaded_to_website ? 1 : 0.3 }} />
-                <span style={{ fontSize: 11, color: "var(--mut)" }}>{vehicle.uploaded_to_website ? "On Website" : "Not Uploaded"}</span>
-                {vehicle.finance_available && <span style={{ fontSize: 11, color: "var(--gold-deep)" }}>· Finance Available</span>}
+                <span style={{ fontSize: 11, color: "var(--mut)", whiteSpace: "nowrap" }}>{vehicle.uploaded_to_website ? "On Website" : "Not Uploaded"}</span>
+                {vehicle.finance_available && <span style={{ fontSize: 11, color: "var(--gold-deep)", whiteSpace: "nowrap" }}>· Finance Available</span>}
               </div>
             </div>
           </GlassCard>
