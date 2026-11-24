@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Plus, Search, Phone, Mail, Car, Filter, Edit, ClipboardList, Clock, RefreshCw, MoreHorizontal } from "lucide-react";
 import moment from "moment";
 import LeadFollowUpDialog from "@/components/leads/LeadFollowUpDialog";
@@ -223,7 +224,7 @@ export default function Leads() {
           <div className="km-table-wrap">
             <table className="km-table">
               <thead>
-                <tr><th>Lead</th><th>Interest</th><th>Source</th><th>Consultant</th><th>Status</th><th>Added</th><th></th></tr>
+                <tr><th>Lead</th><th>Interest</th><th>Status</th><th></th></tr>
               </thead>
               <tbody>
                 {filteredLeads.map(lead => {
@@ -239,25 +240,40 @@ export default function Leads() {
                           </div>
                         </div>
                       </td>
-                      <td style={{ color: "var(--mut)" }}>
-                        {lead.car_interested && (() => {
-                          const matched = findMatchingVehicle(lead.car_interested);
-                          return matched?.images?.length > 0 ? (
-                            <button onClick={() => setVehicleDialogLead(lead)} style={{ color: "var(--gold-deep)", cursor: "pointer", background: "none", border: 0, textAlign: "left", textDecoration: "underline" }}>{lead.car_interested}</button>
-                          ) : <span>{lead.car_interested}</span>;
-                        })() || "—"}
-                        {platform && <span style={{ marginLeft: 4, fontSize: 10, padding: "2px 6px", borderRadius: 8, background: platform.color + "22", color: platform.color }}>{platform.name}</span>}
-                      </td>
-                      <td style={{ color: "var(--mut)" }}>{lead.source || "—"}</td>
-                      <td style={{ color: "var(--mut)" }}>{lead.assigned_consultant || "Unassigned"}</td>
-                      <td><StatusPill status={lead.status} /></td>
-                      <td style={{ color: "var(--mut)", fontSize: 11 }}>{moment(lead.created_date).format("DD MMM, HH:mm")}</td>
-                      <td>
-                        <div style={{ display: "flex", gap: 4 }}>
-                          <button onClick={() => handleEdit(lead)} style={{ background: "none", border: 0, cursor: "pointer", color: "var(--mut)", padding: 4 }}><Edit style={{ width: 15, height: 15 }} /></button>
-                          <button onClick={() => setFollowUpLead(lead)} style={{ background: "none", border: 0, cursor: "pointer", color: "var(--mut)", padding: 4 }}><ClipboardList style={{ width: 15, height: 15 }} /></button>
-                          <button onClick={() => setCallingLead(lead)} style={{ background: "none", border: 0, cursor: "pointer", color: "var(--mut)", padding: 4 }}><Phone style={{ width: 15, height: 15 }} /></button>
+                      <td style={{ color: "var(--mut)", maxWidth: 300 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+                          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={lead.car_interested || ""}>
+                            {lead.car_interested && (() => {
+                              const matched = findMatchingVehicle(lead.car_interested);
+                              return matched?.images?.length > 0 ? (
+                                <button onClick={() => setVehicleDialogLead(lead)} style={{ color: "var(--gold-deep)", cursor: "pointer", background: "none", border: 0, padding: 0, textAlign: "left", textDecoration: "underline" }}>{lead.car_interested}</button>
+                              ) : <span>{lead.car_interested}</span>;
+                            })() || "—"}
+                          </div>
+                          {platform && <span style={{ flexShrink: 0, fontSize: 10, padding: "2px 6px", borderRadius: 8, background: platform.color + "22", color: platform.color }}>{platform.name}</span>}
                         </div>
+                      </td>
+                      <td><StatusPill status={lead.status} /></td>
+                      <td style={{ textAlign: "right" }}>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="km-icon-btn" style={{ cursor: "pointer" }} aria-label={`Options for ${lead.lead_name}`}>
+                              <MoreHorizontal style={{ width: 16, height: 16 }} />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-60">
+                            <DropdownMenuLabel style={{ fontSize: 11, color: "var(--mut)", fontWeight: 400 }}>Lead details</DropdownMenuLabel>
+                            <div style={{ display: "grid", gap: 5, padding: "0 8px 8px", fontSize: 11.5, color: "var(--mut)" }}>
+                              <div>Source: <span style={{ color: "var(--ink)" }}>{lead.source || "—"}</span></div>
+                              <div>Consultant: <span style={{ color: "var(--ink)" }}>{lead.assigned_consultant || "Unassigned"}</span></div>
+                              <div>Added: <span style={{ color: "var(--ink)" }}>{moment(lead.created_date).format("DD MMM YYYY, HH:mm")}</span></div>
+                            </div>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => handleEdit(lead)} style={{ cursor: "pointer" }}><Edit style={{ width: 14, height: 14, marginRight: 8 }} /> Edit lead</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setFollowUpLead(lead)} style={{ cursor: "pointer" }}><ClipboardList style={{ width: 14, height: 14, marginRight: 8 }} /> Follow-up</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setCallingLead(lead)} style={{ cursor: "pointer" }}><Phone style={{ width: 14, height: 14, marginRight: 8 }} /> Log call</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </td>
                     </tr>
                   );
