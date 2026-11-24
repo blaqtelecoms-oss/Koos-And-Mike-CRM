@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,7 +23,7 @@ export default function ClientCarRequest() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await base44.entities.CarRequest.create({
+    await api.entities.CarRequest.create({
       ...form,
       year_from: form.year_from ? parseInt(form.year_from) : undefined,
       year_to: form.year_to ? parseInt(form.year_to) : undefined,

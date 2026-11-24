@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,12 +28,12 @@ export default function Vehicles() {
 
   useEffect(() => { loadVehicles(); }, []);
 
-  const loadVehicles = async () => { const data = await base44.entities.Vehicle.list("-created_date", 500); setVehicles(data); setLoading(false); };
+  const loadVehicles = async () => { const data = await api.entities.Vehicle.list("-created_date", 500); setVehicles(data); setLoading(false); };
 
   const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files); if (!files.length) return; setUploading(true);
     const newImages = [];
-    for (const file of files) { const { file_url } = await base44.integrations.Core.UploadFile({ file }); newImages.push(file_url); }
+    for (const file of files) { const { file_url } = await api.integrations.Core.UploadFile({ file }); newImages.push(file_url); }
     setForm({ ...form, images: [...form.images, ...newImages] }); setUploading(false);
   };
   const removeImage = (index) => setForm({ ...form, images: form.images.filter((_, i) => i !== index) });
@@ -41,8 +41,8 @@ export default function Vehicles() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = { ...form, year: form.year ? Number(form.year) : null, mileage: form.mileage ? Number(form.mileage) : null, price: form.price ? Number(form.price) : null };
-    if (editingVehicle) await base44.entities.Vehicle.update(editingVehicle.id, payload);
-    else await base44.entities.Vehicle.create(payload);
+    if (editingVehicle) await api.entities.Vehicle.update(editingVehicle.id, payload);
+    else await api.entities.Vehicle.create(payload);
     setShowForm(false); setEditingVehicle(null); resetForm(); loadVehicles();
   };
   const resetForm = () => setForm({ title: "", make: "", model: "", year: "", mileage: "", price: "", stand: "Stand 1", description: "", status: "Available", uploaded_to_website: false, finance_available: true, images: [] });
@@ -51,7 +51,7 @@ export default function Vehicles() {
     setForm({ title: vehicle.title || "", make: vehicle.make || "", model: vehicle.model || "", year: vehicle.year?.toString() || "", mileage: vehicle.mileage?.toString() || "", price: vehicle.price?.toString() || "", stand: vehicle.stand || "Stand 1", description: vehicle.description || "", status: vehicle.status || "Available", uploaded_to_website: vehicle.uploaded_to_website || false, finance_available: vehicle.finance_available !== false, images: vehicle.images || [] });
     setShowForm(true);
   };
-  const handleDelete = async (id) => { if (confirm("Are you sure you want to delete this vehicle?")) { await base44.entities.Vehicle.delete(id); loadVehicles(); } };
+  const handleDelete = async (id) => { if (confirm("Are you sure you want to delete this vehicle?")) { await api.entities.Vehicle.delete(id); loadVehicles(); } };
 
   const filteredVehicles = vehicles.filter(v => {
     const ms = v.title?.toLowerCase().includes(search.toLowerCase()) || v.make?.toLowerCase().includes(search.toLowerCase()) || v.model?.toLowerCase().includes(search.toLowerCase());

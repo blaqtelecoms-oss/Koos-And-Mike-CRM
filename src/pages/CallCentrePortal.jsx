@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -56,7 +56,7 @@ export default function CallCentrePortal() {
     setTogglingAvailability(true);
     const newVal = !consultant.available;
     try {
-      await base44.entities.Consultant.update(consultant.id, { available: newVal });
+      await api.entities.Consultant.update(consultant.id, { available: newVal });
       const updated = { ...consultant, available: newVal };
       setConsultant(updated);
       localStorage.setItem("ccConsultant", JSON.stringify(updated));
@@ -66,19 +66,19 @@ export default function CallCentrePortal() {
   };
 
   const loadConsultants = async () => {
-    const consultants = await base44.entities.Consultant.list("-created_date", 100);
+    const consultants = await api.entities.Consultant.list("-created_date", 100);
     setAllConsultants(consultants.filter(c => c.active && c.available && c.role === "Sales"));
   };
 
   const loadLeads = async () => {
-    const data = await base44.entities.Lead.list("-created_date", 500);
+    const data = await api.entities.Lead.list("-created_date", 500);
     setLeads(data);
     setLoading(false);
   };
 
   const loadTodayFollowUps = async () => {
     const today = moment().format("YYYY-MM-DD");
-    const data = await base44.entities.LeadFollowUp.filter({ update_date: today });
+    const data = await api.entities.LeadFollowUp.filter({ update_date: today });
     setTodayFollowUps(data);
   };
 
@@ -123,7 +123,7 @@ export default function CallCentrePortal() {
       <header className="border-b sticky top-0 z-50 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.85)", borderColor: "#3b82f622" }}>
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png" alt="K&M" className="w-10 h-10 object-contain" />
+            <img src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo.png" alt="K&M" className="w-10 h-10 object-contain" />
             <div>
               <h1 className="font-bold text-lg leading-none" style={{ color: BLUE }}>Call Centre Portal</h1>
               <p className="text-xs" style={{ color: "#3b82f650" }}>Koos & Mike Cars</p>
@@ -307,7 +307,7 @@ function CallLogDialog({ lead, agent, allConsultants, onClose, onSaved }) {
   const handleSave = async () => {
     setSaving(true);
     // Log the follow-up
-    await base44.entities.LeadFollowUp.create({
+    await api.entities.LeadFollowUp.create({
       lead_id: lead.id,
       lead_name: lead.lead_name,
       update_date: moment().format("YYYY-MM-DD"),
@@ -321,7 +321,7 @@ function CallLogDialog({ lead, agent, allConsultants, onClose, onSaved }) {
     // Update lead: assign consultant + status
     const updates = { status: form.new_status };
     if (form.assign_to) updates.assigned_consultant = form.assign_to;
-    await base44.entities.Lead.update(lead.id, updates);
+    await api.entities.Lead.update(lead.id, updates);
 
     setSaving(false);
     onSaved();

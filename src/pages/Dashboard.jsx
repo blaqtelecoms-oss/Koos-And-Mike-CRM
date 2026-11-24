@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import moment from "moment";
@@ -33,7 +33,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     Promise.all([
-      base44.auth.me().catch(() => null),
+      api.auth.me().catch(() => null),
       loadData()
     ]).then(([user]) => setCurrentUser(user));
     const interval = setInterval(loadData, 5 * 60 * 1000);
@@ -43,9 +43,9 @@ export default function Dashboard() {
   const loadData = async () => {
     try {
       const [leadsData, vehiclesData, tasksData] = await Promise.all([
-        base44.entities.Lead.list("-created_date", 100),
-        base44.entities.Vehicle.list("-created_date", 100),
-        base44.entities.DailyTask.filter({ task_date: moment().format("YYYY-MM-DD") }, "-created_date", 50)
+        api.entities.Lead.list("-created_date", 100),
+        api.entities.Vehicle.list("-created_date", 100),
+        api.entities.DailyTask.filter({ task_date: moment().format("YYYY-MM-DD") }, "-created_date", 50)
       ]);
       setLeads(leadsData || []);
       setVehicles(vehiclesData || []);

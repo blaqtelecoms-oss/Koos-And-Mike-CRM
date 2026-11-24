@@ -25,7 +25,7 @@ export default function ClientLayout({ children }) {
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link to="/ClientPortal" className="flex items-center gap-3">
             <img
-              src="https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png"
+              src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo.png"
               alt="Koos & Mike Cars"
               className="w-10 h-10 object-contain"
             />

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -64,7 +64,7 @@ export default function LeadFollowUpDialog({ lead, open, onClose }) {
 
   const loadFollowUps = async () => {
     setLoading(true);
-    const data = await base44.entities.LeadFollowUp.filter({ lead_id: lead.id }, "-update_date", 50);
+    const data = await api.entities.LeadFollowUp.filter({ lead_id: lead.id }, "-update_date", 50);
     setFollowUps(data);
     setLoading(false);
   };
@@ -72,7 +72,7 @@ export default function LeadFollowUpDialog({ lead, open, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    await base44.entities.LeadFollowUp.create({
+    await api.entities.LeadFollowUp.create({
       ...form,
       lead_id: lead.id,
       lead_name: lead.lead_name

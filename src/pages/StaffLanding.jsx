@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Star, ChevronDown, Eye, EyeOff, ArrowRight, Lock } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 
 const GOLD = "#C9A84C";
 
@@ -14,7 +14,7 @@ export default function StaffLanding() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    base44.functions.invoke("getConsultants", {})
+    api.functions.invoke("getConsultants", {})
       .then(res => setConsultants(res.data?.consultants || []))
       .catch(() => setConsultants([]))
       .finally(() => setLoading(false));
@@ -26,7 +26,7 @@ export default function StaffLanding() {
     setError("");
     setLogging(true);
     try {
-      const res = await base44.functions.invoke("consultantAuth", {
+      const res = await api.functions.invoke("consultantAuth", {
         action: "login",
         consultantId: selectedId,
         password
@@ -59,7 +59,7 @@ export default function StaffLanding() {
       <header className="border-b py-4 px-6" style={{ borderColor: "#C9A84C22", background: "rgba(255,255,255,0.85)" }}>
         <div className="max-w-3xl mx-auto flex items-center gap-3">
           <img
-            src="https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png"
+            src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo.png"
             alt="Koos & Mike Cars"
             className="w-11 h-11 object-contain"
           />

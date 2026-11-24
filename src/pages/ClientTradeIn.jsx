@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,7 +27,7 @@ export default function ClientTradeIn() {
     setUploadingPhotos(true);
     const urls = [];
     for (const file of files) {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await api.integrations.Core.UploadFile({ file });
       urls.push(file_url);
     }
     setPhotos(prev => [...prev, ...urls]);
@@ -39,7 +39,7 @@ export default function ClientTradeIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await base44.entities.TradeIn.create({
+    await api.entities.TradeIn.create({
       ...form,
       car_year: form.car_year ? parseInt(form.car_year) : undefined,
       mileage: form.mileage ? parseInt(form.mileage) : undefined,

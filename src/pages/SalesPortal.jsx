@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,8 +31,8 @@ export default function SalesPortal() {
     setLoading(true);
     try {
       const [consultantsData, leadsData] = await Promise.all([
-        base44.entities.Consultant.list("-created_date", 100),
-        base44.entities.Lead.list("-created_date", 500)
+        api.entities.Consultant.list("-created_date", 100),
+        api.entities.Lead.list("-created_date", 500)
       ]);
       setConsultants(consultantsData);
       setLeads(leadsData);
@@ -95,11 +95,11 @@ export default function SalesPortal() {
 
     try {
       if (isAdding) {
-        await base44.entities.Consultant.create(formData);
+        await api.entities.Consultant.create(formData);
         // Invite them as a user in the app so they can log in
         if (formData.email) {
           try {
-            await base44.users.inviteUser(formData.email, "user");
+            await api.functions.invoke("inviteUser", { email: formData.email, role: "user", full_name: formData.name });
           } catch (inviteErr) {
             console.warn("Could not invite user (may already exist):", inviteErr);
           }
@@ -107,7 +107,7 @@ export default function SalesPortal() {
         setError("");
         setIsAdding(false);
       } else {
-        await base44.entities.Consultant.update(selectedConsultant.id, formData);
+        await api.entities.Consultant.update(selectedConsultant.id, formData);
         setError("");
         setIsEditing(false);
       }
@@ -123,7 +123,7 @@ export default function SalesPortal() {
     if (!window.confirm("Are you sure you want to delete this consultant?")) return;
 
     try {
-      await base44.entities.Consultant.delete(selectedConsultant.id);
+      await api.entities.Consultant.delete(selectedConsultant.id);
       await loadData();
       setSelectedConsultant(null);
       setFormData({});
@@ -136,7 +136,7 @@ export default function SalesPortal() {
   const handleResetPassword = async () => {
     if (!window.confirm(`Reset password for ${selectedConsultant.name} to default (Leads2026)?`)) return;
     try {
-      await base44.functions.invoke("consultantAuth", {
+      await api.functions.invoke("consultantAuth", {
         action: "resetPassword",
         consultantId: selectedConsultant.id
       });
@@ -458,8 +458,8 @@ export default function SalesPortal() {
                                 </div>
                                 <Button
                                    onClick={async () => {
-                                     await base44.entities.Lead.update(lead.id, { assigned_consultant: selectedConsultant.name });
-                                     const updatedLeads = await base44.entities.Lead.list("-created_date", 500);
+                                     await api.entities.Lead.update(lead.id, { assigned_consultant: selectedConsultant.name });
+                                     const updatedLeads = await api.entities.Lead.list("-created_date", 500);
                                      setLeads(updatedLeads);
                                      // Force re-render by updating selectedConsultant with fresh reference
                                      setSelectedConsultant(curr => ({ ...curr }));

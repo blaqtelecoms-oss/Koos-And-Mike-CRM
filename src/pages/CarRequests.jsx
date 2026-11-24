@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,11 +18,11 @@ export default function CarRequests() {
 
   const { data: requests = [], isLoading } = useQuery({
     queryKey: ["car-requests"],
-    queryFn: () => base44.entities.CarRequest.list("-created_date"),
+    queryFn: () => api.entities.CarRequest.list("-created_date"),
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.CarRequest.update(id, data),
+    mutationFn: ({ id, data }) => api.entities.CarRequest.update(id, data),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["car-requests"] }),
   });
 

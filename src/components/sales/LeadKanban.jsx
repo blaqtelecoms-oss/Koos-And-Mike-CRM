@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { MessageCircle, Phone, RefreshCw } from "lucide-react";
 
@@ -112,9 +112,9 @@ export default function LeadKanban() {
   const loadData = async () => {
     setLoading(true);
     const [leadsData, followUpsData, consultantsData] = await Promise.all([
-      base44.entities.Lead.list("-created_date", 500),
-      base44.entities.LeadFollowUp.list("-update_date", 1000),
-      base44.entities.Consultant.filter({ active: true }, "name", 100),
+      api.entities.Lead.list("-created_date", 500),
+      api.entities.LeadFollowUp.list("-update_date", 1000),
+      api.entities.Consultant.filter({ active: true }, "name", 100),
     ]);
     setLeads(leadsData);
     setFollowUps(followUpsData);
@@ -151,7 +151,7 @@ export default function LeadKanban() {
     ]);
 
     // Persist to backend
-    await base44.entities.LeadFollowUp.create({
+    await api.entities.LeadFollowUp.create({
       lead_id: draggableId,
       lead_name: lead.lead_name,
       pipeline_stage: newStage,

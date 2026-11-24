@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,14 +28,14 @@ export default function Tasks() {
 
   const loadTasks = async () => {
     setLoading(true);
-    const data = await base44.entities.DailyTask.filter({ task_date: selectedDate }, "created_date", 100);
+    const data = await api.entities.DailyTask.filter({ task_date: selectedDate }, "created_date", 100);
     setTasks(data); setLoading(false);
   };
 
-  const handleSubmit = async (e) => { e.preventDefault(); await base44.entities.DailyTask.create({ ...form, task_date: selectedDate }); setShowForm(false); resetForm(); loadTasks(); };
+  const handleSubmit = async (e) => { e.preventDefault(); await api.entities.DailyTask.create({ ...form, task_date: selectedDate }); setShowForm(false); resetForm(); loadTasks(); };
   const resetForm = () => setForm({ task_date: selectedDate, task_type: "Lead Check", description: "", platform: "N/A", notes: "" });
-  const toggleComplete = async (task) => { await base44.entities.DailyTask.update(task.id, { completed: !task.completed }); loadTasks(); };
-  const deleteTask = async (id) => { await base44.entities.DailyTask.delete(id); loadTasks(); };
+  const toggleComplete = async (task) => { await api.entities.DailyTask.update(task.id, { completed: !task.completed }); loadTasks(); };
+  const deleteTask = async (id) => { await api.entities.DailyTask.delete(id); loadTasks(); };
   const navigateDate = (d) => setSelectedDate(moment(selectedDate).add(d, 'days').format("YYYY-MM-DD"));
 
   const completedCount = tasks.filter(t => t.completed).length;
@@ -51,7 +51,7 @@ export default function Tasks() {
     { type: "Social Media Post", description: "Post 1 Reel/Short Video", platform: "Instagram" },
     { type: "Social Media Post", description: "Update Story", platform: "Instagram" }
   ];
-  const addSuggestedTask = async (task) => { await base44.entities.DailyTask.create({ task_date: selectedDate, task_type: task.type, description: task.description, platform: task.platform, completed: false }); loadTasks(); };
+  const addSuggestedTask = async (task) => { await api.entities.DailyTask.create({ task_date: selectedDate, task_type: task.type, description: task.description, platform: task.platform, completed: false }); loadTasks(); };
 
   if (loading) return <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 400 }}><div className="w-8 h-8 border-2 border-amber-500/30 border-t-amber-400 rounded-full animate-spin" /></div>;
 

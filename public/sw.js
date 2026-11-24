@@ -4,8 +4,8 @@ self.addEventListener('push', function(event) {
   const title = data.title || 'New Lead!';
   const options = {
     body: data.body || 'A new lead has been received.',
-    icon: 'https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png',
-    badge: 'https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png',
+    icon: 'https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo.png',
+    badge: 'https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo.png',
     vibrate: [200, 100, 200, 100, 200],
     tag: 'new-lead',
     renotify: true,

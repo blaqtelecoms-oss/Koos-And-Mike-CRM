@@ -1,14 +1,16 @@
 import { useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { useNavigate } from "react-router-dom";
+import { api } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Car, Star, MessageCircle } from "lucide-react";
 
 const GOLD = "#C9A84C";
 
 export default function ClientLogin() {
+  const navigate = useNavigate();
   useEffect(() => {
     // If already logged in, redirect to client portal
-    base44.auth.isAuthenticated().then((authed) => {
+    api.auth.isAuthenticated().then((authed) => {
       if (authed) {
         window.location.href = "/ClientPortal";
       }
@@ -16,7 +18,7 @@ export default function ClientLogin() {
   }, []);
 
   const handleLogin = () => {
-    base44.auth.redirectToLogin("/ClientPortal");
+    navigate("/Login?redirect=/ClientPortal");
   };
 
   return (
@@ -29,7 +31,7 @@ export default function ClientLogin() {
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
-              src="https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png"
+              src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo.png"
               alt="Koos & Mike Cars"
               className="w-11 h-11 object-contain"
             />

@@ -1,8 +1,5 @@
 import { Car, BarChart2, ArrowRight, Star } from "lucide-react";
-import { useState } from "react";
-import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
-import AdminPasswordGate from "@/components/AdminPasswordGate";
 
 const GOLD = "#f6c635";
 const GOLD_DEEP = "#f59e0b";
@@ -15,14 +12,13 @@ const SHADOW = "0 10px 30px rgba(150,125,30,0.12)";
 
 export default function Landing() {
   const navigate = useNavigate();
-  const [showAdminGate, setShowAdminGate] = useState(false);
 
   const handleClientClick = () => {
     navigate("/ClientPortal");
   };
 
   const handleSalesLogin = () => {
-    base44.auth.redirectToLogin("/Dashboard");
+    navigate("/Login?redirect=/Dashboard");
   };
 
   return (
@@ -31,7 +27,7 @@ export default function Landing() {
       <header className="py-5 px-6" style={{ borderBottom: `1px solid rgba(120,105,50,0.14)` }}>
         <div className="max-w-5xl mx-auto flex items-center gap-3">
           <img
-            src="https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png"
+            src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo.png"
             alt="Koos & Mike Cars"
             className="w-11 h-11 object-contain"
           />
@@ -87,7 +83,7 @@ export default function Landing() {
 
           {/* Sales Card */}
           <button
-            onClick={() => setShowAdminGate(true)}
+            onClick={handleSalesLogin}
             className="group text-left rounded-3xl p-8 transition-all duration-200 hover:scale-[1.02] cursor-pointer"
             style={{ background: GLASS, border: `1px solid ${GLASS_BORDER}`, boxShadow: SHADOW, backdropFilter: "blur(18px)" }}
           >
@@ -110,12 +106,6 @@ export default function Landing() {
           </button>
         </div>
       </main>
-
-      <AdminPasswordGate
-        open={showAdminGate}
-        onClose={() => setShowAdminGate(false)}
-        onSuccess={handleSalesLogin}
-      />
 
       <footer className="py-5 text-center text-xs" style={{ color: MUT, borderTop: `1px solid rgba(120,105,50,0.14)` }}>
         © 2026 Koos & Mike Cars · Quality Vehicles, Trusted Service.

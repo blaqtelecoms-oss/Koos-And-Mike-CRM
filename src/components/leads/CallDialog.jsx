@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -39,7 +39,7 @@ export default function CallDialog({ lead, open, onClose, onSaved, onOptimisticU
     }
 
     // Create follow-up log
-    await base44.entities.LeadFollowUp.create({
+    await api.entities.LeadFollowUp.create({
       lead_id: lead.id,
       lead_name: lead.lead_name,
       update_date: moment().format("YYYY-MM-DD"),
@@ -57,7 +57,7 @@ export default function CallDialog({ lead, open, onClose, onSaved, onOptimisticU
     }
 
     // Persist to backend
-    await base44.entities.Lead.update(lead.id, {
+    await api.entities.Lead.update(lead.id, {
       response_time_minutes: responseMinutes,
       status: newStatus
     });

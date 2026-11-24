@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -42,7 +42,7 @@ export default function AdminPerformance() {
   const [editIsManager, setEditIsManager] = useState(false);
 
   useEffect(() => {
-    base44.auth.me().then(u => {
+    api.auth.me().then(u => {
       setUser(u);
       if (u?.role !== "admin") {
         window.location.href = "/";
@@ -53,14 +53,14 @@ export default function AdminPerformance() {
   }, []);
 
   const loadConsultants = async () => {
-    const res = await base44.functions.invoke("getConsultants", {});
+    const res = await api.functions.invoke("getConsultants", {});
     setConsultants(res.data?.consultants || []);
   };
 
   const loadData = async () => {
     const [leadsData, followUpsData] = await Promise.all([
-      base44.entities.Lead.list("-created_date", 500),
-      base44.entities.LeadFollowUp.list("-update_date", 1000),
+      api.entities.Lead.list("-created_date", 500),
+      api.entities.LeadFollowUp.list("-update_date", 1000),
     ]);
     setLeads(leadsData);
     setFollowUps(followUpsData);
@@ -209,13 +209,13 @@ export default function AdminPerformance() {
       <header className="border-b sticky top-0 z-50 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.85)", borderColor: "#C9A84C22" }}>
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png" alt="K&M" className="w-10 h-10 object-contain" />
+            <img src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo.png" alt="K&M" className="w-10 h-10 object-contain" />
             <div>
               <h1 className="font-bold text-lg leading-none" style={{ color: GOLD }}>Admin Performance Monitor</h1>
               <p className="text-xs" style={{ color: "#C9A84C66" }}>Koos & Mike Cars · Internal Only</p>
             </div>
           </div>
-          <Button variant="ghost" size="sm" className="text-amber-400 hover:text-amber-300 gap-2" onClick={() => base44.auth.logout()}>
+          <Button variant="ghost" size="sm" className="text-amber-400 hover:text-amber-300 gap-2" onClick={() => api.auth.logout()}>
             <LogOut className="w-4 h-4" /> Logout
           </Button>
         </div>
@@ -458,7 +458,7 @@ export default function AdminPerformance() {
                   <Button
                     onClick={async () => {
                       if (!newConsultantName.trim()) return;
-                      await base44.entities.Consultant.create({
+                      await api.entities.Consultant.create({
                         name: newConsultantName,
                         role: newConsultantRole,
                         email: newConsultantEmail,
@@ -550,7 +550,7 @@ export default function AdminPerformance() {
                 <div className="flex gap-2">
                   <Button
                     onClick={async () => {
-                      await base44.entities.Consultant.update(editingStaff.id, {
+                      await api.entities.Consultant.update(editingStaff.id, {
                         name: editName,
                         email: editEmail,
                         phone: editPhone,
@@ -616,7 +616,7 @@ export default function AdminPerformance() {
                               <Button
                                 onClick={async () => {
                                   if (confirm(`Reset password for ${staff.name}? They will need to set a new password on next login.`)) {
-                                    await base44.functions.invoke("resetConsultantPassword", { consultant_id: staff.id });
+                                    await api.functions.invoke("resetConsultantPassword", { consultant_id: staff.id });
                                     alert("Password reset. User must set new password on next login.");
                                   }
                                 }}
@@ -628,7 +628,7 @@ export default function AdminPerformance() {
                               <Button
                                 onClick={async () => {
                                   if (confirm(`Remove ${staff.name}?`)) {
-                                    await base44.entities.Consultant.update(staff.id, { active: false });
+                                    await api.entities.Consultant.update(staff.id, { active: false });
                                     await loadConsultants();
                                   }
                                 }}

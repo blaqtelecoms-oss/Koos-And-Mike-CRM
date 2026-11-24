@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Car, ExternalLink, ArrowLeft, Phone, MessageCircle, Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,7 @@ export default function ClientInventory() {
 
   const { data: vehicles = [] } = useQuery({
     queryKey: ["vehicles-public"],
-    queryFn: () => base44.entities.Vehicle.filter({ status: "Available" }),
+    queryFn: () => api.entities.Vehicle.filter({ status: "Available" }),
   });
 
   const stands = ["All", "Stand 1", "Stand 2", "Stand 3"];

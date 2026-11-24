@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { useToast } from "@/components/ui/use-toast";
 
 // Plays a notification chime using Web Audio API
@@ -29,7 +29,7 @@ export default function NewLeadNotifier({ onNewLead }) {
   const knownIds = useRef(new Set());
 
   useEffect(() => {
-    const unsubscribe = base44.entities.Lead.subscribe((event) => {
+    const unsubscribe = api.entities.Lead.subscribe((event) => {
       // Only fire for newly created leads AFTER page load
       if (event.type !== "create") return;
       if (Date.now() - mountedAt.current < 3000) return; // ignore initial load burst

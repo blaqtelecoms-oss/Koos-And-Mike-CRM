@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { CheckCircle2, FileDown, Mail, ChevronLeft, Shield, Car, User, ClipboardList, AlertTriangle } from "lucide-react";
 
-const LOGO_URL = "https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/ed57e5a9f_istockphoto-1482350068-612x612.jpg";
+const LOGO_URL = "https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/insurance-quote.jpg";
 
 const SECTION = ({ title, icon, color = "#0ea5e9", children }) => (
   <div className="rounded-2xl border p-5 space-y-4" style={{ background: "var(--glass)", borderColor: color + "30" }}>
@@ -267,7 +267,7 @@ ${form.additional_notes ? `<h2>Additional Notes</h2><div class="row"><div class=
     setSendError("");
     try {
       const html = buildPdfHtml();
-      await base44.integrations.Core.SendEmail({
+      await api.integrations.Core.SendEmail({
         to: form.email_address,
         subject: `Insurance Quotation Request – ${form.full_names} | Koos & Mike Cars`,
         body: html,

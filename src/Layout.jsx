@@ -6,7 +6,7 @@ import {
   ShieldCheck, Megaphone, Bell, Plus, Trash2
 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import DeleteAccountDialog from "@/components/DeleteAccountDialog";
 import Avatar from "@/components/premium/Avatar";
 
@@ -21,8 +21,8 @@ export default function Layout({ children, currentPageName }) {
   const isChildRoute = !TOP_LEVEL_PAGES.includes(currentPageName);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
-    base44.entities.Lead.filter({ status: "New" }, "-created_date", 500)
+    api.auth.me().then(setUser).catch(() => {});
+    api.entities.Lead.filter({ status: "New" }, "-created_date", 500)
       .then(data => setNewLeadsCount(data?.length || 0))
       .catch(() => {});
   }, []);
@@ -46,7 +46,7 @@ export default function Layout({ children, currentPageName }) {
     { name: "Sales Portals", path: "/SalesPortal", icon: ShieldCheck },
   ];
 
-  const handleLogout = () => base44.auth.logout();
+  const handleLogout = () => api.auth.logout();
 
   const firstName = user?.full_name?.split(" ")[0] || user?.email?.split("@")[0] || "?";
   const initials = user?.full_name

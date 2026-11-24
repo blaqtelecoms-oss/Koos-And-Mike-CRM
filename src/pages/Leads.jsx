@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -48,9 +48,9 @@ export default function Leads() {
 
   useEffect(() => {
     loadLeads();
-    base44.entities.Consultant.filter({ role: "Sales", active: true }, "name", 50)
+    api.entities.Consultant.filter({ role: "Sales", active: true }, "name", 50)
       .then(data => setConsultants(data || [])).catch(() => {});
-    base44.entities.Vehicle.list("title", 500)
+    api.entities.Vehicle.list("title", 500)
       .then(data => setVehicles(data || [])).catch(() => {});
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get("action") === "new") setShowForm(true);
@@ -81,8 +81,8 @@ export default function Leads() {
 
   const loadLeads = async () => {
     const [data, allFollowUps] = await Promise.all([
-      base44.entities.Lead.list("-created_date", 200),
-      base44.entities.LeadFollowUp.list("-update_date", 500)
+      api.entities.Lead.list("-created_date", 200),
+      api.entities.LeadFollowUp.list("-update_date", 500)
     ]);
     setLeads(data);
     const map = {};
@@ -94,8 +94,8 @@ export default function Leads() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = { ...form, response_time_minutes: form.response_time_minutes ? Number(form.response_time_minutes) : null };
-    if (editingLead) await base44.entities.Lead.update(editingLead.id, payload);
-    else await base44.entities.Lead.create(payload);
+    if (editingLead) await api.entities.Lead.update(editingLead.id, payload);
+    else await api.entities.Lead.create(payload);
     setShowForm(false); setEditingLead(null); resetForm(); loadLeads();
   };
 
@@ -109,13 +109,13 @@ export default function Leads() {
 
   const handleDelete = async (id) => {
     if (confirm("Note: Leads should not be deleted according to company policy. Are you sure?")) {
-      await base44.entities.Lead.delete(id); loadLeads();
+      await api.entities.Lead.delete(id); loadLeads();
     }
   };
 
   const handleStatusChange = async (leadId, newStatus) => {
     setLeads(prev => prev.map(l => l.id === leadId ? { ...l, status: newStatus } : l));
-    await base44.entities.Lead.update(leadId, { status: newStatus });
+    await api.entities.Lead.update(leadId, { status: newStatus });
   };
 
   const filteredLeads = leads.filter(lead => {

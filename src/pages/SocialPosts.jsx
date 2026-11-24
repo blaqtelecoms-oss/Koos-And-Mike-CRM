@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,13 +28,13 @@ export default function SocialPosts() {
   const loadPosts = async () => {
     setLoading(true);
     const filter = filterPlatform === "all" ? { post_date: filterDate } : { post_date: filterDate, platform: filterPlatform };
-    const data = await base44.entities.SocialPost.filter(filter, "-created_date", 100);
+    const data = await api.entities.SocialPost.filter(filter, "-created_date", 100);
     setPosts(data); setLoading(false);
   };
 
-  const handleSubmit = async (e) => { e.preventDefault(); await base44.entities.SocialPost.create(form); setShowForm(false); resetForm(); loadPosts(); };
+  const handleSubmit = async (e) => { e.preventDefault(); await api.entities.SocialPost.create(form); setShowForm(false); resetForm(); loadPosts(); };
   const resetForm = () => setForm({ post_date: filterDate, platform: "Facebook Page", post_type: "Car Post", vehicle_featured: "", includes_website_link: true, includes_cta: true, posted_by: "" });
-  const deletePost = async (id) => { await base44.entities.SocialPost.delete(id); loadPosts(); };
+  const deletePost = async (id) => { await api.entities.SocialPost.delete(id); loadPosts(); };
 
   const dailyRequirements = {
     carPosts: posts.filter(p => p.post_type === "Car Post").length >= 1,
