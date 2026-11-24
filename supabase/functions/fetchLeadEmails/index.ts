@@ -10,7 +10,7 @@ const IMAP_CONFIG = {
 
 const quoteIMAP = (value) => String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 
-async function connectIMAP(password, sinceDate = null) {
+async function connectIMAP(password, sinceDate = null, isAlreadyProcessed = null) {
   const socket = tls.connect({
     host: IMAP_CONFIG.host,
     port: IMAP_CONFIG.port,
@@ -92,22 +92,31 @@ async function connectIMAP(password, sinceDate = null) {
   const match = searchResult.response.match(/\* SEARCH([\d\s]*)/);
   const messageIds = match && match[1].trim() ? match[1].trim().split(/\s+/) : [];
 
-  // Take the newest messages so a busy day can never hide fresh leads.
-  const limit = sinceDate ? 50 : 10;
-  const ids = messageIds.slice(-limit);
+  // Process EVERY message in the search window: dropping the older ones would
+  // lose leads for good, because the window moves forward on the next run.
+  // Already-imported ids are skipped here so a wide window stays cheap: only
+  // unseen mail is actually downloaded.
+  const ids = [];
+  for (const id of messageIds) {
+    if (isAlreadyProcessed && (await isAlreadyProcessed(id))) continue;
+    ids.push(id);
+  }
+  const batchSize = 20;
+  let tagSeq = 4;
 
-  if (ids.length > 0) {
-    // Batch FETCH all emails in one command (BODY.PEEK[] avoids auto-marking as SEEN)
-    const fetchTag = "A4";
+  for (let i = 0; i < ids.length; i += batchSize) {
+    const batch = ids.slice(i, i + batchSize);
+    // Batch FETCH (BODY.PEEK[] avoids auto-marking as SEEN)
+    const fetchTag = `A${tagSeq++}`;
     const fetchResult = await sendCommand(
-      `${fetchTag} FETCH ${ids.join(",")} (BODY.PEEK[])`,
+      `${fetchTag} FETCH ${batch.join(",")} (BODY.PEEK[])`,
       fetchTag
     );
 
     // Parse the multi-email response using literal length markers.
     // Dovecot (and most IMAP servers) echo the section back as "BODY[]" even
     // though we asked for "BODY.PEEK[]", so both forms must be accepted.
-    let response = fetchResult.response;
+    const response = fetchResult.response;
     const fetchRegex = /\* (\d+) FETCH \(BODY(?:\.PEEK)?\[\] \{(\d+)\+?\}\r\n/g;
     let m;
     while ((m = fetchRegex.exec(response)) !== null) {
@@ -117,15 +126,19 @@ async function connectIMAP(password, sinceDate = null) {
       const body = response.substring(bodyStart, bodyStart + len);
       emails.push({ id, raw: body });
     }
+  }
 
-    if (emails.length === 0) {
-      throw new Error(
-        `IMAP returned ${ids.length} message(s) but none could be parsed from the FETCH response`
-      );
-    }
+  if (ids.length > 0 && emails.length === 0) {
+    throw new Error(
+      `IMAP returned ${ids.length} message(s) but none could be parsed from the FETCH response`
+    );
+  }
 
-    // Mark all as SEEN in a single STORE command
-    await sendCommand(`A5 STORE ${ids.join(",")} +FLAGS (\\Seen)`, "A5");
+  // Mark everything as SEEN in batched STORE commands
+  for (let i = 0; i < ids.length; i += batchSize) {
+    const batch = ids.slice(i, i + batchSize);
+    const tag = `A${tagSeq++}`;
+    await sendCommand(`${tag} STORE ${batch.join(",")} +FLAGS (\\Seen)`, tag);
   }
 
   socket.destroy();
@@ -238,9 +251,10 @@ serve(async (req) => {
     } catch (_) {}
 
     if (!sinceDate) {
-      // Look back a day as well, so an email that arrived just before
-      // midnight is still picked up by the next scheduled run.
-      const now = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      // Look back a full week, so a run that failed or was skipped (or a lead
+      // that arrived just before midnight) is still picked up later. Repeats
+      // are harmless: each email is deduplicated by its IMAP id below.
+      const now = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
       const day = String(now.getUTCDate()).padStart(2, '0');
       const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
       const month = months[now.getUTCMonth()];
@@ -254,10 +268,12 @@ serve(async (req) => {
     const isAlreadyProcessed = async (id: string) => {
       const { data } = await client
         .from('leads')
-        .select('id')
+        .select('notes')
         .ilike('notes', `%EmailID: ${id}%`)
-        .limit(1);
-      return !!(data && data.length > 0);
+        .limit(20);
+      // "%EmailID: 536%" also matches 5361, so confirm the id itself.
+      const exact = new RegExp(`EmailID: ${id}(\\s|$)`);
+      return (data || []).some((row) => exact.test(row.notes || ''));
     };
 
     const emailPassword = (Deno.env.get("LEADS_EMAIL_PASSWORD") || "").trim();
@@ -267,7 +283,7 @@ serve(async (req) => {
 
     let emails = [];
     try {
-      emails = await connectIMAP(emailPassword, sinceDate);
+      emails = await connectIMAP(emailPassword, sinceDate, isAlreadyProcessed);
     } catch (err) {
       return json({ error: "IMAP extraction failed: " + err.message, processed: 0 });
     }
