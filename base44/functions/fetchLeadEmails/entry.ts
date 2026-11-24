@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { secrets } from 'base44:runtime';
 import tls from 'node:tls';
 
 const IMAP_CONFIG = {
@@ -7,19 +8,8 @@ const IMAP_CONFIG = {
   username: "leads@blaqmedia.co.za",
 };
 
-// Secrets resolve per request on the Base44 backend, so they must be read
-// inside the handler — a module-level read returns undefined in production.
-async function getSecret(name) {
-  try {
-    const { secrets } = await import("base44:runtime");
-    const value = secrets?.get?.(name);
-    if (value) return value;
-  } catch (_) {
-    // Runtimes without base44:runtime fall back to Deno.env below.
-  }
-  return Deno.env.get(name) || "";
-}
-
+// Secrets must be read with secrets.get() inside the handler. Reading
+// Deno.env at module level returns undefined on the Base44 backend.
 const quoteIMAP = (value) => String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 
 async function connectIMAP(password, sinceDate = null) {
@@ -223,7 +213,9 @@ Deno.serve(async (req) => {
     } catch (_) {}
 
     if (!sinceDate) {
-      const now = new Date();
+      // Look back a day as well, so an email that arrived just before
+      // midnight is still picked up by the next scheduled run.
+      const now = new Date(Date.now() - 24 * 60 * 60 * 1000);
       const day = String(now.getUTCDate()).padStart(2, '0');
       const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
       const month = months[now.getUTCMonth()];
@@ -238,7 +230,7 @@ Deno.serve(async (req) => {
       if (refMatch) processedEmailIds.add(refMatch[1]);
     }
 
-    const emailPassword = (await getSecret("LEADS_EMAIL_PASSWORD")).trim();
+    const emailPassword = (secrets.get("LEADS_EMAIL_PASSWORD") || "").trim();
     if (!emailPassword) {
       return Response.json({ error: "LEADS_EMAIL_PASSWORD is not configured for this app", processed: 0 });
     }
@@ -287,11 +279,13 @@ Deno.serve(async (req) => {
         if (phoneMatch) result.phone = phoneMatch[1].trim().replace(/\s+/g, '');
         const emailMatch = body.match(/Email Address[:\s]+([^\s\n\r]+@[^\s\n\r]+)/i) || body.match(/Email[:\s]+([^\s\n\r]+@[^\s\n\r]+)/i);
         if (emailMatch) result.email = emailMatch[1].trim();
-        const carMatch = body.match(/Vehicle[:\s]+([^\n\r]{1,150})/i) || body.match(/Car[:\s]+([^\n\r]{1,150})/i);
+        const carMatch = body.match(/Vehicle[:\t][ \t]*([^\n\r]{1,150})/i) || body.match(/Car[:\t][ \t]*([^\n\r]{1,150})/i) || body.match(/lead for the ([^\n\r]+?) vehicle/i);
         if (carMatch) result.car_interested = carMatch[1].trim().substring(0, 150);
         const refMatch = body.match(/Listing ID[:\s]+([^\n\r]+)/i) || body.match(/Lead ID[:\s]+([^\n\r]+)/i) || body.match(/Ref(?:erence)?[:\s#]+([^\n\r]+)/i);
         if (refMatch) result.lead_ref = refMatch[1].trim();
-        const msgMatch = body.match(/Message[:\s]+([^\n\r]+(?:\n(?![A-Z][a-z]+:)[^\n\r]+)*)/i);
+        // Anchor to a real "Message:" line — otherwise the word "message"
+        // inside the legal disclaimer is captured as the customer's message.
+        const msgMatch = body.match(/^Message[:\t ]+([^\n\r]+(?:\n(?![A-Z][a-z]+:)[^\n\r]+)*)/im);
         if (msgMatch) result.notes = msgMatch[1].trim();
 
         // AutoTrader-style enquiries list the customer in an unlabelled block:
