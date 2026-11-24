@@ -102,10 +102,11 @@ async function connectIMAP(sinceDate = null) {
       fetchTag
     );
 
-    // Parse the multi-email response using literal length markers
+    // Parse the multi-email response using literal length markers.
+    // Dovecot (and most IMAP servers) echo the section back as "BODY[]" even
+    // though we asked for "BODY.PEEK[]", so both forms must be accepted.
     let response = fetchResult.response;
-    const fetchRegex = /\* (\d+) FETCH \(BODY\.PEEK\[\] \{(\d+)\}\r\n/g;
-    let lastIdx = 0;
+    const fetchRegex = /\* (\d+) FETCH \(BODY(?:\.PEEK)?\[\] \{(\d+)\+?\}\r\n/g;
     let m;
     while ((m = fetchRegex.exec(response)) !== null) {
       const id = m[1];
@@ -113,7 +114,12 @@ async function connectIMAP(sinceDate = null) {
       const bodyStart = m.index + m[0].length;
       const body = response.substring(bodyStart, bodyStart + len);
       emails.push({ id, raw: body });
-      lastIdx = fetchRegex.lastIndex;
+    }
+
+    if (emails.length === 0) {
+      throw new Error(
+        `IMAP returned ${ids.length} message(s) but none could be parsed from the FETCH response`
+      );
     }
 
     // Mark all as SEEN in a single STORE command
@@ -216,7 +222,7 @@ Deno.serve(async (req) => {
     try {
       emails = await connectIMAP(sinceDate);
     } catch (err) {
-      return Response.json({ error: "IMAP connection failed: " + err.message, processed: 0 });
+      return Response.json({ error: "IMAP extraction failed: " + err.message, processed: 0 });
     }
 
     if (emails.length === 0) {
