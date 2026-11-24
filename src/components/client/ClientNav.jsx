@@ -16,31 +16,35 @@ export default function ClientNav() {
   const { pathname } = useLocation();
 
   return (
-    <nav aria-label="Client portal pages" className="flex flex-wrap items-center gap-1.5">
-      {CLIENT_NAV.map(({ label, path, href, icon: Icon, external }) => {
+    <nav aria-label="Client portal pages" className="hidden min-[980px]:flex items-center gap-0.5">
+      {CLIENT_NAV.map(({ label, path, href, external }) => {
         const active = path === pathname;
 
-        const chip = (
+        const inner = (
           <span
-            className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs sm:text-sm font-semibold whitespace-nowrap transition-colors"
-            style={active
-              ? { background: GOLD, borderColor: GOLD, color: "#151005" }
-              : { background: "rgba(201,168,76,0.07)", borderColor: "#C9A84C3D", color: "#4a463c" }
-            }
+            className="relative inline-flex items-center gap-1.5 px-2.5 py-2 text-[13px] font-medium whitespace-nowrap transition-colors"
+            style={{ color: active ? "#17130a" : "#6b6355" }}
           >
-            <Icon className="w-3.5 h-3.5 shrink-0" style={{ color: active ? "#151005" : GOLD }} />
             {label}
-            {external && <ExternalLink className="w-3 h-3 opacity-60" />}
+            {external && <ExternalLink className="w-3 h-3 opacity-45" />}
+            {active && (
+              <span
+                className="absolute left-2.5 right-2.5 -bottom-px h-[2px] rounded-full"
+                style={{ background: GOLD }}
+              />
+            )}
           </span>
         );
 
+        const className = "group hover:opacity-100 [&>span]:hover:!text-[#17130a]";
+
         return external ? (
-          <a key={label} href={href} target="_blank" rel="noreferrer" className="hover:opacity-85 transition-opacity">
-            {chip}
+          <a key={label} href={href} target="_blank" rel="noreferrer" className={className}>
+            {inner}
           </a>
         ) : (
-          <Link key={label} to={path} aria-current={active ? "page" : undefined} className="hover:opacity-85 transition-opacity">
-            {chip}
+          <Link key={label} to={path} aria-current={active ? "page" : undefined} className={className}>
+            {inner}
           </Link>
         );
       })}
