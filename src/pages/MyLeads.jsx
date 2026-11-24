@@ -3,6 +3,7 @@ import { api } from "@/api/supabaseClient";
 import { Users, Phone, MessageCircle, LogOut, Car, ClipboardList, ChevronRight, X, Check, KeyRound, CheckSquare, BellRing, BellOff, RefreshCw } from "lucide-react";
 import moment from "moment";
 import ChangePasswordDialog from "@/components/staff/ChangePasswordDialog";
+import VehicleImage from "@/components/VehicleImage";
 
 const GOLD = "#C9A84C";
 
@@ -519,7 +520,7 @@ export default function MyLeads() {
               {filteredVehicles.map(v => (
                 <div key={v.id} className="rounded-xl border overflow-hidden" style={{ background: "#ffffff06", borderColor: "var(--line)" }}>
                   {v.images?.[0] && (
-                    <img src={v.images[0]} alt={v.title} className="w-full h-40 object-cover" />
+                    <VehicleImage src={v.images[0]} alt={v.title} className="w-full h-40 object-cover" />
                   )}
                   <div className="p-4">
                     <p className="text-gray-900 font-semibold text-sm">{v.title}</p>

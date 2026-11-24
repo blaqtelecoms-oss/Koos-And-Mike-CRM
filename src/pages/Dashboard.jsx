@@ -14,6 +14,7 @@ import StatusPill from "@/components/premium/StatusPill";
 import Avatar from "@/components/premium/Avatar";
 import PipelineRing from "@/components/premium/PipelineRing";
 import LeadsChart from "@/components/premium/LeadsChart";
+import VehicleImage from "@/components/VehicleImage";
 import QuickTile from "@/components/premium/QuickTile";
 
 const ADMIN_EMAILS = ["deon", "heino", "blaqtelecoms@gmail.com"];
@@ -197,7 +198,7 @@ export default function Dashboard() {
             </div>
             <div style={{ textAlign: "center" }}>
               {spotlightVehicle?.images?.[0] ? (
-                <img src={spotlightVehicle.images[0]} alt={spotlightVehicle.title} style={{ width: "88%", maxWidth: 330, borderRadius: 16, objectFit: "cover", maxHeight: 160 }} />
+                <VehicleImage src={spotlightVehicle.images[0]} alt={spotlightVehicle.title} style={{ width: "88%", maxWidth: 330, borderRadius: 16, objectFit: "cover", maxHeight: 160 }} />
               ) : (
                 <div style={{ width: "88%", maxWidth: 330, margin: "0 auto", aspectRatio: "16/10", display: "grid", placeItems: "center", color: "var(--mut)" }}>
                   <Car style={{ width: 48, height: 48, strokeWidth: 1 }} />

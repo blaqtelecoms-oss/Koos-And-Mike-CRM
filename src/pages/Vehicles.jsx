@@ -11,6 +11,7 @@ import { Plus, Search, Car, Edit, Trash2, Upload, ExternalLink, Filter } from "l
 import GlassCard from "@/components/premium/GlassCard";
 import StatusPill from "@/components/premium/StatusPill";
 import EmptyState from "@/components/premium/EmptyState";
+import VehicleImage from "@/components/VehicleImage";
 
 const STANDS = ["Stand 1", "Stand 2", "Stand 3", "Detailing Workshop", "Dekra"];
 const STATUSES = ["Available", "Reserved", "Sold"];
@@ -100,10 +101,10 @@ export default function Vehicles() {
               {vehicle.images?.length > 0 ? (
                 vehicle.website_slug ? (
                   <a href={`https://www.koosandmike.co.za/vehicle/${vehicle.website_slug}`} target="_blank" rel="noreferrer" className="block w-full h-full group">
-                    <img src={vehicle.images[0]} alt={vehicle.title} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity" />
+                    <VehicleImage src={vehicle.images[0]} alt={vehicle.title} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity" />
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><ExternalLink style={{ width: 32, height: 32, color: "#fff" }} /></div>
                   </a>
-                ) : <img src={vehicle.images[0]} alt={vehicle.title} className="w-full h-full object-cover" />
+                ) : <VehicleImage src={vehicle.images[0]} alt={vehicle.title} className="w-full h-full object-cover" />
               ) : <div className="w-full h-full flex items-center justify-center"><Car style={{ width: 48, height: 48, color: "var(--mut)", opacity: 0.3 }} /></div>}
               <div style={{ position: "absolute", top: 8, right: 8 }}><StatusPill status={vehicle.status} /></div>
             </div>

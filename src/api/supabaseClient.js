@@ -44,6 +44,27 @@ const entity = (table) => ({
     const rows = unwrap(await withOrder(supabase.from(table).select('*'), sort).range(skip, skip + limit - 1));
     return rows || [];
   },
+  // Fetches every row, paging past Supabase's 1000-row response cap
+  async listAll(sort) {
+    const pageSize = 1000;
+    let rows = [];
+    for (let skip = 0; ; skip += pageSize) {
+      const page = unwrap(await withOrder(supabase.from(table).select('*'), sort).range(skip, skip + pageSize - 1));
+      rows = rows.concat(page || []);
+      if (!page || page.length < pageSize) break;
+    }
+    return rows;
+  },
+  async count(query = {}) {
+    let q = supabase.from(table).select('id', { count: 'exact', head: true });
+    for (const [key, value] of Object.entries(query || {})) {
+      if (value === undefined) continue;
+      q = q.eq(key, value);
+    }
+    const { count, error } = await q;
+    if (error) throw error;
+    return count || 0;
+  },
   async filter(query = {}, sort, limit = 100, skip = 0) {
     let q = supabase.from(table).select('*');
     for (const [key, value] of Object.entries(query || {})) {

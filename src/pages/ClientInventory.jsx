@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import ClientLayout from "@/components/client/ClientLayout";
+import VehicleImage from "@/components/VehicleImage";
 
 export default function ClientInventory() {
   const [search, setSearch] = useState("");
@@ -110,13 +111,13 @@ function VehicleCard({ vehicle }) {
           ? vehicle.website_slug
             ? (
               <a href={`https://www.koosandmike.co.za/vehicle/${vehicle.website_slug}`} target="_blank" rel="noreferrer" className="block w-full h-full group">
-                <img src={vehicle.images[0]} alt={vehicle.title} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity" />
+                <VehicleImage src={vehicle.images[0]} alt={vehicle.title} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity" />
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-gray-200/60">
                   <ExternalLink className="w-8 h-8 text-gray-900" />
                 </div>
               </a>
             )
-            : <img src={vehicle.images[0]} alt={vehicle.title} className="w-full h-full object-cover" />
+            : <VehicleImage src={vehicle.images[0]} alt={vehicle.title} className="w-full h-full object-cover" />
           : <Car className="w-16 h-16 text-slate-600" />
         }
         {vehicle.finance_available && (

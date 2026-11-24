@@ -14,6 +14,7 @@ import CallDialog from "@/components/leads/CallDialog";
 import WhatsAppDialog from "@/components/leads/WhatsAppDialog";
 import NewLeadNotifier from "@/components/leads/NewLeadNotifier";
 import PushNotificationSetup from "@/components/leads/PushNotificationSetup";
+import VehicleImage from "@/components/VehicleImage";
 import GlassCard from "@/components/premium/GlassCard";
 import StatusPill from "@/components/premium/StatusPill";
 import Avatar from "@/components/premium/Avatar";
@@ -81,7 +82,7 @@ export default function Leads() {
 
   const loadLeads = async () => {
     const [data, allFollowUps] = await Promise.all([
-      api.entities.Lead.list("-created_date", 200),
+      api.entities.Lead.listAll("-created_date"),
       api.entities.LeadFollowUp.list("-update_date", 500)
     ]);
     setLeads(data);
@@ -281,13 +282,13 @@ export default function Leads() {
             return matched?.images?.length > 0 ? (
               <div className="space-y-3">
                 <div className="aspect-[16/10] bg-gray-200/60 rounded-lg overflow-hidden">
-                  <img src={matched.images[0]} alt={matched.title} className="w-full h-full object-cover" />
+                  <VehicleImage src={matched.images[0]} alt={matched.title} className="w-full h-full object-cover" />
                 </div>
                 <p className="text-gray-600 text-sm">{matched.title}</p>
                 {matched.price && <p className="text-amber-400 font-semibold">R {matched.price.toLocaleString()}</p>}
                 {matched.images.length > 1 && (
                   <div className="grid grid-cols-4 gap-2">
-                    {matched.images.slice(1, 5).map((img, i) => <img key={i} src={img} alt={`${matched.title} ${i+2}`} className="aspect-square object-cover rounded-lg border border-amber-200/60" />)}
+                    {matched.images.slice(1, 5).map((img, i) => <VehicleImage key={i} src={img} alt={`${matched.title} ${i+2}`} className="aspect-square object-cover rounded-lg border border-amber-200/60" />)}
                   </div>
                 )}
               </div>

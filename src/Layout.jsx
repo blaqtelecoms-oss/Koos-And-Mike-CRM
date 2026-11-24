@@ -22,8 +22,8 @@ export default function Layout({ children, currentPageName }) {
 
   useEffect(() => {
     api.auth.me().then(setUser).catch(() => {});
-    api.entities.Lead.filter({ status: "New" }, "-created_date", 500)
-      .then(data => setNewLeadsCount(data?.length || 0))
+    api.entities.Lead.count({ status: "New" })
+      .then(setNewLeadsCount)
       .catch(() => {});
   }, []);
 
