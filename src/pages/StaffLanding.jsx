@@ -59,7 +59,7 @@ export default function StaffLanding() {
       <header className="border-b py-4 px-6" style={{ borderColor: "var(--glass-border)", background: "var(--glass)" }}>
         <div className="max-w-3xl mx-auto flex items-center gap-3">
           <img
-            src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo.png"
+            src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo-round.png"
             alt="Koos & Mike Cars"
             className="w-11 h-11 object-contain"
           />

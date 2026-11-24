@@ -123,7 +123,7 @@ export default function CallCentrePortal() {
       <header className="border-b sticky top-0 z-50 backdrop-blur-sm" style={{ background: "var(--glass)", borderColor: "#ff9d0022" }}>
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo.png" alt="K&M" className="w-10 h-10 object-contain" />
+            <img src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo-round.png" alt="K&M" className="w-10 h-10 object-contain" />
             <div>
               <h1 className="font-bold text-lg leading-none" style={{ color: BLUE }}>Call Centre Portal</h1>
               <p className="text-xs" style={{ color: "#ff9d0050" }}>Koos & Mike Cars</p>

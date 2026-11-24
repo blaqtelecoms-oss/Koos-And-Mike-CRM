@@ -319,7 +319,7 @@ export default function MyLeads() {
       <header className="border-b py-3 px-4" style={{ borderColor: "#C9A84C22", background: "rgba(255,255,255,0.85)" }}>
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo.png" alt="K&M" className="w-9 h-9 object-contain" />
+            <img src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo-round.png" alt="K&M" className="w-9 h-9 object-contain" />
             <div>
               <h1 className="font-bold text-sm leading-none" style={{ color: GOLD }}>Koos & Mike Cars</h1>
               <p className="text-xs text-gray-400">{consultant?.name || authUser?.full_name} · {consultant?.role || "Staff"}</p>

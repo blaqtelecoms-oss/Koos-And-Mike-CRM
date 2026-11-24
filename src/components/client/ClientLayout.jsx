@@ -23,7 +23,7 @@ export default function ClientLayout({ children }) {
           {/* Brand */}
           <Link to="/ClientPortal" className="flex items-center gap-3 shrink-0">
             <img
-              src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo.png"
+              src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo-round.png"
               alt="Koos & Mike Cars"
               className="h-9 w-9 object-contain"
             />

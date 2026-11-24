@@ -60,7 +60,11 @@ export default function Layout({ children, currentPageName }) {
       <aside className="km-sidebar">
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, fontWeight: 700, fontSize: 15, letterSpacing: "-0.2px", color: "#fff", padding: "0 6px" }}>
-          <span style={{ width: 38, height: 38, borderRadius: 12, background: "linear-gradient(145deg, #2b2a24, #0b0a07)", color: "var(--gold)", display: "grid", placeItems: "center", font: "800 13px Inter", boxShadow: "0 6px 16px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.2)" }}>K&M</span>
+          <img
+            src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo-round.png"
+            alt="Koos & Mike Cars"
+            style={{ width: 40, height: 40, objectFit: "contain", filter: "drop-shadow(0 4px 10px rgba(0,0,0,.45))" }}
+          />
           <div>
             <div>Koos & Mike Cars</div>
             <small style={{ display: "block", fontWeight: 400, fontSize: "10.5px", color: "var(--mut)", letterSpacing: ".3px" }}>LEAD MANAGEMENT</small>
