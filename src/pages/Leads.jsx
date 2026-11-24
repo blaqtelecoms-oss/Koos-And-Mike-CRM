@@ -88,7 +88,13 @@ export default function Leads() {
       api.entities.Lead.listAll("-created_date"),
       api.entities.LeadFollowUp.list("-update_date", 500)
     ]);
-    setLeads(data);
+    const ordered = [...data].sort((a, b) => {
+      const aNew = a.status === "New" ? 1 : 0;
+      const bNew = b.status === "New" ? 1 : 0;
+      if (aNew !== bNew) return bNew - aNew;
+      return new Date(b.created_date || 0) - new Date(a.created_date || 0);
+    });
+    setLeads(ordered);
     const map = {};
     for (const fu of allFollowUps) { if (!map[fu.lead_id]) map[fu.lead_id] = fu; }
     setFollowUps(map);
