@@ -84,7 +84,9 @@ const AuthenticatedApp = () => {
   const publicPaths = ['/Login', '/staff', '/MyLeads', '/ClientPortal', '/ClientLogin', '/ClientInventory', '/ClientRegister', '/ClientTradeIn', '/ClientCarRequest', '/ClientPrivacy', '/ClientTerms', '/CallCentrePortal', '/CCLanding'];
   // Visitors who aren't signed in only ever see the client portal — no portal selector, no staff portal
   if (!isAuthenticated && location.pathname !== '/' && !publicPaths.some((p) => location.pathname.startsWith(p))) {
-    return <Navigate to="/ClientPortal" replace />;
+    // Protected admin/staff URLs send you to the sign-in page and bring you
+    // back to the page you asked for once you are signed in.
+    return <Navigate to={`/Login?redirect=${encodeURIComponent(location.pathname)}`} replace />;
   }
 
   // Render the main app
