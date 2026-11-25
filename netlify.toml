@@ -2,11 +2,21 @@
 #
 # Site environment variables to set in Netlify
 # (Project configuration > Environment variables):
-#   VITE_SUPABASE_URL          Supabase project URL
-#   VITE_SUPABASE_ANON_KEY     Supabase anon/publishable key (public by design)
+#   VITE_SUPABASE_URL               Supabase project URL
+#   VITE_SUPABASE_PUBLISHABLE_KEY   Supabase publishable key (sb_publishable_…)
 #
-# Only mark values that must stay private (service role key, API tokens,
-# passwords) as "Contains secret values". Never commit them to this repository.
+# Both values are public by design: they are shipped to the browser and access
+# is enforced by Supabase Row Level Security. Do NOT mark them as
+# "Contains secret values" in Netlify — the built site must contain them, so a
+# secret flag makes Netlify's secret scanner fail every deploy.
+#
+# Never put a private value (service role key, API tokens, passwords) in a
+# VITE_ variable or anywhere in this repository: everything with a VITE_ prefix
+# is inlined into the public JavaScript bundle.
+#
+# The legacy Supabase anon key is a JWT, and deploy-time scanners flag any JWT
+# found in the build output. The app therefore uses the publishable key
+# (src/api/supabaseClient.js) and never inlines the anon key.
 
 [build]
   command = "npm run build"
@@ -15,14 +25,17 @@
 [build.environment]
   NODE_VERSION = "22"
 
-  # The Supabase anon/publishable key is intentionally shipped to the browser:
-  # it is a public key and data access is enforced by Row Level Security.
-  # Netlify's smart detection cannot tell that public JWT apart from a leaked
-  # secret and fails the deploy, so it is disabled here. Scanning for
-  # environment variables marked as secret stays enabled, so a genuinely
-  # private value that reaches the build output still fails the deploy.
+  # The client only ships public values (project URL + publishable key), so
+  # pattern-based smart detection has nothing genuine to protect here and is
+  # turned off. Scanning for environment variables explicitly marked as secret
+  # stays enabled, so a private value that reaches the build still fails.
   SECRETS_SCAN_SMART_DETECTION_ENABLED = "false"
-  SECRETS_SCAN_OMIT_KEYS = "VITE_SUPABASE_ANON_KEY,VITE_SUPABASE_PUBLISHABLE_KEY"
+  SECRETS_SCAN_OMIT_KEYS = "VITE_SUPABASE_URL,VITE_SUPABASE_PUBLISHABLE_KEY"
+
+  # Netlify reads the SECRETS_SCAN_* settings from the site's environment
+  # variables (Project configuration > Environment variables), not from this
+  # file. If a deploy still reports an exposed secret, create these two keys
+  # there with the same values.
 
 # Single-page app: every route is rendered client-side by react-router.
 [[redirects]]

@@ -1,3 +1,4 @@
+import { PUBLIC_ASSETS } from "@/lib/supabaseUrl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { api } from "@/api/supabaseClient";
 import { CheckCircle2, FileDown, Mail, ChevronLeft, Shield, Car, User, ClipboardList, AlertTriangle } from "lucide-react";
 
-const LOGO_URL = "https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/insurance-quote.jpg";
+const LOGO_URL = `${PUBLIC_ASSETS}/insurance-quote.jpg`;
 
 const SECTION = ({ title, icon, color = "#0ea5e9", children }) => (
   <div className="rounded-2xl border p-5 space-y-4" style={{ background: "var(--glass)", borderColor: color + "30" }}>
