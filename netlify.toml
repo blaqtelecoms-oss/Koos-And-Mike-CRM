@@ -37,6 +37,18 @@
   # file. If a deploy still reports an exposed secret, create these two keys
   # there with the same values.
 
+# WhatsApp Cloud API webhook. Meta needs a public HTTPS endpoint, and the handler
+# is the Supabase Edge Function `supabase/functions/whatsappWebhook`. This proxies
+# the app-domain URL to it, so the Callback URL configured in Meta stays stable:
+#   https://koos-and-mike-crm.netlify.app/api/whatsapp/webhook
+# netlify.toml cannot interpolate environment variables, so the project URL is
+# written out here; it is the same public URL the frontend already ships.
+[[redirects]]
+  from = "/api/whatsapp/webhook"
+  to = "https://xiqwiiwyjuwrfdezvnoi.supabase.co/functions/v1/whatsappWebhook"
+  status = 200
+  force = true
+
 # Single-page app: every route is rendered client-side by react-router.
 [[redirects]]
   from = "/*"
