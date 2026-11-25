@@ -148,7 +148,7 @@ export default function StaffLanding() {
                 </button>
               </div>
               {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
-              <p className="text-gray-400 text-xs mt-2">Default password: <span style={{ color: GOLD }}>Leads2026</span></p>
+              <p className="text-gray-400 text-xs mt-2">First login? Use the default password given to you by your manager.</p>
             </div>
 
             <button

@@ -134,13 +134,13 @@ export default function SalesPortal() {
   };
 
   const handleResetPassword = async () => {
-    if (!window.confirm(`Reset password for ${selectedConsultant.name} to default (Leads2026)?`)) return;
+    if (!window.confirm(`Reset password for ${selectedConsultant.name} to the default password?`)) return;
     try {
       await api.functions.invoke("consultantAuth", {
         action: "resetPassword",
         consultantId: selectedConsultant.id
       });
-      setResetMsg("Password reset to default: Leads2026");
+      setResetMsg("Password reset to the default password");
       setTimeout(() => setResetMsg(""), 4000);
     } catch (err) {
       setError("Failed to reset password");

@@ -1,6 +1,9 @@
 import { db, json, requireUser, serve } from "../_shared/supabase.ts";
 
-const DEFAULT_PASSWORD = 'Leads2026';
+// Password for consultants who have not set their own yet. It is a secret and
+// must come from the function environment (Supabase > Edge Functions > Secrets),
+// never from source — this repository is public.
+const defaultPassword = () => (Deno.env.get("DEFAULT_CONSULTANT_PASSWORD") || "").trim();
 
 async function hashPassword(password: string) {
   const data = new TextEncoder().encode(password);
@@ -36,7 +39,11 @@ serve(async (req) => {
 
       // No password set yet: allow the default password and force a change
       if (!consultant.password_hash) {
-        if (password !== DEFAULT_PASSWORD) {
+        const initialPassword = defaultPassword();
+        if (!initialPassword) {
+          return json({ error: "Default password is not configured — ask an admin to reset it" }, 503);
+        }
+        if (password !== initialPassword) {
           return json({ error: "Incorrect password" }, 401);
         }
         return json({
