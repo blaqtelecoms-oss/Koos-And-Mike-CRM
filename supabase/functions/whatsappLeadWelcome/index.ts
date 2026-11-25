@@ -28,6 +28,21 @@ const clean = (value: unknown, fallback: string) => {
   return text || fallback;
 };
 
+// The template carries an image header, so every message needs a public image link.
+const FALLBACK_IMAGE = `${Deno.env.get("SUPABASE_URL") ?? ""}/storage/v1/object/public/app-assets/km-logo.png`;
+
+// Same matching rule as the leads screen: the enquiry text contains the make and model.
+const findVehicleImage = async (sb: any, carInterested: unknown) => {
+  const text = String(carInterested ?? "").toLowerCase();
+  if (!text) return "";
+  const { data } = await sb.from("vehicles").select("make, model, images").limit(2000);
+  const match = (data ?? []).find(
+    (v: any) => v.make && v.model && text.includes(String(v.make).toLowerCase()) && text.includes(String(v.model).toLowerCase()),
+  );
+  const image = Array.isArray(match?.images) ? match.images[0] : match?.images;
+  return typeof image === "string" && image.startsWith("https://") ? image : "";
+};
+
 serve(async (req) => {
   // Only internal.invoke_edge() (the lead_created_automation trigger) may call this.
   const internalSecret = Deno.env.get("INTERNAL_EDGE_SECRET") ?? "";
@@ -56,6 +71,7 @@ serve(async (req) => {
 
   const name = clean(String(lead.lead_name ?? "").trim().split(" ")[0], "there");
   const vehicle = clean(lead.car_interested, "the vehicle you enquired about");
+  const image = (await findVehicleImage(sb, lead.car_interested)) || FALLBACK_IMAGE;
 
   const res = await fetch(`${GRAPH}/${phoneId}/messages`, {
     method: "POST",
@@ -68,6 +84,7 @@ serve(async (req) => {
         name: TEMPLATE,
         language: { code: TEMPLATE_LANG },
         components: [
+          { type: "header", parameters: [{ type: "image", image: { link: image } }] },
           { type: "body", parameters: [{ type: "text", text: name }, { type: "text", text: vehicle }] },
         ],
       },
@@ -89,5 +106,5 @@ serve(async (req) => {
     error,
   });
 
-  return json({ sent: !!waId, wa_message_id: waId, error });
+  return json({ sent: !!waId, wa_message_id: waId, image, error });
 });
