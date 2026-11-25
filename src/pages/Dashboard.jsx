@@ -17,13 +17,7 @@ import LeadsChart from "@/components/premium/LeadsChart";
 import VehicleImage from "@/components/VehicleImage";
 import QuickTile from "@/components/premium/QuickTile";
 
-const ADMIN_EMAILS = ["deon", "heino", "blaqtelecoms@gmail.com"];
-function isAdminUser(user) {
-  if (!user) return false;
-  if (user.role === "admin") return true;
-  const email = (user.email || "").toLowerCase();
-  return ADMIN_EMAILS.some(a => email.includes(a));
-}
+import { isAdminUser } from "@/lib/admin";
 
 export default function Dashboard() {
   const [leads, setLeads] = useState([]);

@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { api } from "@/api/supabaseClient";
+import { isAdminUser } from "@/lib/admin";
 import DeleteAccountDialog from "@/components/DeleteAccountDialog";
 import Avatar from "@/components/premium/Avatar";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -110,7 +111,7 @@ export default function Layout({ children, currentPageName }) {
             );
           })}
 
-          {user?.role === "admin" && (
+          {isAdminUser(user) && (
             <>
               <div className="km-nav-group-label">Admin Only</div>
               {adminNav.map(item => {
