@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,11 +25,11 @@ export default function TradeIns() {
 
   const { data: tradeIns = [], isLoading } = useQuery({
     queryKey: ["tradeins"],
-    queryFn: () => base44.entities.TradeIn.list("-created_date"),
+    queryFn: () => api.entities.TradeIn.list("-created_date"),
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.TradeIn.update(id, data),
+    mutationFn: ({ id, data }) => api.entities.TradeIn.update(id, data),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["tradeins"] }),
   });
 

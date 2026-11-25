@@ -3,14 +3,15 @@ import { createPageUrl } from "./utils";
 import {
   LayoutGrid, Users, Car, CheckSquare, Share2,
   Menu, X, LogOut, RefreshCcw, Search, BarChart3,
-  ShieldCheck, Megaphone, Bell, Plus, Trash2
+  ShieldCheck, Megaphone, Bell, Plus, Trash2, MessageCircle
 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import DeleteAccountDialog from "@/components/DeleteAccountDialog";
 import Avatar from "@/components/premium/Avatar";
+import ThemeToggle from "@/components/ThemeToggle";
 
-const TOP_LEVEL_PAGES = ["Dashboard", "Leads", "Vehicles", "Tasks", "SocialPosts", "TradeIns", "CarRequests", "Adverts"];
+const TOP_LEVEL_PAGES = ["Dashboard", "Leads", "WhatsApp", "Vehicles", "Tasks", "SocialPosts", "TradeIns", "CarRequests", "Adverts"];
 
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -21,15 +22,16 @@ export default function Layout({ children, currentPageName }) {
   const isChildRoute = !TOP_LEVEL_PAGES.includes(currentPageName);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
-    base44.entities.Lead.filter({ status: "New" }, "-created_date", 500)
-      .then(data => setNewLeadsCount(data?.length || 0))
+    api.auth.me().then(setUser).catch(() => {});
+    api.entities.Lead.count({ status: "New" })
+      .then(setNewLeadsCount)
       .catch(() => {});
   }, []);
 
   const navigation = [
     { name: "Dashboard", page: "Dashboard", icon: LayoutGrid },
     { name: "Leads", page: "Leads", icon: Users, badge: newLeadsCount },
+    { name: "WhatsApp", page: "WhatsApp", icon: MessageCircle },
     { name: "Vehicles", page: "Vehicles", icon: Car },
     { name: "Daily Tasks", page: "Tasks", icon: CheckSquare },
     { name: "Social Posts", page: "SocialPosts", icon: Share2 },
@@ -46,7 +48,7 @@ export default function Layout({ children, currentPageName }) {
     { name: "Sales Portals", path: "/SalesPortal", icon: ShieldCheck },
   ];
 
-  const handleLogout = () => base44.auth.logout();
+  const handleLogout = () => api.auth.logout();
 
   const firstName = user?.full_name?.split(" ")[0] || user?.email?.split("@")[0] || "?";
   const initials = user?.full_name
@@ -59,7 +61,11 @@ export default function Layout({ children, currentPageName }) {
       <aside className="km-sidebar">
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, fontWeight: 700, fontSize: 15, letterSpacing: "-0.2px", color: "#fff", padding: "0 6px" }}>
-          <span style={{ width: 38, height: 38, borderRadius: 12, background: "linear-gradient(145deg, #2b2a24, #0b0a07)", color: "var(--gold)", display: "grid", placeItems: "center", font: "800 13px Inter", boxShadow: "0 6px 16px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.2)" }}>K&M</span>
+          <img
+            src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo-round.png"
+            alt="Koos & Mike Cars"
+            style={{ width: 40, height: 40, objectFit: "contain", filter: "drop-shadow(0 4px 10px rgba(0,0,0,.45))" }}
+          />
           <div>
             <div>Koos & Mike Cars</div>
             <small style={{ display: "block", fontWeight: 400, fontSize: "10.5px", color: "var(--mut)", letterSpacing: ".3px" }}>LEAD MANAGEMENT</small>
@@ -160,6 +166,7 @@ export default function Layout({ children, currentPageName }) {
             <Avatar name={user?.full_name || user?.email || "?"} size={28} />
             <span>{firstName}</span>
           </div>
+          <ThemeToggle />
         </div>
 
         {/* Page content */}

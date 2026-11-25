@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { MessageCircle, ChevronLeft, ChevronRight, Play, CheckCircle } from "lucide-react";
 
-const GOLD = "#C9A84C";
+const GOLD = "var(--gold)";
 
 function getYouTubeId(url) {
   if (!url) return null;
@@ -13,9 +13,9 @@ function getYouTubeId(url) {
 
 function isDirectVideo(url) {
   if (!url) return false;
-  // Match file extensions OR base44 media/storage URLs that are not YouTube
+  // Match file extensions OR Supabase storage URLs that are not YouTube
   return /\.(mp4|webm|ogg|mov)(\?|$)/i.test(url) || 
-    (url.includes("media.base44.com") && !getYouTubeId(url));
+    (url.includes("/storage/v1/object/public/") && !getYouTubeId(url));
 }
 
 function ImageCarousel({ images }) {
@@ -142,7 +142,7 @@ function AdvertCard({ ad }) {
 export default function AdvertFeed() {
   const { data: adverts = [], isLoading } = useQuery({
     queryKey: ["adverts-public"],
-    queryFn: () => base44.entities.Advert.filter({ is_published: true }, "-created_date", 50),
+    queryFn: () => api.entities.Advert.filter({ is_published: true }, "-created_date", 50),
   });
 
   if (isLoading) {

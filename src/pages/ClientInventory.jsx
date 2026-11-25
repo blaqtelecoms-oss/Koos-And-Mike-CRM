@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Car, ExternalLink, ArrowLeft, Phone, MessageCircle, Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import ClientLayout from "@/components/client/ClientLayout";
+import VehicleImage from "@/components/VehicleImage";
 
 export default function ClientInventory() {
   const [search, setSearch] = useState("");
@@ -14,7 +15,7 @@ export default function ClientInventory() {
 
   const { data: vehicles = [] } = useQuery({
     queryKey: ["vehicles-public"],
-    queryFn: () => base44.entities.Vehicle.filter({ status: "Available" }),
+    queryFn: () => api.entities.Vehicle.filter({ status: "Available" }),
   });
 
   const stands = ["All", "Stand 1", "Stand 2", "Stand 3"];
@@ -40,9 +41,9 @@ export default function ClientInventory() {
 
         {/* Website CTA */}
         <div className="rounded-xl p-4 mb-8 flex flex-col sm:flex-row items-center justify-between gap-3 border" style={{ background: "#C9A84C15", borderColor: "#C9A84C44" }}>
-          <p className="text-sm" style={{ color: "#C9A84C" }}>🌐 For the full up-to-date inventory, visit our website</p>
+          <p className="text-sm" style={{ color: "var(--gold)" }}>🌐 For the full up-to-date inventory, visit our website</p>
           <a href="https://www.koosandmike.co.za" target="_blank" rel="noreferrer">
-            <Button size="sm" className="gap-2 text-black font-bold" style={{ background: "#C9A84C" }}>
+            <Button size="sm" className="gap-2 text-black font-bold" style={{ background: "var(--gold)" }}>
               <ExternalLink className="w-4 h-4" /> koosandmike.co.za
             </Button>
           </a>
@@ -66,7 +67,7 @@ export default function ClientInventory() {
                 size="sm"
                 onClick={() => setDealerFilter(s)}
                 variant={dealerFilter === s ? "default" : "outline"}
-                style={dealerFilter === s ? { background: "#C9A84C", color: "#000", border: "none" } : {}}
+                style={dealerFilter === s ? { background: "var(--gold)", color: "#000", border: "none" } : {}}
                 className={dealerFilter === s ? "" : "border-amber-200/60 text-slate-300 hover:bg-white/70"}
               >
                 {s === "All" ? "All Stands" : s}
@@ -84,7 +85,7 @@ export default function ClientInventory() {
             <Car className="w-16 h-16 mx-auto mb-4 opacity-30" />
             <p className="text-lg">No vehicles found matching your search.</p>
             <a href="https://www.koosandmike.co.za" target="_blank" rel="noreferrer" className="inline-block mt-4">
-              <Button className="gap-2 text-black font-bold" style={{ background: "#C9A84C" }}>
+              <Button className="gap-2 text-black font-bold" style={{ background: "var(--gold)" }}>
                 <ExternalLink className="w-4 h-4" /> Check Full Website
               </Button>
             </a>
@@ -110,13 +111,13 @@ function VehicleCard({ vehicle }) {
           ? vehicle.website_slug
             ? (
               <a href={`https://www.koosandmike.co.za/vehicle/${vehicle.website_slug}`} target="_blank" rel="noreferrer" className="block w-full h-full group">
-                <img src={vehicle.images[0]} alt={vehicle.title} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity" />
+                <VehicleImage src={vehicle.images[0]} alt={vehicle.title} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity" />
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-gray-200/60">
                   <ExternalLink className="w-8 h-8 text-gray-900" />
                 </div>
               </a>
             )
-            : <img src={vehicle.images[0]} alt={vehicle.title} className="w-full h-full object-cover" />
+            : <VehicleImage src={vehicle.images[0]} alt={vehicle.title} className="w-full h-full object-cover" />
           : <Car className="w-16 h-16 text-slate-600" />
         }
         {vehicle.finance_available && (
@@ -130,7 +131,7 @@ function VehicleCard({ vehicle }) {
         <p className="text-slate-400 text-xs mb-1">{vehicle.stand || ""}</p>
         {vehicle.mileage && <p className="text-slate-400 text-xs mb-3">{vehicle.mileage.toLocaleString()} km</p>}
         {vehicle.price && (
-          <p className="font-bold text-xl mb-4" style={{ color: "#C9A84C" }}>R {vehicle.price.toLocaleString()}</p>
+          <p className="font-bold text-xl mb-4" style={{ color: "var(--gold)" }}>R {vehicle.price.toLocaleString()}</p>
         )}
         <div className="flex gap-2 mt-auto">
           <a href={`https://wa.me/27000000000?text=${whatsappMsg}`} target="_blank" rel="noreferrer" className="flex-1">

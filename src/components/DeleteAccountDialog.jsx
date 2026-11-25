@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Trash2, CheckCircle2 } from "lucide-react";
 import {
   AlertDialog,
@@ -20,7 +20,7 @@ export default function DeleteAccountDialog() {
     setStep("requested");
     // Log out after a short delay so the user sees the confirmation
     setTimeout(() => {
-      base44.auth.logout("/");
+      api.auth.logout("/");
     }, 3000);
   };
 

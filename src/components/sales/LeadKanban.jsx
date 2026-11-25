@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { MessageCircle, Phone, RefreshCw } from "lucide-react";
 
-const GOLD = "#C9A84C";
+const GOLD = "var(--gold)";
 
 const PIPELINE_STAGES = [
   "Initial Contact",
@@ -24,7 +24,7 @@ const STAGE_COLORS = {
   "Engaged": "#8b5cf6",
   "Test Drive Booked": "#f59e0b",
   "Test Drive Done": "#f97316",
-  "With Sales Department": "#C9A84C",
+  "With Sales Department": "var(--gold)",
   "With Finance": "#06b6d4",
   "Application Submitted": "#6366f1",
   "Application Approved": "#22c55e",
@@ -34,7 +34,7 @@ const STAGE_COLORS = {
 };
 
 const STATUS_COLORS = {
-  New: "#C9A84C",
+  New: "var(--gold)",
   Contacted: "#3b82f6",
   "Test Drive": "#a855f7",
   Approved: "#22c55e",
@@ -112,9 +112,9 @@ export default function LeadKanban() {
   const loadData = async () => {
     setLoading(true);
     const [leadsData, followUpsData, consultantsData] = await Promise.all([
-      base44.entities.Lead.list("-created_date", 500),
-      base44.entities.LeadFollowUp.list("-update_date", 1000),
-      base44.entities.Consultant.filter({ active: true }, "name", 100),
+      api.entities.Lead.list("-created_date", 500),
+      api.entities.LeadFollowUp.list("-update_date", 1000),
+      api.entities.Consultant.filter({ active: true }, "name", 100),
     ]);
     setLeads(leadsData);
     setFollowUps(followUpsData);
@@ -151,7 +151,7 @@ export default function LeadKanban() {
     ]);
 
     // Persist to backend
-    await base44.entities.LeadFollowUp.create({
+    await api.entities.LeadFollowUp.create({
       lead_id: draggableId,
       lead_name: lead.lead_name,
       pipeline_stage: newStage,

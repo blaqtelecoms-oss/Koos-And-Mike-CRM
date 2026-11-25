@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import moment from "moment";
@@ -14,6 +14,7 @@ import StatusPill from "@/components/premium/StatusPill";
 import Avatar from "@/components/premium/Avatar";
 import PipelineRing from "@/components/premium/PipelineRing";
 import LeadsChart from "@/components/premium/LeadsChart";
+import VehicleImage from "@/components/VehicleImage";
 import QuickTile from "@/components/premium/QuickTile";
 
 const ADMIN_EMAILS = ["deon", "heino", "blaqtelecoms@gmail.com"];
@@ -33,7 +34,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     Promise.all([
-      base44.auth.me().catch(() => null),
+      api.auth.me().catch(() => null),
       loadData()
     ]).then(([user]) => setCurrentUser(user));
     const interval = setInterval(loadData, 5 * 60 * 1000);
@@ -43,9 +44,9 @@ export default function Dashboard() {
   const loadData = async () => {
     try {
       const [leadsData, vehiclesData, tasksData] = await Promise.all([
-        base44.entities.Lead.list("-created_date", 100),
-        base44.entities.Vehicle.list("-created_date", 100),
-        base44.entities.DailyTask.filter({ task_date: moment().format("YYYY-MM-DD") }, "-created_date", 50)
+        api.entities.Lead.list("-created_date", 100),
+        api.entities.Vehicle.list("-created_date", 100),
+        api.entities.DailyTask.filter({ task_date: moment().format("YYYY-MM-DD") }, "-created_date", 50)
       ]);
       setLeads(leadsData || []);
       setVehicles(vehiclesData || []);
@@ -197,7 +198,7 @@ export default function Dashboard() {
             </div>
             <div style={{ textAlign: "center" }}>
               {spotlightVehicle?.images?.[0] ? (
-                <img src={spotlightVehicle.images[0]} alt={spotlightVehicle.title} style={{ width: "88%", maxWidth: 330, borderRadius: 16, objectFit: "cover", maxHeight: 160 }} />
+                <VehicleImage src={spotlightVehicle.images[0]} alt={spotlightVehicle.title} style={{ width: "88%", maxWidth: 330, borderRadius: 16, objectFit: "cover", maxHeight: 160 }} />
               ) : (
                 <div style={{ width: "88%", maxWidth: 330, margin: "0 auto", aspectRatio: "16/10", display: "grid", placeItems: "center", color: "var(--mut)" }}>
                   <Car style={{ width: 48, height: 48, strokeWidth: 1 }} />

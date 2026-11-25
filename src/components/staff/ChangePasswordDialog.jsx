@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Eye, EyeOff, KeyRound } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 
-const GOLD = "#C9A84C";
+const GOLD = "var(--gold)";
 
 export default function ChangePasswordDialog({ consultantId, open, onClose, forced = false }) {
   const [newPassword, setNewPassword] = useState("");
@@ -29,7 +29,7 @@ export default function ChangePasswordDialog({ consultantId, open, onClose, forc
 
     setLoading(true);
     try {
-      const res = await base44.functions.invoke("consultantAuth", {
+      const res = await api.functions.invoke("consultantAuth", {
         action: "changePassword",
         consultantId,
         newPassword

@@ -1,18 +1,19 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import NavigationTracker from '@/lib/NavigationTracker'
 import { pagesConfig } from './pages.config'
-import { BrowserRouter as Router, Route, Routes, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import ClientPortal from './pages/ClientPortal';
 import ClientLogin from './pages/ClientLogin';
+import Login from './pages/Login';
 import ClientInventory from './pages/ClientInventory';
 import ClientRegister from './pages/ClientRegister';
 import ClientTradeIn from './pages/ClientTradeIn';
 import ClientCarRequest from './pages/ClientCarRequest';
-import Landing from './pages/Landing';
+import ClientPrivacy from './pages/ClientPrivacy';
+import ClientTerms from './pages/ClientTerms';
 import StaffLanding from './pages/StaffLanding';
 import MyLeads from './pages/MyLeads';
 import AdminPerformance from './pages/AdminPerformance';
@@ -21,8 +22,8 @@ import CallCentrePortal from './pages/CallCentrePortal';
 import CCLanding from './pages/CCLanding';
 import Adverts from './pages/Adverts';
 import InsuranceCallFlow from './pages/InsuranceCallFlow';
+import ThemeToggle from '@/components/ThemeToggle';
 
-import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { useEffect } from 'react';
 
 const { Pages, Layout, mainPage } = pagesConfig;
@@ -32,6 +33,15 @@ const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
 const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   <Layout currentPageName={currentPageName}>{children}</Layout>
   : <>{children}</>;
+
+const ADMIN_PATHS = [...Object.keys(Pages).map((p) => `/${p}`), '/Adverts', '/AdminPerformance', '/SalesPortal'];
+
+// Standalone portals get a floating theme switch; admin pages use the top bar one
+const PortalThemeToggle = () => {
+  const location = useLocation();
+  const isAdmin = ADMIN_PATHS.some((p) => location.pathname === p || location.pathname.startsWith(`${p}/`));
+  return isAdmin ? null : <ThemeToggle floating />;
+};
 
 // Redirects authenticated users to the right portal based on role
 const RoleBasedRedirect = () => {
@@ -56,7 +66,7 @@ const RoleBasedRedirect = () => {
 };
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, user, isAuthenticated } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, user, isAuthenticated } = useAuth();
   const location = useLocation();
 
   // Show loading spinner while checking app public settings or auth
@@ -68,31 +78,21 @@ const AuthenticatedApp = () => {
     );
   }
 
-  // Handle authentication errors
-  if (authError) {
-    if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
-    }
-    // auth_required — allow public routes to still render
-    if (authError.type === 'auth_required') {
-      const path = location.pathname;
-      const publicPaths = ['/staff', '/MyLeads', '/ClientPortal', '/ClientLogin', '/ClientInventory', '/ClientRegister', '/ClientTradeIn', '/ClientCarRequest', '/SalesPortal', '/CallCentrePortal', '/AdminPerformance'];
-      if (publicPaths.some(p => path.startsWith(p))) {
-        // Fall through to render routes below
-      } else {
-        return <Routes>
-          <Route path="*" element={<Landing />} />
-        </Routes>;
-      }
-    }
+  // Admin pages require a signed-in user; the public portals stay open
+  // Staff pages that run their own password login (/staff, /CCLanding → /CallCentrePortal, /MyLeads) stay reachable;
+  // the admin CRM and sales portal do not.
+  const publicPaths = ['/Login', '/staff', '/MyLeads', '/ClientPortal', '/ClientLogin', '/ClientInventory', '/ClientRegister', '/ClientTradeIn', '/ClientCarRequest', '/ClientPrivacy', '/ClientTerms', '/CallCentrePortal', '/CCLanding'];
+  // Visitors who aren't signed in only ever see the client portal — no portal selector, no staff portal
+  if (!isAuthenticated && location.pathname !== '/' && !publicPaths.some((p) => location.pathname.startsWith(p))) {
+    return <Navigate to="/ClientPortal" replace />;
   }
 
   // Render the main app
   return (
     <Routes>
-      {/* Landing page — if already logged in, redirect to correct portal */}
+      {/* Root — the public site is the client portal; signed-in staff go to their portal */}
       <Route path="/" element={
-        isAuthenticated && user ? <RoleBasedRedirect /> : <Landing />
+        isAuthenticated && user ? <RoleBasedRedirect /> : <ClientPortal />
       } />
 
       {/* Admin / Sales pages — wrapped in layout */}
@@ -109,18 +109,21 @@ const AuthenticatedApp = () => {
       ))}
 
       {/* Client Portal — no admin layout */}
+      <Route path="/Login" element={<Login />} />
       <Route path="/ClientLogin" element={<ClientLogin />} />
       <Route path="/ClientPortal" element={<ClientPortal />} />
       <Route path="/ClientInventory" element={<ClientInventory />} />
       <Route path="/ClientRegister" element={<ClientRegister />} />
       <Route path="/ClientTradeIn" element={<ClientTradeIn />} />
       <Route path="/ClientCarRequest" element={<ClientCarRequest />} />
+      <Route path="/ClientPrivacy" element={<ClientPrivacy />} />
+      <Route path="/ClientTerms" element={<ClientTerms />} />
 
       <Route path="/Adverts" element={<LayoutWrapper currentPageName="Adverts"><Adverts /></LayoutWrapper>} />
       <Route path="/staff" element={<StaffLanding />} />
       <Route path="/MyLeads" element={<MyLeads />} />
-      <Route path="/AdminPerformance" element={<AdminPerformance />} />
-      <Route path="/SalesPortal" element={<SalesPortal />} />
+      <Route path="/AdminPerformance" element={<LayoutWrapper currentPageName="AdminPerformance"><AdminPerformance /></LayoutWrapper>} />
+      <Route path="/SalesPortal" element={<LayoutWrapper currentPageName="SalesPortal"><SalesPortal /></LayoutWrapper>} />
       <Route path="/CallCentrePortal" element={<CallCentrePortal />} />
       <Route path="/CCLanding" element={<CCLanding />} />
       <Route path="/InsuranceCallFlow" element={<InsuranceCallFlow />} />
@@ -136,8 +139,8 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
-          <NavigationTracker />
           <AuthenticatedApp />
+          <PortalThemeToggle />
         </Router>
         <Toaster />
       </QueryClientProvider>

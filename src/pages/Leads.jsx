@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,13 +7,15 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus, Search, Phone, Mail, Car, Filter, Edit, ClipboardList, Clock, RefreshCw, MoreHorizontal } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Plus, Search, Phone, Mail, Car, Filter, Edit, ClipboardList, Clock, RefreshCw, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import moment from "moment";
 import LeadFollowUpDialog from "@/components/leads/LeadFollowUpDialog";
 import CallDialog from "@/components/leads/CallDialog";
 import WhatsAppDialog from "@/components/leads/WhatsAppDialog";
 import NewLeadNotifier from "@/components/leads/NewLeadNotifier";
 import PushNotificationSetup from "@/components/leads/PushNotificationSetup";
+import VehicleImage from "@/components/VehicleImage";
 import GlassCard from "@/components/premium/GlassCard";
 import StatusPill from "@/components/premium/StatusPill";
 import Avatar from "@/components/premium/Avatar";
@@ -37,6 +39,8 @@ export default function Leads() {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterConsultant, setFilterConsultant] = useState("all");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(100);
   const [followUpLead, setFollowUpLead] = useState(null);
   const [callingLead, setCallingLead] = useState(null);
   const [whatsappLead, setWhatsappLead] = useState(null);
@@ -48,9 +52,9 @@ export default function Leads() {
 
   useEffect(() => {
     loadLeads();
-    base44.entities.Consultant.filter({ role: "Sales", active: true }, "name", 50)
+    api.entities.Consultant.filter({ role: "Sales", active: true }, "name", 50)
       .then(data => setConsultants(data || [])).catch(() => {});
-    base44.entities.Vehicle.list("title", 500)
+    api.entities.Vehicle.list("title", 500)
       .then(data => setVehicles(data || [])).catch(() => {});
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get("action") === "new") setShowForm(true);
@@ -81,10 +85,16 @@ export default function Leads() {
 
   const loadLeads = async () => {
     const [data, allFollowUps] = await Promise.all([
-      base44.entities.Lead.list("-created_date", 200),
-      base44.entities.LeadFollowUp.list("-update_date", 500)
+      api.entities.Lead.listAll("-created_date"),
+      api.entities.LeadFollowUp.list("-update_date", 500)
     ]);
-    setLeads(data);
+    const ordered = [...data].sort((a, b) => {
+      const aNew = a.status === "New" ? 1 : 0;
+      const bNew = b.status === "New" ? 1 : 0;
+      if (aNew !== bNew) return bNew - aNew;
+      return new Date(b.created_date || 0) - new Date(a.created_date || 0);
+    });
+    setLeads(ordered);
     const map = {};
     for (const fu of allFollowUps) { if (!map[fu.lead_id]) map[fu.lead_id] = fu; }
     setFollowUps(map);
@@ -94,8 +104,8 @@ export default function Leads() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = { ...form, response_time_minutes: form.response_time_minutes ? Number(form.response_time_minutes) : null };
-    if (editingLead) await base44.entities.Lead.update(editingLead.id, payload);
-    else await base44.entities.Lead.create(payload);
+    if (editingLead) await api.entities.Lead.update(editingLead.id, payload);
+    else await api.entities.Lead.create(payload);
     setShowForm(false); setEditingLead(null); resetForm(); loadLeads();
   };
 
@@ -109,13 +119,13 @@ export default function Leads() {
 
   const handleDelete = async (id) => {
     if (confirm("Note: Leads should not be deleted according to company policy. Are you sure?")) {
-      await base44.entities.Lead.delete(id); loadLeads();
+      await api.entities.Lead.delete(id); loadLeads();
     }
   };
 
   const handleStatusChange = async (leadId, newStatus) => {
     setLeads(prev => prev.map(l => l.id === leadId ? { ...l, status: newStatus } : l));
-    await base44.entities.Lead.update(leadId, { status: newStatus });
+    await api.entities.Lead.update(leadId, { status: newStatus });
   };
 
   const filteredLeads = leads.filter(lead => {
@@ -124,6 +134,12 @@ export default function Leads() {
     const matchesDealer = filterConsultant === "all" || lead.assigned_consultant === filterConsultant;
     return matchesSearch && matchesStatus && matchesDealer;
   });
+
+  const totalPages = Math.max(1, Math.ceil(filteredLeads.length / pageSize));
+  const safePage = Math.min(page, totalPages);
+  const pagedLeads = filteredLeads.slice((safePage - 1) * pageSize, safePage * pageSize);
+
+  useEffect(() => { setPage(1); }, [search, filterStatus, filterConsultant, pageSize]);
 
   const getEmailReceivedDate = (lead) => lead.email_received_date || null;
 
@@ -215,17 +231,27 @@ export default function Leads() {
 
       {/* Leads table */}
       <GlassCard>
-        <div className="km-card-header">All Leads</div>
+        <div className="km-card-header">
+          <div>
+            All Leads
+            {filteredLeads.length > 0 && (
+              <div style={{ fontSize: 11, color: "var(--mut)", fontWeight: 400 }}>
+                Showing {(safePage - 1) * pageSize + 1}–{Math.min(safePage * pageSize, filteredLeads.length)} of {filteredLeads.length.toLocaleString()}
+              </div>
+            )}
+          </div>
+        </div>
         {filteredLeads.length === 0 ? (
           <div className="km-empty">No leads found. Try adjusting your search or filters.</div>
         ) : (
+          <>
           <div className="km-table-wrap">
             <table className="km-table">
               <thead>
-                <tr><th>Lead</th><th>Interest</th><th>Source</th><th>Consultant</th><th>Status</th><th>Added</th><th></th></tr>
+                <tr><th>Lead</th><th>Interest</th><th>Status</th><th></th></tr>
               </thead>
               <tbody>
-                {filteredLeads.map(lead => {
+                {pagedLeads.map(lead => {
                   const platform = getPlatformFromNotes(lead.notes);
                   return (
                     <tr key={lead.id}>
@@ -238,25 +264,40 @@ export default function Leads() {
                           </div>
                         </div>
                       </td>
-                      <td style={{ color: "var(--mut)" }}>
-                        {lead.car_interested && (() => {
-                          const matched = findMatchingVehicle(lead.car_interested);
-                          return matched?.images?.length > 0 ? (
-                            <button onClick={() => setVehicleDialogLead(lead)} style={{ color: "var(--gold-deep)", cursor: "pointer", background: "none", border: 0, textAlign: "left", textDecoration: "underline" }}>{lead.car_interested}</button>
-                          ) : <span>{lead.car_interested}</span>;
-                        })() || "—"}
-                        {platform && <span style={{ marginLeft: 4, fontSize: 10, padding: "2px 6px", borderRadius: 8, background: platform.color + "22", color: platform.color }}>{platform.name}</span>}
-                      </td>
-                      <td style={{ color: "var(--mut)" }}>{lead.source || "—"}</td>
-                      <td style={{ color: "var(--mut)" }}>{lead.assigned_consultant || "Unassigned"}</td>
-                      <td><StatusPill status={lead.status} /></td>
-                      <td style={{ color: "var(--mut)", fontSize: 11 }}>{moment(lead.created_date).format("DD MMM, HH:mm")}</td>
-                      <td>
-                        <div style={{ display: "flex", gap: 4 }}>
-                          <button onClick={() => handleEdit(lead)} style={{ background: "none", border: 0, cursor: "pointer", color: "var(--mut)", padding: 4 }}><Edit style={{ width: 15, height: 15 }} /></button>
-                          <button onClick={() => setFollowUpLead(lead)} style={{ background: "none", border: 0, cursor: "pointer", color: "var(--mut)", padding: 4 }}><ClipboardList style={{ width: 15, height: 15 }} /></button>
-                          <button onClick={() => setCallingLead(lead)} style={{ background: "none", border: 0, cursor: "pointer", color: "var(--mut)", padding: 4 }}><Phone style={{ width: 15, height: 15 }} /></button>
+                      <td style={{ color: "var(--mut)", maxWidth: 300 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+                          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={lead.car_interested || ""}>
+                            {lead.car_interested && (() => {
+                              const matched = findMatchingVehicle(lead.car_interested);
+                              return matched?.images?.length > 0 ? (
+                                <button onClick={() => setVehicleDialogLead(lead)} style={{ color: "var(--gold-deep)", cursor: "pointer", background: "none", border: 0, padding: 0, textAlign: "left", textDecoration: "underline" }}>{lead.car_interested}</button>
+                              ) : <span>{lead.car_interested}</span>;
+                            })() || "—"}
+                          </div>
+                          {platform && <span style={{ flexShrink: 0, fontSize: 10, padding: "2px 6px", borderRadius: 8, background: platform.color + "22", color: platform.color }}>{platform.name}</span>}
                         </div>
+                      </td>
+                      <td><StatusPill status={lead.status} /></td>
+                      <td style={{ textAlign: "right" }}>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="km-icon-btn" style={{ cursor: "pointer" }} aria-label={`Options for ${lead.lead_name}`}>
+                              <MoreHorizontal style={{ width: 16, height: 16 }} />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-60">
+                            <DropdownMenuLabel style={{ fontSize: 11, color: "var(--mut)", fontWeight: 400 }}>Lead details</DropdownMenuLabel>
+                            <div style={{ display: "grid", gap: 5, padding: "0 8px 8px", fontSize: 11.5, color: "var(--mut)" }}>
+                              <div>Source: <span style={{ color: "var(--ink)" }}>{lead.source || "—"}</span></div>
+                              <div>Consultant: <span style={{ color: "var(--ink)" }}>{lead.assigned_consultant || "Unassigned"}</span></div>
+                              <div>Added: <span style={{ color: "var(--ink)" }}>{moment(lead.created_date).format("DD MMM YYYY, HH:mm")}</span></div>
+                            </div>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => handleEdit(lead)} style={{ cursor: "pointer" }}><Edit style={{ width: 14, height: 14, marginRight: 8 }} /> Edit lead</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setFollowUpLead(lead)} style={{ cursor: "pointer" }}><ClipboardList style={{ width: 14, height: 14, marginRight: 8 }} /> Follow-up</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setCallingLead(lead)} style={{ cursor: "pointer" }}><Phone style={{ width: 14, height: 14, marginRight: 8 }} /> Log call</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </td>
                     </tr>
                   );
@@ -264,6 +305,51 @@ export default function Leads() {
               </tbody>
             </table>
           </div>
+
+          {/* Pagination */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--line)" }}>
+            <button
+              className="km-icon-btn"
+              onClick={() => setPage(Math.max(1, safePage - 1))}
+              disabled={safePage <= 1}
+              aria-label="Previous page"
+              style={{ cursor: safePage <= 1 ? "not-allowed" : "pointer", opacity: safePage <= 1 ? 0.4 : 1 }}
+            >
+              <ChevronLeft style={{ width: 16, height: 16 }} />
+            </button>
+            <span style={{ fontSize: 12, color: "var(--mut)" }}>Page</span>
+            <Input
+              type="number"
+              min={1}
+              max={totalPages}
+              value={safePage}
+              onChange={(e) => { const v = Number(e.target.value); if (Number.isInteger(v) && v >= 1 && v <= totalPages) setPage(v); }}
+              aria-label="Page number"
+              style={{ width: 64, height: 34, textAlign: "center", background: "var(--glass)", border: "1px solid var(--glass-border)", borderRadius: 10, fontSize: 12.5 }}
+            />
+            <span style={{ fontSize: 12, color: "var(--mut)" }}>of {totalPages}</span>
+            <button
+              className="km-icon-btn"
+              onClick={() => setPage(Math.min(totalPages, safePage + 1))}
+              disabled={safePage >= totalPages}
+              aria-label="Next page"
+              style={{ cursor: safePage >= totalPages ? "not-allowed" : "pointer", opacity: safePage >= totalPages ? 0.4 : 1 }}
+            >
+              <ChevronRight style={{ width: 16, height: 16 }} />
+            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginLeft: "auto" }}>
+              <Select value={String(pageSize)} onValueChange={(v) => setPageSize(Number(v))}>
+                <SelectTrigger style={{ width: 120, height: 34, background: "var(--glass)", border: "1px solid var(--glass-border)", borderRadius: 10, fontSize: 12 }}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {[50, 100, 200, 500].map(n => <SelectItem key={n} value={String(n)}>{n} rows</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <span style={{ fontSize: 12, color: "var(--mut)", whiteSpace: "nowrap" }}>{filteredLeads.length.toLocaleString()} records</span>
+            </div>
+          </div>
+          </>
         )}
       </GlassCard>
 
@@ -281,13 +367,13 @@ export default function Leads() {
             return matched?.images?.length > 0 ? (
               <div className="space-y-3">
                 <div className="aspect-[16/10] bg-gray-200/60 rounded-lg overflow-hidden">
-                  <img src={matched.images[0]} alt={matched.title} className="w-full h-full object-cover" />
+                  <VehicleImage src={matched.images[0]} alt={matched.title} className="w-full h-full object-cover" />
                 </div>
                 <p className="text-gray-600 text-sm">{matched.title}</p>
                 {matched.price && <p className="text-amber-400 font-semibold">R {matched.price.toLocaleString()}</p>}
                 {matched.images.length > 1 && (
                   <div className="grid grid-cols-4 gap-2">
-                    {matched.images.slice(1, 5).map((img, i) => <img key={i} src={img} alt={`${matched.title} ${i+2}`} className="aspect-square object-cover rounded-lg border border-amber-200/60" />)}
+                    {matched.images.slice(1, 5).map((img, i) => <VehicleImage key={i} src={img} alt={`${matched.title} ${i+2}`} className="aspect-square object-cover rounded-lg border border-amber-200/60" />)}
                   </div>
                 )}
               </div>

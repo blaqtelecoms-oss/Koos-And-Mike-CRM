@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Users, Phone, MessageCircle, LogOut, Car, ClipboardList, ChevronRight, X, Check, KeyRound, CheckSquare, BellRing, BellOff, RefreshCw } from "lucide-react";
 import moment from "moment";
 import ChangePasswordDialog from "@/components/staff/ChangePasswordDialog";
+import VehicleImage from "@/components/VehicleImage";
 
-const GOLD = "#C9A84C";
+const GOLD = "var(--gold)";
 
 const STATUS_COLORS = {
-  "New": { bg: "#C9A84C20", color: "#C9A84C" },
+  "New": { bg: "#C9A84C20", color: "var(--gold)" },
   "Contacted": { bg: "#3b82f620", color: "#3b82f6" },
   "Test Drive": { bg: "#a855f720", color: "#a855f7" },
   "Approved": { bg: "#22c55e20", color: "#22c55e" },
@@ -64,14 +65,14 @@ export default function MyLeads() {
     const init = async () => {
       // First try Base44 authenticated user
       try {
-        const user = await base44.auth.me();
+        const user = await api.auth.me();
         if (user) {
           setAuthUser(user);
           // Find their consultant record by email first, then by name as fallback
-          let allConsultants = await base44.entities.Consultant.filter({ email: user.email }, "-created_date", 1);
+          let allConsultants = await api.entities.Consultant.filter({ email: user.email }, "-created_date", 1);
           if (!allConsultants || allConsultants.length === 0) {
             // Try matching by full name
-            const allC = await base44.entities.Consultant.list("-created_date", 200);
+            const allC = await api.entities.Consultant.list("-created_date", 200);
             allConsultants = allC.filter(c =>
               c.name?.toLowerCase().trim() === user.full_name?.toLowerCase().trim()
             );
@@ -149,7 +150,7 @@ export default function MyLeads() {
     try {
       if (useBackendFunction) {
         // localStorage users can't call entities directly — use the public backend function
-        const res = await base44.functions.invoke("getStaffPortalData", { consultantName: name });
+        const res = await api.functions.invoke("getStaffPortalData", { consultantName: name });
         const d = res.data;
         setLeads(d.myLeads || []);
         setAllLeads(d.allLeads || []);
@@ -159,11 +160,11 @@ export default function MyLeads() {
         // Base44 authenticated users call entities directly
         const [myLeadsData, allLeadsData, vehiclesData, tasksData] = await Promise.all([
           name
-            ? base44.entities.Lead.filter({ assigned_consultant: name }, "-created_date", 300)
+            ? api.entities.Lead.filter({ assigned_consultant: name }, "-created_date", 300)
             : Promise.resolve([]),
-          base44.entities.Lead.list("-created_date", 300),
-          base44.entities.Vehicle.filter({ status: "Available" }, "-created_date", 100),
-          base44.entities.DailyTask.list("-task_date", 100),
+          api.entities.Lead.list("-created_date", 300),
+          api.entities.Vehicle.filter({ status: "Available" }, "-created_date", 100),
+          api.entities.DailyTask.list("-task_date", 100),
         ]);
         setLeads(myLeadsData || []);
         setAllLeads(allLeadsData || []);
@@ -194,7 +195,11 @@ export default function MyLeads() {
     setTogglingAvailability(true);
     const newVal = !consultant.available;
     try {
-      await base44.entities.Consultant.update(consultant.id, { available: newVal });
+      if (isLegacyUser) {
+        await api.functions.invoke("staffAction", { action: "setAvailability", consultantId: consultant.id, available: newVal });
+      } else {
+        await api.entities.Consultant.update(consultant.id, { available: newVal });
+      }
       setConsultant(prev => ({ ...prev, available: newVal }));
     } finally {
       setTogglingAvailability(false);
@@ -205,7 +210,7 @@ export default function MyLeads() {
     localStorage.removeItem("staffConsultant");
     localStorage.removeItem("mustChangePassword");
     if (authUser) {
-      base44.auth.logout("/");
+      api.auth.logout("/");
     } else {
       window.location.href = "/staff";
     }
@@ -214,7 +219,11 @@ export default function MyLeads() {
   const handleUpdateStatus = async (lead, newStatus) => {
     setUpdatingStatus(true);
     try {
-      await base44.entities.Lead.update(lead.id, { status: newStatus });
+      if (isLegacyUser) {
+        await api.functions.invoke("staffAction", { action: "updateLeadStatus", leadId: lead.id, status: newStatus });
+      } else {
+        await api.entities.Lead.update(lead.id, { status: newStatus });
+      }
       const update = l => l.id === lead.id ? { ...l, status: newStatus } : l;
       setLeads(prev => prev.map(update));
       setAllLeads(prev => prev.map(update));
@@ -229,10 +238,10 @@ export default function MyLeads() {
     setFollowUpHistory([]);
     try {
       if (isLegacyUser) {
-        const res = await base44.functions.invoke("getStaffPortalData", { leadId: lead.id });
+        const res = await api.functions.invoke("getStaffPortalData", { leadId: lead.id });
         setFollowUpHistory(res.data?.followUps || []);
       } else {
-        const data = await base44.entities.LeadFollowUp.filter({ lead_id: lead.id }, "-update_date", 100);
+        const data = await api.entities.LeadFollowUp.filter({ lead_id: lead.id }, "-update_date", 100);
         setFollowUpHistory(data || []);
       }
     } catch (e) {
@@ -253,13 +262,18 @@ export default function MyLeads() {
     if (!followUpData.pipeline_stage) return;
     setSavingFollowUp(true);
     try {
-      await base44.entities.LeadFollowUp.create({
+      const followUp = {
         lead_id: selectedLead.id,
         lead_name: selectedLead.lead_name,
         update_date: moment().format("YYYY-MM-DD"),
         reported_by: consultant?.name || authUser?.full_name,
         ...followUpData,
-      });
+      };
+      if (isLegacyUser) {
+        await api.functions.invoke("staffAction", { action: "createFollowUp", followUp });
+      } else {
+        await api.entities.LeadFollowUp.create(followUp);
+      }
       setShowFollowUp(false);
       setFollowUpData({});
       // Refresh history
@@ -305,7 +319,7 @@ export default function MyLeads() {
       <header className="border-b py-3 px-4" style={{ borderColor: "#C9A84C22", background: "rgba(255,255,255,0.85)" }}>
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png" alt="K&M" className="w-9 h-9 object-contain" />
+            <img src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo-round.png" alt="K&M" className="w-9 h-9 object-contain" />
             <div>
               <h1 className="font-bold text-sm leading-none" style={{ color: GOLD }}>Koos & Mike Cars</h1>
               <p className="text-xs text-gray-400">{consultant?.name || authUser?.full_name} · {consultant?.role || "Staff"}</p>
@@ -479,7 +493,7 @@ export default function MyLeads() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className={`text-sm font-semibold ${t.completed ? "line-through text-gray-400" : "text-gray-900"}`}>{t.description}</p>
-                      <span className="px-2 py-0.5 rounded text-xs" style={{ background: "#C9A84C20", color: "#C9A84C" }}>{t.task_type}</span>
+                      <span className="px-2 py-0.5 rounded text-xs" style={{ background: "#C9A84C20", color: "var(--gold)" }}>{t.task_type}</span>
                     </div>
                     <div className="flex gap-3 mt-1 flex-wrap">
                       <p className="text-xs text-gray-400">{t.task_date}</p>
@@ -506,7 +520,7 @@ export default function MyLeads() {
               {filteredVehicles.map(v => (
                 <div key={v.id} className="rounded-xl border overflow-hidden" style={{ background: "#ffffff06", borderColor: "var(--line)" }}>
                   {v.images?.[0] && (
-                    <img src={v.images[0]} alt={v.title} className="w-full h-40 object-cover" />
+                    <VehicleImage src={v.images[0]} alt={v.title} className="w-full h-40 object-cover" />
                   )}
                   <div className="p-4">
                     <p className="text-gray-900 font-semibold text-sm">{v.title}</p>

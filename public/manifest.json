@@ -9,12 +9,12 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png",
+      "src": "https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png",
+      "src": "https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo.png",
       "sizes": "512x512",
       "type": "image/png"
     }

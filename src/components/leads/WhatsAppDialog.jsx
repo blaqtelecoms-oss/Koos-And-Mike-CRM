@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -23,7 +23,7 @@ export default function WhatsAppDialog({ lead, open, onClose, onSaved }) {
     const encodedMsg = encodeURIComponent(message);
 
     // Log the WhatsApp message as a follow-up
-    await base44.entities.LeadFollowUp.create({
+    await api.entities.LeadFollowUp.create({
       lead_id: lead.id,
       lead_name: lead.lead_name,
       update_date: moment().format("YYYY-MM-DD"),

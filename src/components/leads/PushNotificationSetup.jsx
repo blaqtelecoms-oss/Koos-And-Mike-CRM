@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Bell, BellOff, BellRing } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { useToast } from "@/components/ui/use-toast";
 
 function urlBase64ToUint8Array(base64String) {
@@ -54,7 +54,7 @@ export default function PushNotificationSetup() {
       }
 
       // Fetch VAPID public key from backend
-      const res = await base44.functions.invoke('getVapidPublicKey', {});
+      const res = await api.functions.invoke('getVapidPublicKey', {});
       const publicKey = res.data?.publicKey;
       if (!publicKey) {
         toast({ title: "Setup error", description: "VAPID public key not configured.", variant: "destructive" });
@@ -69,7 +69,7 @@ export default function PushNotificationSetup() {
       });
 
       const subJson = sub.toJSON();
-      await base44.functions.invoke('savePushSubscription', {
+      await api.functions.invoke('savePushSubscription', {
         endpoint: subJson.endpoint,
         p256dh: subJson.keys.p256dh,
         auth: subJson.keys.auth

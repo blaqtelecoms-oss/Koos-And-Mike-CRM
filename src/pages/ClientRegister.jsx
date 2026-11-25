@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,7 +22,7 @@ export default function ClientRegister() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await base44.entities.Lead.create({
+    await api.entities.Lead.create({
       ...form,
       status: "New",
       dealer_assigned: "Unassigned",
@@ -43,7 +43,7 @@ export default function ClientRegister() {
           <p className="text-slate-300 mb-2">Thank you, <strong className="text-gray-900">{form.lead_name}</strong>.</p>
           <p className="text-slate-400 mb-8">Deon will contact you within 5–10 minutes via {form.contact_preference}.</p>
           <Button onClick={() => { setSubmitted(false); setForm({ lead_name: "", phone: "", email: "", car_interested: "", source: "Website", notes: "", contact_preference: "WhatsApp" }); }}
-            className="text-black font-bold" style={{ background: "#C9A84C" }}>
+            className="text-black font-bold" style={{ background: "var(--gold)" }}>
             Submit Another
           </Button>
         </div>
@@ -56,7 +56,7 @@ export default function ClientRegister() {
       <div className="max-w-2xl mx-auto px-4 py-10">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "#C9A84C20" }}>
-            <UserPlus className="w-6 h-6" style={{ color: "#C9A84C" }} />
+            <UserPlus className="w-6 h-6" style={{ color: "var(--gold)" }} />
           </div>
           <div>
             <h1 className="text-gray-900 text-3xl font-bold">Register My Interest</h1>
@@ -116,7 +116,7 @@ export default function ClientRegister() {
               className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400" />
           </FormField>
 
-          <Button type="submit" disabled={loading} className="w-full py-6 text-lg font-bold rounded-xl gap-2 text-black" style={{ background: "#C9A84C" }}>
+          <Button type="submit" disabled={loading} className="w-full py-6 text-lg font-bold rounded-xl gap-2 text-black" style={{ background: "var(--gold)" }}>
             {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : <><UserPlus className="w-5 h-5" /> Register My Interest</>}
           </Button>
         </form>

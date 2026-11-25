@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +11,7 @@ import { Plus, Search, Car, Edit, Trash2, Upload, ExternalLink, Filter } from "l
 import GlassCard from "@/components/premium/GlassCard";
 import StatusPill from "@/components/premium/StatusPill";
 import EmptyState from "@/components/premium/EmptyState";
+import VehicleImage from "@/components/VehicleImage";
 
 const STANDS = ["Stand 1", "Stand 2", "Stand 3", "Detailing Workshop", "Dekra"];
 const STATUSES = ["Available", "Reserved", "Sold"];
@@ -28,12 +29,12 @@ export default function Vehicles() {
 
   useEffect(() => { loadVehicles(); }, []);
 
-  const loadVehicles = async () => { const data = await base44.entities.Vehicle.list("-created_date", 500); setVehicles(data); setLoading(false); };
+  const loadVehicles = async () => { const data = await api.entities.Vehicle.list("-created_date", 500); setVehicles(data); setLoading(false); };
 
   const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files); if (!files.length) return; setUploading(true);
     const newImages = [];
-    for (const file of files) { const { file_url } = await base44.integrations.Core.UploadFile({ file }); newImages.push(file_url); }
+    for (const file of files) { const { file_url } = await api.integrations.Core.UploadFile({ file }); newImages.push(file_url); }
     setForm({ ...form, images: [...form.images, ...newImages] }); setUploading(false);
   };
   const removeImage = (index) => setForm({ ...form, images: form.images.filter((_, i) => i !== index) });
@@ -41,8 +42,8 @@ export default function Vehicles() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = { ...form, year: form.year ? Number(form.year) : null, mileage: form.mileage ? Number(form.mileage) : null, price: form.price ? Number(form.price) : null };
-    if (editingVehicle) await base44.entities.Vehicle.update(editingVehicle.id, payload);
-    else await base44.entities.Vehicle.create(payload);
+    if (editingVehicle) await api.entities.Vehicle.update(editingVehicle.id, payload);
+    else await api.entities.Vehicle.create(payload);
     setShowForm(false); setEditingVehicle(null); resetForm(); loadVehicles();
   };
   const resetForm = () => setForm({ title: "", make: "", model: "", year: "", mileage: "", price: "", stand: "Stand 1", description: "", status: "Available", uploaded_to_website: false, finance_available: true, images: [] });
@@ -51,7 +52,7 @@ export default function Vehicles() {
     setForm({ title: vehicle.title || "", make: vehicle.make || "", model: vehicle.model || "", year: vehicle.year?.toString() || "", mileage: vehicle.mileage?.toString() || "", price: vehicle.price?.toString() || "", stand: vehicle.stand || "Stand 1", description: vehicle.description || "", status: vehicle.status || "Available", uploaded_to_website: vehicle.uploaded_to_website || false, finance_available: vehicle.finance_available !== false, images: vehicle.images || [] });
     setShowForm(true);
   };
-  const handleDelete = async (id) => { if (confirm("Are you sure you want to delete this vehicle?")) { await base44.entities.Vehicle.delete(id); loadVehicles(); } };
+  const handleDelete = async (id) => { if (confirm("Are you sure you want to delete this vehicle?")) { await api.entities.Vehicle.delete(id); loadVehicles(); } };
 
   const filteredVehicles = vehicles.filter(v => {
     const ms = v.title?.toLowerCase().includes(search.toLowerCase()) || v.make?.toLowerCase().includes(search.toLowerCase()) || v.model?.toLowerCase().includes(search.toLowerCase());
@@ -100,32 +101,32 @@ export default function Vehicles() {
               {vehicle.images?.length > 0 ? (
                 vehicle.website_slug ? (
                   <a href={`https://www.koosandmike.co.za/vehicle/${vehicle.website_slug}`} target="_blank" rel="noreferrer" className="block w-full h-full group">
-                    <img src={vehicle.images[0]} alt={vehicle.title} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity" />
+                    <VehicleImage src={vehicle.images[0]} alt={vehicle.title} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity" />
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><ExternalLink style={{ width: 32, height: 32, color: "#fff" }} /></div>
                   </a>
-                ) : <img src={vehicle.images[0]} alt={vehicle.title} className="w-full h-full object-cover" />
+                ) : <VehicleImage src={vehicle.images[0]} alt={vehicle.title} className="w-full h-full object-cover" />
               ) : <div className="w-full h-full flex items-center justify-center"><Car style={{ width: 48, height: 48, color: "var(--mut)", opacity: 0.3 }} /></div>}
               <div style={{ position: "absolute", top: 8, right: 8 }}><StatusPill status={vehicle.status} /></div>
             </div>
             <div style={{ paddingTop: 12 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                <div>
-                  <div style={{ fontWeight: 600, color: "var(--ink)", fontSize: 14, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{vehicle.title}</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: "var(--gold-deep)" }}>{formatPrice(vehicle.price)}</div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div style={{ fontWeight: 600, color: "var(--ink)", fontSize: 14, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={vehicle.title}>{vehicle.title}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "var(--gold-deep)", whiteSpace: "nowrap" }}>{formatPrice(vehicle.price)}</div>
                 </div>
-                <div style={{ display: "flex", gap: 4 }}>
+                <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
                   <button onClick={() => handleEdit(vehicle)} style={{ background: "none", border: 0, cursor: "pointer", color: "var(--mut)", padding: 4 }}><Edit style={{ width: 16, height: 16 }} /></button>
                   <button onClick={() => handleDelete(vehicle.id)} style={{ background: "none", border: 0, cursor: "pointer", color: "var(--mut)", padding: 4 }}><Trash2 style={{ width: 16, height: 16 }} /></button>
                 </div>
               </div>
-              <div style={{ fontSize: 12, color: "var(--mut)", marginTop: 8 }}>
+              <div style={{ fontSize: 12, color: "var(--mut)", marginTop: 8, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {vehicle.stand && <span>Stand: {vehicle.stand}</span>}
                 {vehicle.mileage && <span> · {vehicle.mileage.toLocaleString()} km</span>}
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, paddingTop: 8, borderTop: "1px solid var(--line)" }}>
+              <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", columnGap: 8, rowGap: 2, marginTop: 8, paddingTop: 8, borderTop: "1px solid var(--line)" }}>
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: vehicle.uploaded_to_website ? "var(--gold)" : "var(--mut)", opacity: vehicle.uploaded_to_website ? 1 : 0.3 }} />
-                <span style={{ fontSize: 11, color: "var(--mut)" }}>{vehicle.uploaded_to_website ? "On Website" : "Not Uploaded"}</span>
-                {vehicle.finance_available && <span style={{ fontSize: 11, color: "var(--gold-deep)" }}>· Finance Available</span>}
+                <span style={{ fontSize: 11, color: "var(--mut)", whiteSpace: "nowrap" }}>{vehicle.uploaded_to_website ? "On Website" : "Not Uploaded"}</span>
+                {vehicle.finance_available && <span style={{ fontSize: 11, color: "var(--gold-deep)", whiteSpace: "nowrap" }}>· Finance Available</span>}
               </div>
             </div>
           </GlassCard>

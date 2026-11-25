@@ -2,8 +2,9 @@ import { MessageCircle, Star, ArrowRight, Search, RefreshCw, UserPlus, ExternalL
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import AdvertFeed from "@/components/client/AdvertFeed";
+import ClientLayout from "@/components/client/ClientLayout";
 
-const GOLD = "#C9A84C";
+const GOLD = "var(--gold)";
 
 const TEAM = [
   { name: "Koos", phone: "069 007 4746", wa: "27690074746" },
@@ -25,31 +26,7 @@ const REVIEWS = [
 
 export default function ClientPortal() {
   return (
-    <div className="min-h-screen" style={{ background: "var(--app-canvas)" }}>
-      {/* Gold top accent */}
-      <div className="h-1 w-full" style={{ background: GOLD }} />
-
-      {/* Header */}
-      <header className="border-b sticky top-0 z-50 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.85)", borderColor: "#C9A84C22" }}>
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img
-              src="https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png"
-              alt="Koos & Mike Cars"
-              className="w-12 h-12 object-contain"
-            />
-            <div>
-              <h1 className="font-bold text-lg leading-none" style={{ color: GOLD }}>Koos & Mike Cars</h1>
-              <p className="text-xs" style={{ color: "#C9A84C77" }}>Your Trusted Car Portal</p>
-            </div>
-          </div>
-          <a href="https://wa.me/27789657049" target="_blank" rel="noreferrer">
-            <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white gap-2">
-              <MessageCircle className="w-4 h-4" /> WhatsApp Us
-            </Button>
-          </a>
-        </div>
-      </header>
+    <ClientLayout>
 
       {/* Hero */}
       <section className="max-w-6xl mx-auto px-4 py-20 text-center">
@@ -261,10 +238,7 @@ export default function ClientPortal() {
         </div>
       </section>
 
-      <footer className="border-t py-6 text-center text-xs" style={{ borderColor: "#C9A84C22", color: "#ffffff33" }}>
-        © 2026 Koos & Mike Cars · Quality Vehicles, Trusted Service.
-      </footer>
-    </div>
+    </ClientLayout>
   );
 }
 

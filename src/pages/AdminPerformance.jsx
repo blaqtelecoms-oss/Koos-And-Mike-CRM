@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import {
   AlertCircle, Star, Award, BarChart2, Bell, LogOut, ChevronLeft, ChevronRight, UserCheck, Link, Copy, Check
 } from "lucide-react";
 import moment from "moment";
+import StatusPill from "@/components/premium/StatusPill";
 
 const GOLD = "#ff9d00";
 
@@ -42,7 +43,7 @@ export default function AdminPerformance() {
   const [editIsManager, setEditIsManager] = useState(false);
 
   useEffect(() => {
-    base44.auth.me().then(u => {
+    api.auth.me().then(u => {
       setUser(u);
       if (u?.role !== "admin") {
         window.location.href = "/";
@@ -53,14 +54,14 @@ export default function AdminPerformance() {
   }, []);
 
   const loadConsultants = async () => {
-    const res = await base44.functions.invoke("getConsultants", {});
+    const res = await api.functions.invoke("getConsultants", {});
     setConsultants(res.data?.consultants || []);
   };
 
   const loadData = async () => {
     const [leadsData, followUpsData] = await Promise.all([
-      base44.entities.Lead.list("-created_date", 500),
-      base44.entities.LeadFollowUp.list("-update_date", 1000),
+      api.entities.Lead.list("-created_date", 500),
+      api.entities.LeadFollowUp.list("-update_date", 1000),
     ]);
     setLeads(leadsData);
     setFollowUps(followUpsData);
@@ -195,33 +196,22 @@ export default function AdminPerformance() {
 
   if (loading) {
     return (
-      <div className="km-admin-page fixed inset-0 flex items-center justify-center" style={{ background: "var(--app-canvas)" }}>
+      <div className="flex items-center justify-center h-96">
         <div className="w-10 h-10 border-4 border-amber-700 border-t-amber-400 rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="km-admin-page min-h-screen" style={{ background: "var(--app-canvas)" }}>
-      <div className="h-1 w-full" style={{ background: GOLD }} />
-
-      {/* Header */}
-      <header className="border-b sticky top-0 z-50 backdrop-blur-sm" style={{ background: "rgba(255,255,255,0.85)", borderColor: "#C9A84C22" }}>
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src="https://media.base44.com/images/public/69ba4650f213ea0fa82b95fb/fab77c211_KMLogo.png" alt="K&M" className="w-10 h-10 object-contain" />
-            <div>
-              <h1 className="font-bold text-lg leading-none" style={{ color: GOLD }}>Admin Performance Monitor</h1>
-              <p className="text-xs" style={{ color: "#C9A84C66" }}>Koos & Mike Cars · Internal Only</p>
-            </div>
-          </div>
-          <Button variant="ghost" size="sm" className="text-amber-400 hover:text-amber-300 gap-2" onClick={() => base44.auth.logout()}>
-            <LogOut className="w-4 h-4" /> Logout
-          </Button>
+    <div>
+      <div className="km-hero">
+        <div>
+          <h1 className="km-h1">Performance Monitor</h1>
+          <div className="km-sub">Koos & Mike Cars · Internal only</div>
         </div>
-      </header>
+      </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
+      <div className="space-y-8">
 
         {/* Portal Links — only for Blaq Telecoms admin */}
         {user?.email?.toLowerCase().includes("blaq") && (
@@ -230,50 +220,50 @@ export default function AdminPerformance() {
 
         {/* Morning Reminder Banner */}
         {showReminder && isYesterday && (
-          <div className="rounded-2xl p-5 border flex items-start gap-4" style={{ background: "#C9A84C15", borderColor: "#C9A84C55" }}>
+          <div className="rounded-2xl p-5 border flex items-start gap-4" style={{ background: "var(--glass)", borderColor: "var(--glass-border)" }}>
             <Bell className="w-6 h-6 mt-0.5 shrink-0" style={{ color: GOLD }} />
             <div className="flex-1">
               <p className="font-bold text-gray-900">Good morning! 🌅 Time to review yesterday's performance.</p>
-              <p className="text-sm mt-1" style={{ color: "#C9A84C99" }}>
+              <p className="text-sm mt-1" style={{ color: "var(--mut)" }}>
                 Yesterday ({moment().subtract(1, "day").format("DD MMM YYYY")}): <strong className="text-gray-900">{totalNewLeads} new leads received</strong> — {totalCalled} called, {totalNotCalled} not yet contacted.
                 {avgResponseAll !== null && ` Avg response (working hours): ${avgResponseAll} min.`}
               </p>
             </div>
-            <button onClick={() => setShowReminder(false)} className="text-amber-600 hover:text-amber-400 text-xs">Dismiss</button>
+            <button onClick={() => setShowReminder(false)} className="text-xs hover:underline" style={{ color: "var(--mut)" }}>Dismiss</button>
           </div>
         )}
 
         {/* Date Selector */}
         <div className="flex items-center gap-4">
           <h2 className="text-2xl font-bold text-gray-900">Daily Performance Report</h2>
-          <div className="flex items-center gap-2 ml-auto rounded-xl border overflow-hidden" style={{ borderColor: "#C9A84C33" }}>
+          <div className="flex items-center gap-2 ml-auto rounded-xl border overflow-hidden" style={{ borderColor: "var(--glass-border)" }}>
             <button
               onClick={() => setSelectedDate(moment(selectedDate).subtract(1, "day").format("YYYY-MM-DD"))}
               className="p-2 hover:bg-white/70 transition-colors"
             >
-              <ChevronLeft className="w-4 h-4 text-amber-400" />
+              <ChevronLeft className="w-4 h-4" style={{ color: "var(--mut)" }} />
             </button>
             <div className="px-4 py-2 text-gray-900 text-sm font-medium" style={{ background: "var(--glass)" }}>
               {moment(selectedDate).format("dddd, DD MMM YYYY")}
               {isYesterday && <span className="ml-2 text-xs" style={{ color: GOLD }}>(Yesterday)</span>}
-              {selectedDate === moment().format("YYYY-MM-DD") && <span className="ml-2 text-xs text-emerald-400">(Today)</span>}
+              {selectedDate === moment().format("YYYY-MM-DD") && <span className="ml-2 text-xs" style={{ color: "var(--mut)" }}>(Today)</span>}
             </div>
             <button
               onClick={() => setSelectedDate(moment(selectedDate).add(1, "day").format("YYYY-MM-DD"))}
               disabled={selectedDate >= moment().format("YYYY-MM-DD")}
               className="p-2 hover:bg-white/70 transition-colors disabled:opacity-30"
             >
-              <ChevronRight className="w-4 h-4 text-amber-400" />
+              <ChevronRight className="w-4 h-4" style={{ color: "var(--mut)" }} />
             </button>
           </div>
         </div>
 
         {/* Summary KPIs */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <KpiCard icon={<Users className="w-6 h-6" />} label="New Leads" value={totalNewLeads} color="#C9A84C" />
-          <KpiCard icon={<Phone className="w-6 h-6" />} label="Leads Called" value={totalCalled} color="#22c55e" />
-          <KpiCard icon={<PhoneOff className="w-6 h-6" />} label="Not Contacted" value={totalNotCalled} color="#ef4444" />
-          <KpiCard icon={<Clock className="w-6 h-6" />} label="Avg Response" value={avgResponseAll !== null ? `${avgResponseAll}m` : "N/A"} color="#a78bfa" />
+          <KpiCard icon={<Users className="w-6 h-6" />} label="New Leads" value={totalNewLeads} />
+          <KpiCard icon={<Phone className="w-6 h-6" />} label="Leads Called" value={totalCalled} />
+          <KpiCard icon={<PhoneOff className="w-6 h-6" />} label="Not Contacted" value={totalNotCalled} />
+          <KpiCard icon={<Clock className="w-6 h-6" />} label="Avg Response" value={avgResponseAll !== null ? `${avgResponseAll}m` : "N/A"} />
         </div>
 
         {/* Team Toggle */}
@@ -282,8 +272,8 @@ export default function AdminPerformance() {
             <button key={v} onClick={() => { setTeamView(v); setSelectedConsultant(null); }}
               className="px-5 py-2.5 rounded-xl text-sm font-bold border transition-all"
               style={teamView === v
-                ? { background: v === "sales" ? GOLD : v === "callcentre" ? "#3b82f6" : "#8b5cf6", color: "#000", borderColor: "transparent" }
-                : { background: "transparent", color: v === "sales" ? GOLD : v === "callcentre" ? "#3b82f6" : "#8b5cf6", borderColor: v === "sales" ? "#C9A84C40" : v === "callcentre" ? "#3b82f640" : "#8b5cf640" }}>
+                ? { background: GOLD, color: "#000", borderColor: "transparent" }
+                : { background: "transparent", color: "var(--mut)", borderColor: "var(--glass-border)" }}>
               {l}
             </button>
           ))}
@@ -294,14 +284,14 @@ export default function AdminPerformance() {
             {/* Consultant Selector Tabs */}
             <div className="flex flex-wrap gap-2">
               <button onClick={() => setSelectedConsultant(null)}
-                className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all border ${!selectedConsultant ? "text-black border-transparent" : "text-amber-400 border-amber-600/40 hover:border-amber-500"}`}
-                style={!selectedConsultant ? { background: GOLD } : { background: "transparent" }}>
+                className="px-4 py-2 rounded-xl text-sm font-semibold transition-all border"
+                style={!selectedConsultant ? { background: GOLD, color: "#000", borderColor: "transparent" } : { background: "transparent", color: "var(--mut)", borderColor: "var(--glass-border)" }}>
                 All Consultants
               </button>
               {consultantNames.map(c => (
                 <button key={c} onClick={() => setSelectedConsultant(c)}
-                  className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all border ${selectedConsultant === c ? "text-black border-transparent" : "text-amber-400 border-amber-600/40 hover:border-amber-500"}`}
-                  style={selectedConsultant === c ? { background: GOLD } : { background: "transparent" }}>
+                  className="px-4 py-2 rounded-xl text-sm font-semibold transition-all border"
+                  style={selectedConsultant === c ? { background: GOLD, color: "#000", borderColor: "transparent" } : { background: "transparent", color: "var(--mut)", borderColor: "var(--glass-border)" }}>
                   {c}
                 </button>
               ))}
@@ -316,9 +306,9 @@ export default function AdminPerformance() {
 
         {teamView === "callcentre" && (
           <>
-            <div className="rounded-2xl border p-4 flex items-center gap-3" style={{ borderColor: "#3b82f630", background: "#3b82f610" }}>
-              <Phone className="w-5 h-5 text-blue-400" />
-              <p className="text-blue-300 text-sm">Call Centre agents call leads and allocate them to sales consultants. Their activity is tracked below.</p>
+            <div className="rounded-2xl border p-4 flex items-center gap-3" style={{ borderColor: "var(--glass-border)", background: "var(--glass)" }}>
+              <Phone className="w-5 h-5" style={{ color: GOLD }} />
+              <p className="text-sm" style={{ color: "var(--mut)" }}>Call Centre agents call leads and allocate them to sales consultants. Their activity is tracked below.</p>
             </div>
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
               {allCCStats.map(stats => <CCAgentCard key={stats.agent} stats={stats} />)}
@@ -326,29 +316,29 @@ export default function AdminPerformance() {
 
             {/* CC Follow-up Detail Table */}
             {followUpsOnDate.filter(f => ccAgentNames.includes(f.reported_by)).length > 0 && (
-              <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "#3b82f622" }}>
-                <div className="px-6 py-4 border-b" style={{ background: "#3b82f610", borderColor: "#3b82f622" }}>
+              <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "var(--glass-border)" }}>
+                <div className="px-6 py-4 border-b" style={{ background: "var(--line)", borderColor: "var(--glass-border)" }}>
                   <h3 className="text-gray-900 font-bold flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-blue-400" />
+                    <Phone className="w-4 h-4" style={{ color: GOLD }} />
                     Call Centre Activity — {moment(selectedDate).format("DD MMM YYYY")}
                   </h3>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr style={{ background: "var(--glass)", borderBottom: "1px solid #3b82f618" }}>
+                      <tr style={{ borderBottom: "1px solid var(--line)" }}>
                         {["Agent", "Lead", "Contact Method", "Lead Response", "Pipeline Stage", "Allocated To", "Notes"].map(h => (
-                          <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-blue-400/70">{h}</th>
+                          <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--mut)" }}>{h}</th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
-                      {followUpsOnDate.filter(f => ccAgentNames.includes(f.reported_by)).map((fu, i) => {
+                      {followUpsOnDate.filter(f => ccAgentNames.includes(f.reported_by)).map((fu) => {
                         const lead = leads.find(l => l.id === fu.lead_id);
                         return (
-                          <tr key={fu.id} style={{ background: i % 2 === 0 ? "rgba(246,198,53,0.04)" : "transparent", borderBottom: "1px solid rgba(59,130,246,0.1)" }}>
+                          <tr key={fu.id} style={{ borderBottom: "1px solid var(--line)" }}>
                             <td className="px-4 py-3">
-                              <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-500/20 text-blue-400">{fu.reported_by}</span>
+                              <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: "var(--line)", color: "var(--ink)" }}>{fu.reported_by}</span>
                             </td>
                             <td className="px-4 py-3 text-gray-900 font-medium">{fu.lead_name || lead?.lead_name || "—"}</td>
                             <td className="px-4 py-3 text-gray-600">{fu.contact_method || "—"}</td>
@@ -356,7 +346,7 @@ export default function AdminPerformance() {
                             <td className="px-4 py-3 text-gray-600">{fu.pipeline_stage || "—"}</td>
                             <td className="px-4 py-3">
                               {lead?.assigned_consultant && lead.assigned_consultant !== "Unassigned"
-                                ? <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: "#C9A84C20", color: GOLD }}>{lead.assigned_consultant}</span>
+                                ? <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: "rgba(255,157,0,.14)", color: GOLD }}>{lead.assigned_consultant}</span>
                                 : <span className="text-gray-400 text-xs">Unassigned</span>}
                             </td>
                             <td className="px-4 py-3 text-gray-400 text-xs max-w-xs truncate">{fu.notes || "—"}</td>
@@ -373,9 +363,9 @@ export default function AdminPerformance() {
 
         {teamView === "manage" && (
           <>
-            <div className="rounded-2xl border p-5 flex items-center gap-3" style={{ borderColor: "#8b5cf630", background: "#8b5cf610" }}>
-              <Users className="w-5 h-5 text-purple-400" />
-              <p className="text-purple-300 text-sm">
+            <div className="rounded-2xl border p-5 flex items-center gap-3" style={{ borderColor: "var(--glass-border)", background: "var(--glass)" }}>
+              <Users className="w-5 h-5" style={{ color: GOLD }} />
+              <p className="text-sm" style={{ color: "var(--mut)" }}>
                 {user?.role === 'admin' && user?.email && ["heino", "koos"].some(name => user.email.toLowerCase().includes(name)) 
                   ? "Manage your sales team"
                   : "Add sales consultants and call centre agents manually without requiring login credentials."}
@@ -384,7 +374,7 @@ export default function AdminPerformance() {
 
             {/* Add Staff Form */}
             {showAddForm && (
-              <div className="rounded-2xl border p-6 space-y-4" style={{ borderColor: "#8b5cf630", background: "#8b5cf60A" }}>
+              <div className="rounded-2xl border p-6 space-y-4" style={{ borderColor: "var(--glass-border)", background: "var(--glass)" }}>
                 <h3 className="text-gray-900 font-bold text-lg">Add New Staff Member</h3>
                 <div className="space-y-3">
                   <div>
@@ -395,7 +385,7 @@ export default function AdminPerformance() {
                       onChange={(e) => setNewConsultantName(e.target.value)}
                       placeholder="Enter staff name"
                       className="w-full rounded-lg px-4 py-2 bg-white/60 border text-gray-900"
-                      style={{ borderColor: "#8b5cf630" }}
+                      style={{ borderColor: "var(--glass-border)" }}
                     />
                   </div>
                   <div>
@@ -404,7 +394,7 @@ export default function AdminPerformance() {
                       value={newConsultantRole}
                       onChange={(e) => setNewConsultantRole(e.target.value)}
                       className="w-full rounded-lg px-4 py-2 bg-white/60 border text-gray-900"
-                      style={{ borderColor: "#8b5cf630" }}
+                      style={{ borderColor: "var(--glass-border)" }}
                     >
                       <option value="Sales">Sales Consultant</option>
                       <option value="Call Centre">Call Centre Agent</option>
@@ -418,7 +408,7 @@ export default function AdminPerformance() {
                       onChange={(e) => setNewConsultantEmail(e.target.value)}
                       placeholder="Enter email"
                       className="w-full rounded-lg px-4 py-2 bg-white/60 border text-gray-900"
-                      style={{ borderColor: "#8b5cf630" }}
+                      style={{ borderColor: "var(--glass-border)" }}
                     />
                   </div>
                   <div>
@@ -429,7 +419,7 @@ export default function AdminPerformance() {
                       onChange={(e) => setNewConsultantPhone(e.target.value)}
                       placeholder="Enter phone number"
                       className="w-full rounded-lg px-4 py-2 bg-white/60 border text-gray-900"
-                      style={{ borderColor: "#8b5cf630" }}
+                      style={{ borderColor: "var(--glass-border)" }}
                     />
                   </div>
                   <div>
@@ -440,7 +430,7 @@ export default function AdminPerformance() {
                       onChange={(e) => setNewConsultantWhatsapp(e.target.value)}
                       placeholder="Enter WhatsApp number"
                       className="w-full rounded-lg px-4 py-2 bg-white/60 border text-gray-900"
-                      style={{ borderColor: "#8b5cf630" }}
+                      style={{ borderColor: "var(--glass-border)" }}
                     />
                   </div>
                   <div className="flex items-center gap-2">
@@ -458,7 +448,7 @@ export default function AdminPerformance() {
                   <Button
                     onClick={async () => {
                       if (!newConsultantName.trim()) return;
-                      await base44.entities.Consultant.create({
+                      await api.entities.Consultant.create({
                         name: newConsultantName,
                         role: newConsultantRole,
                         email: newConsultantEmail,
@@ -476,7 +466,7 @@ export default function AdminPerformance() {
                       setNewConsultantIsManager(false);
                       setShowAddForm(false);
                     }}
-                    className="bg-purple-600 hover:bg-purple-700 text-white"
+                    style={{ background: GOLD, color: "#000" }}
                   >
                     Add Staff
                   </Button>
@@ -486,14 +476,14 @@ export default function AdminPerformance() {
             )}
 
             {!showAddForm && !editingStaff && (
-              <Button onClick={() => setShowAddForm(true)} className="bg-purple-600 hover:bg-purple-700 text-white gap-2">
+              <Button onClick={() => setShowAddForm(true)} style={{ background: GOLD, color: "#000" }} className="gap-2">
                 <Users className="w-4 h-4" /> Add Staff Member
               </Button>
             )}
 
             {/* Edit Staff Form */}
             {editingStaff && (
-              <div className="rounded-2xl border p-6 space-y-4" style={{ borderColor: "#8b5cf630", background: "#8b5cf60A" }}>
+              <div className="rounded-2xl border p-6 space-y-4" style={{ borderColor: "var(--glass-border)", background: "var(--glass)" }}>
                 <h3 className="text-gray-900 font-bold text-lg">Edit Staff Member</h3>
                 <div className="space-y-3">
                   <div>
@@ -503,7 +493,7 @@ export default function AdminPerformance() {
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
                       className="w-full rounded-lg px-4 py-2 bg-white/60 border text-gray-900"
-                      style={{ borderColor: "#8b5cf630" }}
+                      style={{ borderColor: "var(--glass-border)" }}
                     />
                   </div>
                   <div>
@@ -513,7 +503,7 @@ export default function AdminPerformance() {
                       value={editEmail}
                       onChange={(e) => setEditEmail(e.target.value)}
                       className="w-full rounded-lg px-4 py-2 bg-white/60 border text-gray-900"
-                      style={{ borderColor: "#8b5cf630" }}
+                      style={{ borderColor: "var(--glass-border)" }}
                     />
                   </div>
                   <div>
@@ -523,7 +513,7 @@ export default function AdminPerformance() {
                       value={editPhone}
                       onChange={(e) => setEditPhone(e.target.value)}
                       className="w-full rounded-lg px-4 py-2 bg-white/60 border text-gray-900"
-                      style={{ borderColor: "#8b5cf630" }}
+                      style={{ borderColor: "var(--glass-border)" }}
                     />
                   </div>
                   <div>
@@ -533,7 +523,7 @@ export default function AdminPerformance() {
                       value={editWhatsapp}
                       onChange={(e) => setEditWhatsapp(e.target.value)}
                       className="w-full rounded-lg px-4 py-2 bg-white/60 border text-gray-900"
-                      style={{ borderColor: "#8b5cf630" }}
+                      style={{ borderColor: "var(--glass-border)" }}
                     />
                   </div>
                   <div className="flex items-center gap-2">
@@ -550,7 +540,7 @@ export default function AdminPerformance() {
                 <div className="flex gap-2">
                   <Button
                     onClick={async () => {
-                      await base44.entities.Consultant.update(editingStaff.id, {
+                      await api.entities.Consultant.update(editingStaff.id, {
                         name: editName,
                         email: editEmail,
                         phone: editPhone,
@@ -560,7 +550,7 @@ export default function AdminPerformance() {
                       await loadConsultants();
                       setEditingStaff(null);
                     }}
-                    className="bg-purple-600 hover:bg-purple-700 text-white"
+                    style={{ background: GOLD, color: "#000" }}
                   >
                     Save Changes
                   </Button>
@@ -580,18 +570,18 @@ export default function AdminPerformance() {
                   const staffByRole = consultants.filter(c => c.role === role);
                   if (staffByRole.length === 0) return null;
                 return (
-                  <div key={role} className="rounded-2xl border overflow-hidden" style={{ borderColor: "#8b5cf622" }}>
-                    <div className="px-6 py-4 border-b" style={{ background: "#8b5cf610", borderColor: "#8b5cf622" }}>
+                  <div key={role} className="rounded-2xl border overflow-hidden" style={{ borderColor: "var(--glass-border)" }}>
+                    <div className="px-6 py-4 border-b" style={{ background: "var(--line)", borderColor: "var(--glass-border)" }}>
                       <h3 className="text-gray-900 font-bold">{role === "Sales" ? "Sales Consultants" : "Call Centre Agents"} ({staffByRole.length})</h3>
                     </div>
-                    <div className="divide-y" style={{ borderColor: "#8b5cf618" }}>
+                    <div className="divide-y" style={{ borderColor: "var(--line)" }}>
                       {staffByRole.map(staff => (
-                        <div key={staff.id} className="px-6 py-4 hover:bg-white/70 transition-colors">
+                        <div key={staff.id} className="px-6 py-4 hover:bg-black/5 transition-colors">
                           <div className="flex items-start justify-between gap-4">
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-2">
                                 <p className="text-gray-900 font-semibold">{staff.name}</p>
-                                {staff.is_manager && <span className="text-xs bg-amber-600/30 text-amber-300 px-2 py-1 rounded">Manager</span>}
+                                {staff.is_manager && <span className="text-xs px-2 py-1 rounded" style={{ background: "rgba(255,157,0,.14)", color: GOLD }}>Manager</span>}
                               </div>
                               <div className="space-y-1 text-sm">
                                 {staff.email && <p className="text-gray-600">{staff.email}</p>}
@@ -616,19 +606,19 @@ export default function AdminPerformance() {
                               <Button
                                 onClick={async () => {
                                   if (confirm(`Reset password for ${staff.name}? They will need to set a new password on next login.`)) {
-                                    await base44.functions.invoke("resetConsultantPassword", { consultant_id: staff.id });
+                                    await api.functions.invoke("resetConsultantPassword", { consultant_id: staff.id });
                                     alert("Password reset. User must set new password on next login.");
                                   }
                                 }}
                                 size="sm"
-                                className="bg-orange-600 hover:bg-orange-700"
+                                variant="outline"
                               >
                                 Reset Password
                               </Button>
                               <Button
                                 onClick={async () => {
                                   if (confirm(`Remove ${staff.name}?`)) {
-                                    await base44.entities.Consultant.update(staff.id, { active: false });
+                                    await api.entities.Consultant.update(staff.id, { active: false });
                                     await loadConsultants();
                                   }
                                 }}
@@ -652,8 +642,8 @@ export default function AdminPerformance() {
 
         {/* Leads received that day — detail table */}
         {leadsOnDate.length > 0 && (
-          <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "#C9A84C22" }}>
-            <div className="px-6 py-4 border-b" style={{ background: "#C9A84C10", borderColor: "#C9A84C22" }}>
+          <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "var(--glass-border)" }}>
+            <div className="px-6 py-4 border-b" style={{ background: "var(--line)", borderColor: "var(--glass-border)" }}>
               <h3 className="text-gray-900 font-bold flex items-center gap-2">
                 <Star className="w-4 h-4" style={{ color: GOLD }} />
                 Leads Received — {moment(selectedDate).format("DD MMM YYYY")} ({leadsOnDate.length})
@@ -662,39 +652,39 @@ export default function AdminPerformance() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr style={{ background: "var(--glass)", borderBottom: "1px solid #C9A84C18" }}>
+                  <tr style={{ borderBottom: "1px solid var(--line)" }}>
                     {["Lead Name", "Phone", "Car Interested", "Consultant", "Status", "Response Time", "Called?"].map(h => (
-                      <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: "#C9A84C99" }}>{h}</th>
+                      <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--mut)" }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {leadsOnDate
                     .filter(l => !selectedConsultant || l.assigned_consultant === selectedConsultant)
-                    .map((lead, i) => {
+                    .map((lead) => {
                       const wasCalled = followUpsOnDate.some(f =>
                         f.lead_id === lead.id && f.contact_method !== "No Contact Attempted"
                       );
                       return (
-                        <tr key={lead.id} style={{ background: i % 2 === 0 ? "rgba(246,198,53,0.04)" : "transparent", borderBottom: "1px solid rgba(201,168,76,0.1)" }}>
+                        <tr key={lead.id} style={{ borderBottom: "1px solid var(--line)" }}>
                           <td className="px-4 py-3 text-gray-900 font-medium">{lead.lead_name}</td>
                           <td className="px-4 py-3 text-gray-600">{lead.phone}</td>
                           <td className="px-4 py-3 text-gray-600">{lead.car_interested || "—"}</td>
                           <td className="px-4 py-3">
-                            <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: "#C9A84C20", color: GOLD }}>
+                            <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: "rgba(255,157,0,.14)", color: GOLD }}>
                               {lead.assigned_consultant || "Unassigned"}
                             </span>
                           </td>
                           <td className="px-4 py-3">
-                            <StatusBadge status={lead.status} />
+                            <StatusPill status={lead.status} />
                           </td>
                           <td className="px-4 py-3 text-gray-600">
                             {lead.response_time_minutes ? `${lead.response_time_minutes} min` : "—"}
                           </td>
                           <td className="px-4 py-3">
                             {wasCalled
-                              ? <span className="flex items-center gap-1 text-green-400 text-xs font-semibold"><CheckCircle2 className="w-3.5 h-3.5" /> Called</span>
-                              : <span className="flex items-center gap-1 text-red-400 text-xs font-semibold"><AlertCircle className="w-3.5 h-3.5" /> Not Called</span>}
+                              ? <span className="flex items-center gap-1 text-xs" style={{ color: "var(--mut)" }}><CheckCircle2 className="w-3.5 h-3.5" /> Called</span>
+                              : <span className="flex items-center gap-1 text-xs font-semibold" style={{ color: "var(--ink)" }}><AlertCircle className="w-3.5 h-3.5" /> Not Called</span>}
                           </td>
                         </tr>
                       );
@@ -705,7 +695,7 @@ export default function AdminPerformance() {
           </div>
         )}
 
-        <footer className="border-t pt-6 text-center text-xs" style={{ borderColor: "#C9A84C22", color: "rgba(0,0,0,0.2)" }}>
+        <footer className="border-t pt-6 text-center text-xs" style={{ borderColor: "var(--line)", color: "var(--mut)" }}>
           Admin Performance Dashboard · Koos & Mike Cars · Internal Use Only
         </footer>
       </div>
@@ -713,15 +703,15 @@ export default function AdminPerformance() {
   );
 }
 
-function KpiCard({ icon, label, value, color }) {
+function KpiCard({ icon, label, value }) {
   return (
-    <div className="rounded-2xl p-5 border flex items-center gap-4" style={{ background: "var(--glass)", borderColor: "#C9A84C22" }}>
-      <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ background: color + "22" }}>
-        <span style={{ color }}>{icon}</span>
+    <div className="rounded-2xl p-5 border flex items-center gap-4" style={{ background: "var(--glass)", borderColor: "var(--glass-border)" }}>
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ background: "var(--line)", color: "var(--mut)" }}>
+        {icon}
       </div>
       <div>
-        <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">{label}</p>
-        <p className="text-3xl font-extrabold text-gray-900 mt-0.5">{value}</p>
+        <p className="text-xs font-medium uppercase tracking-wide" style={{ color: "var(--mut)" }}>{label}</p>
+        <p className="text-3xl font-extrabold mt-0.5" style={{ color: "var(--ink)" }}>{value}</p>
       </div>
     </div>
   );
@@ -733,49 +723,46 @@ function ConsultantCard({ stats }) {
     : 0;
 
   return (
-    <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "#C9A84C22" }}>
+    <div className="rounded-2xl border overflow-hidden" style={{ background: "var(--glass)", borderColor: "var(--glass-border)" }}>
       {/* Header */}
-      <div className="px-5 py-4 border-b flex items-center gap-3" style={{ background: "#C9A84C12", borderColor: "#C9A84C22" }}>
-        <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg text-black" style={{ background: "#C9A84C" }}>
+      <div className="px-5 py-4 border-b flex items-center gap-3" style={{ borderColor: "var(--line)" }}>
+        <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg text-black" style={{ background: "var(--gold)" }}>
           {stats.consultant[0]}
         </div>
         <div className="flex-1">
           <p className="text-gray-900 font-bold text-lg">{stats.consultant}</p>
-          <p className="text-xs" style={{ color: "#C9A84C88" }}>Sales Consultant</p>
+          <p className="text-xs" style={{ color: "var(--mut)" }}>Sales Consultant</p>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-extrabold" style={{ color: "#C9A84C" }}>{stats.totalSold}</p>
-          <p className="text-xs text-gray-400">Total Sold</p>
+          <p className="text-2xl font-extrabold" style={{ color: "var(--ink)" }}>{stats.totalSold}</p>
+          <p className="text-xs" style={{ color: "var(--mut)" }}>Total Sold</p>
         </div>
       </div>
 
       {/* Stats */}
-      <div className="p-5 space-y-4" style={{ background: "transparent" }}>
+      <div className="p-5 space-y-4">
         <div className="grid grid-cols-2 gap-3">
-          <MiniStat label="New Leads" value={stats.newLeads} color="#C9A84C" />
-          <MiniStat label="Follow-Ups Logged" value={stats.followUpCount} color="#a78bfa" />
-          <MiniStat label="Leads Called" value={stats.calledCount} color="#22c55e" />
-          <MiniStat label="Not Contacted" value={stats.notCalledCount} color="#ef4444" />
+          <MiniStat label="New Leads" value={stats.newLeads} />
+          <MiniStat label="Follow-Ups Logged" value={stats.followUpCount} />
+          <MiniStat label="Leads Called" value={stats.calledCount} />
+          <MiniStat label="Not Contacted" value={stats.notCalledCount} />
         </div>
 
         {stats.avgResponse !== null && (
-          <div className="flex items-center gap-2 rounded-xl px-4 py-3 border" style={{ background: "#a78bfa15", borderColor: "#a78bfa30" }}>
-            <Clock className="w-4 h-4 text-purple-400" />
-            <span className="text-gray-700 text-sm">Avg response time: <strong className="text-gray-900">{stats.avgResponse} min</strong></span>
+          <div className="flex items-center gap-2 rounded-xl px-4 py-3 border" style={{ background: "var(--line)", borderColor: "transparent" }}>
+            <Clock className="w-4 h-4" style={{ color: "var(--mut)" }} />
+            <span className="text-sm" style={{ color: "var(--mut)" }}>Avg response time: <strong style={{ color: "var(--ink)" }}>{stats.avgResponse} min</strong></span>
           </div>
         )}
 
         {/* Call Rate Progress */}
         <div>
           <div className="flex justify-between text-xs mb-1">
-            <span className="text-gray-500">Contact Rate</span>
-            <span className="font-semibold" style={{ color: callRate > 70 ? "#22c55e" : callRate > 40 ? "#C9A84C" : "#ef4444" }}>{callRate}%</span>
+            <span style={{ color: "var(--mut)" }}>Contact Rate</span>
+            <span className="font-semibold" style={{ color: "var(--ink)" }}>{callRate}%</span>
           </div>
-          <div className="w-full h-2 rounded-full" style={{ background: "rgba(0,0,0,0.06)" }}>
-            <div className="h-2 rounded-full transition-all" style={{
-              width: `${callRate}%`,
-              background: callRate > 70 ? "#22c55e" : callRate > 40 ? "#C9A84C" : "#ef4444"
-            }} />
+          <div className="w-full h-2 rounded-full" style={{ background: "var(--line)" }}>
+            <div className="h-2 rounded-full transition-all" style={{ width: `${callRate}%`, background: "var(--gold)" }} />
           </div>
         </div>
       </div>
@@ -783,25 +770,12 @@ function ConsultantCard({ stats }) {
   );
 }
 
-function MiniStat({ label, value, color }) {
+function MiniStat({ label, value }) {
   return (
-    <div className="rounded-xl p-3 border text-center" style={{ background: color + "0D", borderColor: color + "30" }}>
-      <p className="text-2xl font-extrabold" style={{ color }}>{value}</p>
-      <p className="text-xs text-gray-400 mt-0.5">{label}</p>
+    <div className="rounded-xl p-3 border text-center" style={{ background: "var(--line)", borderColor: "transparent" }}>
+      <p className="text-2xl font-extrabold" style={{ color: "var(--ink)" }}>{value}</p>
+      <p className="text-xs mt-0.5" style={{ color: "var(--mut)" }}>{label}</p>
     </div>
-  );
-}
-
-function StatusBadge({ status }) {
-  const colors = {
-    "New": "#3b82f6", "Contacted": "#eab308", "Test Drive": "#a855f7",
-    "Approved": "#22c55e", "Sold": "#10b981", "Lost": "#ef4444"
-  };
-  const c = colors[status] || "#6b7280";
-  return (
-    <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: c + "22", color: c }}>
-      {status}
-    </span>
   );
 }
 
@@ -819,9 +793,9 @@ function PortalLinks() {
   };
 
   return (
-    <div className="rounded-2xl border p-5 space-y-4" style={{ borderColor: "#C9A84C33", background: "#C9A84C08" }}>
+    <div className="rounded-2xl border p-5 space-y-4" style={{ borderColor: "var(--glass-border)", background: "var(--glass)" }}>
       <div className="flex items-center gap-2">
-        <Link className="w-4 h-4" style={{ color: "#C9A84C" }} />
+        <Link className="w-4 h-4" style={{ color: "var(--gold)" }} />
         <h3 className="font-bold text-gray-900 text-sm">Portal Links</h3>
         <span className="text-xs text-gray-400 ml-1">Share these with your staff</span>
       </div>
@@ -830,26 +804,26 @@ function PortalLinks() {
         <div className="flex items-center gap-3 rounded-xl border px-4 py-3" style={{ background: "var(--glass)", borderColor: "#C9A84C22" }}>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-gray-500 mb-0.5">Sales Staff Portal</p>
-            <p className="text-sm font-mono text-amber-300 truncate">{staffUrl}</p>
+            <p className="text-sm font-mono truncate" style={{ color: "var(--ink)" }}>{staffUrl}</p>
           </div>
           <button
             onClick={() => copy(staffUrl, setCopiedStaff)}
             className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
-            style={{ background: copiedStaff ? "#22c55e22" : "#C9A84C22", color: copiedStaff ? "#4ade80" : "#C9A84C", border: `1px solid ${copiedStaff ? "#22c55e44" : "#C9A84C44"}` }}
+            style={{ background: "var(--line)", color: copiedStaff ? "var(--gold)" : "var(--ink)", border: "1px solid var(--glass-border)" }}
           >
             {copiedStaff ? <><Check className="w-3.5 h-3.5" /> Copied</> : <><Copy className="w-3.5 h-3.5" /> Copy</>}
           </button>
         </div>
         {/* Call Centre Portal */}
-        <div className="flex items-center gap-3 rounded-xl border px-4 py-3" style={{ background: "var(--glass)", borderColor: "#3b82f622" }}>
+        <div className="flex items-center gap-3 rounded-xl border px-4 py-3" style={{ background: "var(--glass)", borderColor: "var(--glass-border)" }}>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-gray-500 mb-0.5">Call Centre Portal</p>
-            <p className="text-sm font-mono text-blue-300 truncate">{ccUrl}</p>
+            <p className="text-sm font-mono truncate" style={{ color: "var(--ink)" }}>{ccUrl}</p>
           </div>
           <button
             onClick={() => copy(ccUrl, setCopiedCC)}
             className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
-            style={{ background: copiedCC ? "#22c55e22" : "#3b82f622", color: copiedCC ? "#4ade80" : "#60a5fa", border: `1px solid ${copiedCC ? "#22c55e44" : "#3b82f644"}` }}
+            style={{ background: "var(--line)", color: copiedCC ? "var(--gold)" : "var(--ink)", border: "1px solid var(--glass-border)" }}
           >
             {copiedCC ? <><Check className="w-3.5 h-3.5" /> Copied</> : <><Copy className="w-3.5 h-3.5" /> Copy</>}
           </button>
@@ -862,59 +836,47 @@ function PortalLinks() {
 function CCAgentCard({ stats }) {
   const allocations = Object.entries(stats.allocatedToConsultants);
   return (
-    <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "#3b82f622" }}>
+    <div className="rounded-2xl border overflow-hidden" style={{ background: "var(--glass)", borderColor: "var(--glass-border)" }}>
       {/* Header */}
-      <div className="px-5 py-4 border-b flex items-center gap-3" style={{ background: "#3b82f612", borderColor: "#3b82f622" }}>
-        <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg text-gray-900" style={{ background: "#3b82f6" }}>
+      <div className="px-5 py-4 border-b flex items-center gap-3" style={{ borderColor: "var(--line)" }}>
+        <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg" style={{ background: "var(--line)", color: "var(--ink)" }}>
           {stats.agent[0]}
         </div>
         <div className="flex-1">
           <p className="text-gray-900 font-bold text-lg">{stats.agent}</p>
-          <p className="text-xs text-blue-400/70">Call Centre Agent</p>
+          <p className="text-xs" style={{ color: "var(--mut)" }}>Call Centre Agent</p>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-extrabold text-blue-400">{stats.calledCount}</p>
-          <p className="text-xs text-gray-400">Calls Made</p>
+          <p className="text-2xl font-extrabold" style={{ color: "var(--ink)" }}>{stats.calledCount}</p>
+          <p className="text-xs" style={{ color: "var(--mut)" }}>Calls Made</p>
         </div>
       </div>
 
       {/* Stats */}
-      <div className="p-5 space-y-4" style={{ background: "transparent" }}>
+      <div className="p-5 space-y-4">
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-xl p-3 border text-center" style={{ background: "#3b82f60D", borderColor: "#3b82f630" }}>
-            <p className="text-2xl font-extrabold text-blue-400">{stats.uniqueLeads}</p>
-            <p className="text-xs text-gray-400 mt-0.5">Leads Handled</p>
-          </div>
-          <div className="rounded-xl p-3 border text-center" style={{ background: "#22c55e0D", borderColor: "#22c55e30" }}>
-            <p className="text-2xl font-extrabold text-green-400">{stats.responses.interested}</p>
-            <p className="text-xs text-gray-400 mt-0.5">Interested</p>
-          </div>
-          <div className="rounded-xl p-3 border text-center" style={{ background: "#ef44440D", borderColor: "#ef444430" }}>
-            <p className="text-2xl font-extrabold text-red-400">{stats.responses.noAnswer}</p>
-            <p className="text-xs text-gray-400 mt-0.5">No Answer</p>
-          </div>
-          <div className="rounded-xl p-3 border text-center" style={{ background: "#6b72800D", borderColor: "#6b728030" }}>
-            <p className="text-2xl font-extrabold text-gray-500">{stats.responses.notInterested}</p>
-            <p className="text-xs text-gray-400 mt-0.5">Not Interested</p>
-          </div>
+          <MiniStat label="Leads Handled" value={stats.uniqueLeads} />
+          <MiniStat label="Interested" value={stats.responses.interested} />
+          <MiniStat label="No Answer" value={stats.responses.noAnswer} />
+          <MiniStat label="Not Interested" value={stats.responses.notInterested} />
         </div>
 
         {allocations.length > 0 && (
-          <div className="rounded-xl border p-3 space-y-2" style={{ borderColor: "#C9A84C30", background: "#C9A84C08" }}>
-            <p className="text-xs font-semibold text-amber-400 flex items-center gap-1">
+          <div className="rounded-xl border p-3 space-y-2" style={{ borderColor: "var(--glass-border)" }}>
+            <p className="text-xs font-semibold flex items-center gap-1" style={{ color: "var(--mut)" }}>
               <UserCheck className="w-3.5 h-3.5" /> Allocated to Consultants
             </p>
             {allocations.map(([consultant, count]) => (
               <div key={consultant} className="flex items-center justify-between">
-                <span className="text-gray-700 text-sm">{consultant}</span>
-                <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "#C9A84C20", color: GOLD }}>{count}</span>
+                <span className="text-sm" style={{ color: "var(--ink)" }}>{consultant}</span>
+                <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "rgba(255,157,0,.14)", color: GOLD }}>{count}</span>
               </div>
             ))}
           </div>
         )}
 
         {allocations.length === 0 && (
-          <div className="text-center py-2 text-gray-400 text-xs">No allocations logged today</div>
+          <div className="text-center py-2 text-xs" style={{ color: "var(--mut)" }}>No allocations logged today</div>
         )}
       </div>
     </div>

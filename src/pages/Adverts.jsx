@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,31 +19,31 @@ export default function Adverts() {
 
   const { data: adverts = [] } = useQuery({
     queryKey: ["adverts"],
-    queryFn: () => base44.entities.Advert.list("-created_date", 100),
+    queryFn: () => api.entities.Advert.list("-created_date", 100),
   });
 
   const createMut = useMutation({
-    mutationFn: (data) => base44.entities.Advert.create(data),
+    mutationFn: (data) => api.entities.Advert.create(data),
     onSuccess: () => { qc.invalidateQueries(["adverts"]); setShowForm(false); setForm(defaultForm()); },
   });
   const deleteMut = useMutation({
-    mutationFn: (id) => base44.entities.Advert.delete(id),
+    mutationFn: (id) => api.entities.Advert.delete(id),
     onSuccess: () => qc.invalidateQueries(["adverts"]),
   });
   const toggleMut = useMutation({
-    mutationFn: ({ id, val }) => base44.entities.Advert.update(id, { is_published: val }),
+    mutationFn: ({ id, val }) => api.entities.Advert.update(id, { is_published: val }),
     onSuccess: () => qc.invalidateQueries(["adverts"]),
   });
 
   const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files); if (!files.length) return; setUploading("images");
     const urls = [];
-    for (const file of files) { const { file_url } = await base44.integrations.Core.UploadFile({ file }); urls.push(file_url); }
+    for (const file of files) { const { file_url } = await api.integrations.Core.UploadFile({ file }); urls.push(file_url); }
     setForm(f => ({ ...f, images: [...(f.images || []), ...urls] })); setUploading("");
   };
   const handleVideoUpload = async (e) => {
     const file = e.target.files[0]; if (!file) return; setUploading("video");
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await api.integrations.Core.UploadFile({ file });
     setForm(f => ({ ...f, video_url: file_url })); setUploading("");
   };
   const removeImage = (idx) => setForm(f => ({ ...f, images: f.images.filter((_, i) => i !== idx) }));

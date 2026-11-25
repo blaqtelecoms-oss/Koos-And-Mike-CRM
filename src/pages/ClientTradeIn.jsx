@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,7 +27,7 @@ export default function ClientTradeIn() {
     setUploadingPhotos(true);
     const urls = [];
     for (const file of files) {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await api.integrations.Core.UploadFile({ file });
       urls.push(file_url);
     }
     setPhotos(prev => [...prev, ...urls]);
@@ -39,7 +39,7 @@ export default function ClientTradeIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await base44.entities.TradeIn.create({
+    await api.entities.TradeIn.create({
       ...form,
       car_year: form.car_year ? parseInt(form.car_year) : undefined,
       mileage: form.mileage ? parseInt(form.mileage) : undefined,
@@ -62,7 +62,7 @@ export default function ClientTradeIn() {
           <p className="text-slate-300 mb-2">Thank you, <strong className="text-gray-900">{form.owner_name}</strong>.</p>
           <p className="text-slate-400 mb-8">Our team will review your vehicle and contact you via {form.contact_preference} shortly.</p>
           <Button onClick={() => { setSubmitted(false); setForm({ owner_name: "", phone: "", email: "", contact_preference: "WhatsApp", car_make: "", car_model: "", car_year: "", mileage: "", color: "", condition: "Good", asking_price: "", description: "" }); }}
-            className="text-black font-bold" style={{ background: "#C9A84C" }}>
+            className="text-black font-bold" style={{ background: "var(--gold)" }}>
             Submit Another
           </Button>
         </div>
@@ -159,9 +159,9 @@ export default function ClientTradeIn() {
               <label className="flex items-center justify-center gap-2 w-full py-4 border-2 border-dashed border-amber-200/60 rounded-xl cursor-pointer hover:border-[#C9A84C55] hover:bg-white/70 transition-all">
                 <input type="file" accept="image/*" multiple onChange={handlePhotoChange} className="hidden" />
                 {uploadingPhotos ? (
-                  <><Loader2 className="w-5 h-5 animate-spin" style={{ color: "#C9A84C" }} /><span className="text-slate-300 text-sm">Uploading...</span></>
+                  <><Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--gold)" }} /><span className="text-slate-300 text-sm">Uploading...</span></>
                 ) : (
-                  <><ImagePlus className="w-5 h-5" style={{ color: "#C9A84C" }} /><span className="text-slate-300 text-sm">Click to upload photos</span></>
+                  <><ImagePlus className="w-5 h-5" style={{ color: "var(--gold)" }} /><span className="text-slate-300 text-sm">Click to upload photos</span></>
                 )}
               </label>
               {photos.length > 0 && (
@@ -186,7 +186,7 @@ export default function ClientTradeIn() {
               className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400" />
           </FormField>
 
-          <Button type="submit" disabled={loading} className="w-full py-6 text-lg font-bold rounded-xl gap-2 text-black" style={{ background: "#C9A84C" }}>
+          <Button type="submit" disabled={loading} className="w-full py-6 text-lg font-bold rounded-xl gap-2 text-black" style={{ background: "var(--gold)" }}>
             {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : <><RefreshCw className="w-5 h-5" /> Submit Trade-In</>}
           </Button>
         </form>

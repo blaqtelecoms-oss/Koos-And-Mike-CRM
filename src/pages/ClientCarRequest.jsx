@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,7 +23,7 @@ export default function ClientCarRequest() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await base44.entities.CarRequest.create({
+    await api.entities.CarRequest.create({
       ...form,
       year_from: form.year_from ? parseInt(form.year_from) : undefined,
       year_to: form.year_to ? parseInt(form.year_to) : undefined,
@@ -39,13 +39,13 @@ export default function ClientCarRequest() {
       <ClientLayout>
         <div className="max-w-xl mx-auto px-4 py-20 text-center">
           <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: "#C9A84C20" }}>
-            <CheckCircle2 className="w-10 h-10" style={{ color: "#C9A84C" }} />
+            <CheckCircle2 className="w-10 h-10" style={{ color: "var(--gold)" }} />
           </div>
           <h2 className="text-gray-900 text-3xl font-bold mb-3">Request Submitted!</h2>
           <p className="text-slate-300 mb-2">Thank you, <strong className="text-gray-900">{form.requester_name}</strong>.</p>
           <p className="text-slate-400 mb-8">We'll search our dealer network and contact you via {form.contact_preference} as soon as we find a match.</p>
           <Button onClick={() => { setSubmitted(false); setForm({ requester_name: "", phone: "", email: "", contact_preference: "WhatsApp", make: "", model: "", year_from: "", year_to: "", max_price: "", colour_preference: "", finance_required: false, additional_requirements: "" }); }}
-            className="text-black font-bold" style={{ background: "#C9A84C" }}>
+            className="text-black font-bold" style={{ background: "var(--gold)" }}>
             Submit Another Request
           </Button>
         </div>
@@ -58,7 +58,7 @@ export default function ClientCarRequest() {
       <div className="max-w-2xl mx-auto px-4 py-10">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "#C9A84C20" }}>
-            <Car className="w-6 h-6" style={{ color: "#C9A84C" }} />
+            <Car className="w-6 h-6" style={{ color: "var(--gold)" }} />
           </div>
           <div>
             <h1 className="text-gray-900 text-3xl font-bold">Request a Car</h1>
@@ -145,7 +145,7 @@ export default function ClientCarRequest() {
               className="bg-white/70 border-amber-200/60 text-gray-900 placeholder:text-slate-400" />
           </FormField>
 
-          <Button type="submit" disabled={loading} className="w-full py-6 text-lg font-bold rounded-xl gap-2 text-black" style={{ background: "#C9A84C" }}>
+          <Button type="submit" disabled={loading} className="w-full py-6 text-lg font-bold rounded-xl gap-2 text-black" style={{ background: "var(--gold)" }}>
             {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : <><Car className="w-5 h-5" /> Submit My Request</>}
           </Button>
         </form>
