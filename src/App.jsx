@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { pagesConfig } from './pages.config'
-import { BrowserRouter as Router, Route, Routes, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import ClientPortal from './pages/ClientPortal';
@@ -12,7 +12,6 @@ import ClientInventory from './pages/ClientInventory';
 import ClientRegister from './pages/ClientRegister';
 import ClientTradeIn from './pages/ClientTradeIn';
 import ClientCarRequest from './pages/ClientCarRequest';
-import Landing from './pages/Landing';
 import StaffLanding from './pages/StaffLanding';
 import MyLeads from './pages/MyLeads';
 import AdminPerformance from './pages/AdminPerformance';
@@ -78,21 +77,20 @@ const AuthenticatedApp = () => {
   }
 
   // Admin pages require a signed-in user; the public portals stay open
-  const publicPaths = ['/Login', '/staff', '/MyLeads', '/ClientPortal', '/ClientLogin', '/ClientInventory', '/ClientRegister', '/ClientTradeIn', '/ClientCarRequest', '/SalesPortal', '/CallCentrePortal', '/AdminPerformance', '/CCLanding'];
-  if (!isAuthenticated && !publicPaths.some((p) => location.pathname.startsWith(p))) {
-    return (
-      <Routes>
-        <Route path="*" element={<Landing />} />
-      </Routes>
-    );
+  // Staff pages that run their own password login (/staff, /CCLanding → /CallCentrePortal, /MyLeads) stay reachable;
+  // the admin CRM and sales portal do not.
+  const publicPaths = ['/Login', '/staff', '/MyLeads', '/ClientPortal', '/ClientLogin', '/ClientInventory', '/ClientRegister', '/ClientTradeIn', '/ClientCarRequest', '/CallCentrePortal', '/CCLanding'];
+  // Visitors who aren't signed in only ever see the client portal — no portal selector, no staff portal
+  if (!isAuthenticated && location.pathname !== '/' && !publicPaths.some((p) => location.pathname.startsWith(p))) {
+    return <Navigate to="/ClientPortal" replace />;
   }
 
   // Render the main app
   return (
     <Routes>
-      {/* Landing page — if already logged in, redirect to correct portal */}
+      {/* Root — the public site is the client portal; signed-in staff go to their portal */}
       <Route path="/" element={
-        isAuthenticated && user ? <RoleBasedRedirect /> : <Landing />
+        isAuthenticated && user ? <RoleBasedRedirect /> : <ClientPortal />
       } />
 
       {/* Admin / Sales pages — wrapped in layout */}
