@@ -1,3 +1,4 @@
+import { PUBLIC_ASSETS } from "@/lib/supabaseUrl";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "@/api/supabaseClient";
@@ -31,7 +32,7 @@ export default function ClientLogin() {
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
-              src="https://xiqwiiwyjuwrfdezvnoi.supabase.co/storage/v1/object/public/app-assets/km-logo-round.png"
+              src={`${PUBLIC_ASSETS}/km-logo-round.png`}
               alt="Koos & Mike Cars"
               className="w-11 h-11 object-contain"
             />
