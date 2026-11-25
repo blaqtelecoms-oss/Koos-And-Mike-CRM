@@ -72,6 +72,11 @@ export default function ClientLayout({ children }) {
       <main>{children}</main>
 
       <footer className="border-t py-6 text-center text-xs mt-10" style={{ borderColor: "#C9A84C22", color: "var(--mut)" }}>
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mb-2">
+          <Link to="/ClientPrivacy" className="hover:underline">Privacy Policy</Link>
+          <span aria-hidden="true" style={{ color: "#C9A84C55" }}>·</span>
+          <Link to="/ClientTerms" className="hover:underline">Terms of Service</Link>
+        </div>
         © 2026 Koos &amp; Mike Cars · Quality Vehicles, Trusted Service.
       </footer>
     </div>

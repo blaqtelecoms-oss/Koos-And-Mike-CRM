@@ -12,6 +12,8 @@ import ClientInventory from './pages/ClientInventory';
 import ClientRegister from './pages/ClientRegister';
 import ClientTradeIn from './pages/ClientTradeIn';
 import ClientCarRequest from './pages/ClientCarRequest';
+import ClientPrivacy from './pages/ClientPrivacy';
+import ClientTerms from './pages/ClientTerms';
 import StaffLanding from './pages/StaffLanding';
 import MyLeads from './pages/MyLeads';
 import AdminPerformance from './pages/AdminPerformance';
@@ -79,7 +81,7 @@ const AuthenticatedApp = () => {
   // Admin pages require a signed-in user; the public portals stay open
   // Staff pages that run their own password login (/staff, /CCLanding → /CallCentrePortal, /MyLeads) stay reachable;
   // the admin CRM and sales portal do not.
-  const publicPaths = ['/Login', '/staff', '/MyLeads', '/ClientPortal', '/ClientLogin', '/ClientInventory', '/ClientRegister', '/ClientTradeIn', '/ClientCarRequest', '/CallCentrePortal', '/CCLanding'];
+  const publicPaths = ['/Login', '/staff', '/MyLeads', '/ClientPortal', '/ClientLogin', '/ClientInventory', '/ClientRegister', '/ClientTradeIn', '/ClientCarRequest', '/ClientPrivacy', '/ClientTerms', '/CallCentrePortal', '/CCLanding'];
   // Visitors who aren't signed in only ever see the client portal — no portal selector, no staff portal
   if (!isAuthenticated && location.pathname !== '/' && !publicPaths.some((p) => location.pathname.startsWith(p))) {
     return <Navigate to="/ClientPortal" replace />;
@@ -114,6 +116,8 @@ const AuthenticatedApp = () => {
       <Route path="/ClientRegister" element={<ClientRegister />} />
       <Route path="/ClientTradeIn" element={<ClientTradeIn />} />
       <Route path="/ClientCarRequest" element={<ClientCarRequest />} />
+      <Route path="/ClientPrivacy" element={<ClientPrivacy />} />
+      <Route path="/ClientTerms" element={<ClientTerms />} />
 
       <Route path="/Adverts" element={<LayoutWrapper currentPageName="Adverts"><Adverts /></LayoutWrapper>} />
       <Route path="/staff" element={<StaffLanding />} />
