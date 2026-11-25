@@ -1,0 +1,93 @@
+import { db, json, serve } from "../_shared/supabase.ts";
+
+// Business-initiated WhatsApp welcome message for a newly created lead.
+// Called by the `lead_created_automation` trigger on public.leads through
+// internal.invoke_edge(), which authenticates with the service-role key.
+//
+// Secrets (Supabase -> Edge Functions -> Secrets):
+//   WHATSAPP_ACCESS_TOKEN, WHATSAPP_PHONE_NUMBER_ID — Cloud API credentials
+//   WHATSAPP_WELCOME_TEMPLATE, WHATSAPP_WELCOME_TEMPLATE_LANG — optional overrides
+// The template must be approved in WhatsApp Manager first: business-initiated
+// messages cannot be free text.
+const GRAPH = "https://graph.facebook.com/v21.0";
+const TEMPLATE = Deno.env.get("WHATSAPP_WELCOME_TEMPLATE") || "lead_welcome";
+const TEMPLATE_LANG = Deno.env.get("WHATSAPP_WELCOME_TEMPLATE_LANG") || "en_US";
+
+const normalizePhone = (raw: string | null | undefined) => {
+  const digits = (raw ?? "").replace(/\D/g, "");
+  if (!digits) return "";
+  if (digits.startsWith("00")) return digits.slice(2);
+  if (digits.startsWith("0")) return `27${digits.slice(1)}`;
+  if (digits.length <= 9) return `27${digits}`;
+  return digits;
+};
+
+// Template parameters cannot be empty or contain line breaks.
+const clean = (value: unknown, fallback: string) => {
+  const text = String(value ?? "").replace(/\s+/g, " ").trim().slice(0, 200);
+  return text || fallback;
+};
+
+serve(async (req) => {
+  // Only internal.invoke_edge() (the lead_created_automation trigger) may call this.
+  const internalSecret = Deno.env.get("INTERNAL_EDGE_SECRET") ?? "";
+  if (!internalSecret || req.headers.get("x-internal-secret") !== internalSecret) {
+    return json({ error: "Unauthorized" }, 401);
+  }
+
+  const token = Deno.env.get("WHATSAPP_ACCESS_TOKEN");
+  const phoneId = Deno.env.get("WHATSAPP_PHONE_NUMBER_ID");
+  if (!token || !phoneId) return json({ error: "WhatsApp is not configured" }, 400);
+
+  const payload = await req.json().catch(() => ({}));
+  const lead = payload.lead ?? payload.data ?? payload;
+  const phone = normalizePhone(lead?.phone);
+  if (!phone) return json({ message: "Lead has no phone number, skipping." });
+
+  const sb = db();
+  const { data: already } = await sb
+    .from("whatsapp_messages")
+    .select("id")
+    .eq("lead_id", lead.id)
+    .eq("direction", "out")
+    .eq("template_name", TEMPLATE)
+    .limit(1);
+  if (already?.length) return json({ message: "Welcome message already sent for this lead." });
+
+  const name = clean(String(lead.lead_name ?? "").trim().split(" ")[0], "there");
+  const vehicle = clean(lead.car_interested, "the vehicle you enquired about");
+
+  const res = await fetch(`${GRAPH}/${phoneId}/messages`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      messaging_product: "whatsapp",
+      to: phone,
+      type: "template",
+      template: {
+        name: TEMPLATE,
+        language: { code: TEMPLATE_LANG },
+        components: [
+          { type: "body", parameters: [{ type: "text", text: name }, { type: "text", text: vehicle }] },
+        ],
+      },
+    }),
+  });
+  const data: any = await res.json().catch(() => ({}));
+  const waId = res.ok ? (data?.messages?.[0]?.id as string) ?? null : null;
+  const error = res.ok ? null : data?.error?.message || `WhatsApp API error (${res.status})`;
+  if (error) console.error("WhatsApp welcome failed:", error);
+
+  await sb.from("whatsapp_messages").insert({
+    lead_id: lead.id ?? null,
+    phone,
+    direction: "out",
+    body: `Welcome message (${TEMPLATE}) — ${vehicle}`,
+    template_name: TEMPLATE,
+    status: waId ? "sent" : "failed",
+    wa_message_id: waId,
+    error,
+  });
+
+  return json({ sent: !!waId, wa_message_id: waId, error });
+});
