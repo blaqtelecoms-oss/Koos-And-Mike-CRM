@@ -12,6 +12,9 @@ import { db, json, serve } from "../_shared/supabase.ts";
 const GRAPH = "https://graph.facebook.com/v21.0";
 const TEMPLATE = Deno.env.get("WHATSAPP_WELCOME_TEMPLATE") || "lead_welcome";
 const TEMPLATE_LANG = Deno.env.get("WHATSAPP_WELCOME_TEMPLATE_LANG") || "en_US";
+// Meta reports #132001 when the template exists only under another English variant
+// (e.g. created as "English" instead of "English (US)"), so both are attempted.
+const TEMPLATE_LANGS = [...new Set([TEMPLATE_LANG, "en"])];
 
 const normalizePhone = (raw: string | null | undefined) => {
   const digits = (raw ?? "").replace(/\D/g, "");
@@ -73,38 +76,50 @@ serve(async (req) => {
   const vehicle = clean(lead.car_interested, "the vehicle you enquired about");
   const image = (await findVehicleImage(sb, lead.car_interested)) || FALLBACK_IMAGE;
 
-  const res = await fetch(`${GRAPH}/${phoneId}/messages`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      messaging_product: "whatsapp",
-      to: phone,
-      type: "template",
-      template: {
-        name: TEMPLATE,
-        language: { code: TEMPLATE_LANG },
-        components: [
-          { type: "header", parameters: [{ type: "image", image: { link: image } }] },
-          { type: "body", parameters: [{ type: "text", text: name }, { type: "text", text: vehicle }] },
-        ],
-      },
-    }),
-  });
-  const data: any = await res.json().catch(() => ({}));
-  const waId = res.ok ? (data?.messages?.[0]?.id as string) ?? null : null;
-  const error = res.ok ? null : data?.error?.message || `WhatsApp API error (${res.status})`;
+  let waId: string | null = null;
+  let error: string | null = null;
+  let language = TEMPLATE_LANGS[0];
+
+  for (const lang of TEMPLATE_LANGS) {
+    const res = await fetch(`${GRAPH}/${phoneId}/messages`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messaging_product: "whatsapp",
+        to: phone,
+        type: "template",
+        template: {
+          name: TEMPLATE,
+          language: { code: lang },
+          components: [
+            { type: "header", parameters: [{ type: "image", image: { link: image } }] },
+            { type: "body", parameters: [{ type: "text", text: name }, { type: "text", text: vehicle }] },
+          ],
+        },
+      }),
+    });
+    const data: any = await res.json().catch(() => ({}));
+    language = lang;
+    if (res.ok) {
+      waId = (data?.messages?.[0]?.id as string) ?? null;
+      error = null;
+      break;
+    }
+    error = data?.error?.message || `WhatsApp API error (${res.status})`;
+    if (data?.error?.code !== 132001) break;
+  }
   if (error) console.error("WhatsApp welcome failed:", error);
 
   await sb.from("whatsapp_messages").insert({
     lead_id: lead.id ?? null,
     phone,
     direction: "out",
-    body: `Welcome message (${TEMPLATE}) — ${vehicle}`,
+    body: `Welcome message (${TEMPLATE}/${language}) — ${vehicle}`,
     template_name: TEMPLATE,
     status: waId ? "sent" : "failed",
     wa_message_id: waId,
     error,
   });
 
-  return json({ sent: !!waId, wa_message_id: waId, image, error });
+  return json({ sent: !!waId, wa_message_id: waId, language, image, error });
 });
