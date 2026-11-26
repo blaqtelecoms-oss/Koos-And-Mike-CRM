@@ -13,6 +13,7 @@ import { isAdminUser } from "@/lib/admin";
 import GlassCard from "@/components/premium/GlassCard";
 import StatusPill from "@/components/premium/StatusPill";
 import EmptyState from "@/components/premium/EmptyState";
+import { useToast } from "@/components/ui/use-toast";
 
 const PLATFORMS = ["Facebook Page", "Facebook Groups", "Instagram", "TikTok", "WhatsApp Status"];
 const POST_TYPES = ["Car Post", "Reel/Video", "Story"];
@@ -36,6 +37,7 @@ export default function SocialPosts() {
   const [form, setForm] = useState({ post_date: moment().format("YYYY-MM-DD"), platform: "Facebook Page", post_type: "Car Post", vehicle_featured: "", includes_website_link: true, includes_cta: true, posted_by: "" });
   const [integrations, setIntegrations] = useState({});
   const [user, setUser] = useState(null);
+  const { toast } = useToast();
 
   useEffect(() => { loadPosts(); }, [filterDate, filterPlatform]);
 
@@ -53,7 +55,20 @@ export default function SocialPosts() {
     setPosts(data); setLoading(false);
   };
 
-  const handleSubmit = async (e) => { e.preventDefault(); await api.entities.SocialPost.create(form); setShowForm(false); resetForm(); loadPosts(); };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const created = await api.entities.SocialPost.create(form);
+    const integration = integrations[PLATFORM_INTEGRATION[form.platform]];
+    if (integration?.status === "active") {
+      try {
+        await api.functions.invoke("publishSocialPost", { post_id: created.id });
+        toast({ title: `Published to ${form.platform}` });
+      } catch (err) {
+        toast({ title: "Post saved, but publishing failed", description: err.message, variant: "destructive" });
+      }
+    }
+    setShowForm(false); resetForm(); loadPosts();
+  };
   const resetForm = () => setForm({ post_date: filterDate, platform: "Facebook Page", post_type: "Car Post", vehicle_featured: "", includes_website_link: true, includes_cta: true, posted_by: "" });
   const deletePost = async (id) => { await api.entities.SocialPost.delete(id); loadPosts(); };
 
