@@ -181,7 +181,7 @@ export default function PostCard({ post, refreshing, publishing, onDelete, onPub
         </div>
       )}
 
-      {media.some(isVideoUrl) && <div className="sp-note" style={{ marginTop: 8 }}>Video media is logged with the post; only photos publish automatically.</div>}
+      {media.some(isVideoUrl) && <div className="sp-note" style={{ marginTop: 8 }}>Videos publish to Instagram as Reels — Facebook posts the caption without the video.</div>}
     </GlassCard>
   );
 }

@@ -17,6 +17,29 @@ function firstImageUrl(post) {
   return mediaUrls(post).find((url) => !/\.(mp4|mov|webm|m4v)(\?|$)/i.test(url)) || null;
 }
 
+function firstVideoUrl(post) {
+  return mediaUrls(post).find((url) => /\.(mp4|mov|webm|m4v)(\?|$)/i.test(url)) || null;
+}
+
+// Instagram processes uploaded videos asynchronously, so the media container
+// has to reach FINISHED before it can be published.
+async function waitForVideoContainer(containerId, token) {
+  for (let attempt = 0; attempt < 45; attempt += 1) {
+    const res = await fetch(
+      `${GRAPH}/${containerId}?fields=status_code,status&access_token=${encodeURIComponent(token)}`
+    );
+    const data = await res.json().catch(() => ({}));
+    if (data.status_code === "FINISHED") return;
+    if (data.status_code === "ERROR" || data.error) {
+      throw new Error(
+        data.status || data.error?.error_user_msg || data.error?.message || "Instagram could not process the video"
+      );
+    }
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
+  throw new Error("Instagram is still processing the video — try publishing again in a minute");
+}
+
 function buildCaption(post) {
   const title = (post.title || "").trim();
   const body = (post.body || "").trim();
@@ -104,8 +127,9 @@ serve(async (req) => {
       const token = String(creds.access_token || "").trim();
       if (!igId || !token) return json({ error: "Instagram account ID or access token is missing" }, 400);
 
+      const videoUrl = firstVideoUrl(post);
       let imageUrl = firstImageUrl(post);
-      if (!imageUrl && post.vehicle_featured) {
+      if (!videoUrl && !imageUrl && post.vehicle_featured) {
         const { data: vehicles } = await client
           .from("vehicles")
           .select("title, images")
@@ -113,18 +137,27 @@ serve(async (req) => {
           .limit(1);
         imageUrl = vehicles?.[0]?.images?.[0] || null;
       }
-      if (!imageUrl) {
+      if (!videoUrl && !imageUrl) {
         return json(
-          { error: "Instagram needs a photo — add media to the post or feature a vehicle with photos" },
+          { error: "Instagram needs a photo or video — add media to the post or feature a vehicle with photos" },
           400
         );
       }
 
-      const container = await graphPost(`${igId}/media`, {
-        image_url: imageUrl,
-        caption,
-        access_token: token,
-      });
+      // A video goes out as a Reel; anything else publishes as a photo post.
+      const container = await graphPost(
+        `${igId}/media`,
+        videoUrl
+          ? {
+              media_type: "REELS",
+              video_url: videoUrl,
+              caption,
+              share_to_feed: "true",
+              access_token: token,
+            }
+          : { image_url: imageUrl, caption, access_token: token }
+      );
+      if (videoUrl) await waitForVideoContainer(container.id, token);
       const published = await graphPost(`${igId}/media_publish`, {
         creation_id: container.id,
         access_token: token,
