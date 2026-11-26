@@ -23,6 +23,7 @@ const TABLES = {
   LeadFollowUp: 'lead_follow_ups',
   WhatsAppMessage: 'whatsapp_messages',
   SocialPost: 'social_posts',
+  SocialIntegration: 'social_integrations',
   PushSubscription: 'push_subscriptions',
   User: 'profiles',
 };

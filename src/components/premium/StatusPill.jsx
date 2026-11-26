@@ -17,6 +17,9 @@ const STATUS_COLORS = {
   "Closed":       "#6b7280",
   "Published":    "#22c55e",
   "Draft":        "#6b7280",
+  "Active":       "#22c55e",
+  "Inactive":     "#6b7280",
+  "Disabled":     "#ef4444",
 };
 
 export default function StatusPill({ status }) {

@@ -52,6 +52,7 @@ import Leads from './pages/Leads';
 import Vehicles from './pages/Vehicles';
 import Tasks from './pages/Tasks';
 import SocialPosts from './pages/SocialPosts';
+import Integrations from './pages/Integrations';
 import TradeIns from './pages/TradeIns';
 import CarRequests from './pages/CarRequests';
 import WhatsApp from './pages/WhatsApp';
@@ -64,6 +65,7 @@ export const PAGES = {
     "Vehicles": Vehicles,
     "Tasks": Tasks,
     "SocialPosts": SocialPosts,
+    "Integrations": Integrations,
     "TradeIns": TradeIns,
     "CarRequests": CarRequests,
     "WhatsApp": WhatsApp,

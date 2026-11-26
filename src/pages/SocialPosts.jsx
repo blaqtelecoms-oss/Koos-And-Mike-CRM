@@ -6,14 +6,26 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus, Share2, Link, MessageSquare, Check, X, Calendar, Filter } from "lucide-react";
+import { Plus, Share2, Link, MessageSquare, Check, X, Calendar, Filter, Plug, CircleAlert } from "lucide-react";
+import { Link as RouterLink } from "react-router-dom";
 import moment from "moment";
+import { isAdminUser } from "@/lib/admin";
 import GlassCard from "@/components/premium/GlassCard";
 import StatusPill from "@/components/premium/StatusPill";
 import EmptyState from "@/components/premium/EmptyState";
 
 const PLATFORMS = ["Facebook Page", "Facebook Groups", "Instagram", "TikTok", "WhatsApp Status"];
 const POST_TYPES = ["Car Post", "Reel/Video", "Story"];
+
+// Which integration switches on direct posting for each logged platform.
+const PLATFORM_INTEGRATION = { "Facebook Page": "facebook", "Facebook Groups": "facebook", Instagram: "instagram", TikTok: "tiktok" };
+const SOCIAL_CHANNELS = [
+  { key: "facebook", name: "Facebook" },
+  { key: "instagram", name: "Instagram" },
+  { key: "tiktok", name: "TikTok" },
+];
+const INTEGRATION_LABEL = { active: "Active", inactive: "Inactive", disabled: "Disabled" };
+const INTEGRATION_COLOR = { active: "#22c55e", inactive: "#6b7280", disabled: "#ef4444" };
 
 export default function SocialPosts() {
   const [posts, setPosts] = useState([]);
@@ -22,8 +34,17 @@ export default function SocialPosts() {
   const [filterPlatform, setFilterPlatform] = useState("all");
   const [filterDate, setFilterDate] = useState(moment().format("YYYY-MM-DD"));
   const [form, setForm] = useState({ post_date: moment().format("YYYY-MM-DD"), platform: "Facebook Page", post_type: "Car Post", vehicle_featured: "", includes_website_link: true, includes_cta: true, posted_by: "" });
+  const [integrations, setIntegrations] = useState({});
+  const [user, setUser] = useState(null);
 
   useEffect(() => { loadPosts(); }, [filterDate, filterPlatform]);
+
+  useEffect(() => {
+    api.entities.SocialIntegration.list("platform", 10)
+      .then((rows) => setIntegrations(Object.fromEntries((rows || []).map((r) => [r.platform, r]))))
+      .catch(() => {});
+    api.auth.me().then(setUser).catch(() => {});
+  }, []);
 
   const loadPosts = async () => {
     setLoading(true);
@@ -43,6 +64,9 @@ export default function SocialPosts() {
   };
   const allRequirementsMet = dailyRequirements.carPosts && dailyRequirements.reels && dailyRequirements.stories;
 
+  const selectedIntegration = integrations[PLATFORM_INTEGRATION[form.platform]];
+  const selectedIntegrationActive = selectedIntegration?.status === "active";
+
   if (loading) return <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 400 }}><div className="w-8 h-8 border-2 border-amber-500/30 border-t-amber-400 rounded-full animate-spin" /></div>;
 
   return (
@@ -56,6 +80,31 @@ export default function SocialPosts() {
           <Plus style={{ width: 16, height: 16 }} /> Log Post
         </button>
       </div>
+
+      {/* Direct posting connections */}
+      <GlassCard style={{ marginBottom: 14 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            <Plug style={{ width: 16, height: 16, color: "var(--mut)" }} />
+            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--ink)" }}>Direct posting</span>
+            {SOCIAL_CHANNELS.map(({ key, name }) => {
+              const status = integrations[key]?.status || "inactive";
+              return (
+                <span key={key} className="km-chip" style={{ cursor: "default", fontSize: 11, padding: "3px 8px" }}>
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: INTEGRATION_COLOR[status] }} />
+                  {name}
+                  <span style={{ color: "var(--mut)" }}>· {INTEGRATION_LABEL[status]}</span>
+                </span>
+              );
+            })}
+          </div>
+          {isAdminUser(user) && (
+            <RouterLink to="/Integrations" className="km-chip" style={{ fontSize: 12 }}>
+              <Plug style={{ width: 13, height: 13 }} /> Manage integrations
+            </RouterLink>
+          )}
+        </div>
+      </GlassCard>
 
       {/* Daily requirements */}
       <GlassCard style={{ marginBottom: 14, borderColor: allRequirementsMet ? "rgba(22,131,58,.3)" : "rgba(224,168,0,.3)" }}>
@@ -134,6 +183,16 @@ export default function SocialPosts() {
               <div><Label>Posted By</Label><Input value={form.posted_by} onChange={(e) => setForm({...form, posted_by: e.target.value})} placeholder="Your name" /></div>
               <div className="col-span-2"><Label>Vehicle Featured (if applicable)</Label><Input value={form.vehicle_featured} onChange={(e) => setForm({...form, vehicle_featured: e.target.value})} placeholder="2020 Toyota Hilux" /></div>
             </div>
+            {selectedIntegration && (
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: selectedIntegrationActive ? "#22c55e" : "var(--mut)" }}>
+                {selectedIntegrationActive
+                  ? <Check style={{ width: 14, height: 14 }} />
+                  : <CircleAlert style={{ width: 14, height: 14 }} />}
+                {selectedIntegrationActive
+                  ? `Direct posting is active${selectedIntegration.account_name ? ` for ${selectedIntegration.account_name}` : ""}.`
+                  : `Direct posting is ${INTEGRATION_LABEL[selectedIntegration.status || "inactive"].toLowerCase()} for this platform — change it in Integrations.`}
+              </div>
+            )}
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: "var(--glass)" }}>
                 <div className="flex items-center gap-2"><Link className="w-4 h-4" style={{ color: "var(--mut)" }} /><Label className="font-normal">Includes website link</Label></div>

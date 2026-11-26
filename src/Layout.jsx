@@ -4,7 +4,7 @@ import { createPageUrl } from "./utils";
 import {
   LayoutGrid, Users, Car, CheckSquare, Share2,
   Menu, X, LogOut, RefreshCcw, Search, BarChart3,
-  ShieldCheck, Megaphone, Bell, Plus, Trash2, MessageCircle
+  ShieldCheck, Megaphone, Bell, Plus, Trash2, MessageCircle, Plug
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { api } from "@/api/supabaseClient";
@@ -48,6 +48,7 @@ export default function Layout({ children, currentPageName }) {
   const adminNav = [
     { name: "Performance Monitor", path: "/AdminPerformance", icon: BarChart3 },
     { name: "Sales Portals", path: "/SalesPortal", icon: ShieldCheck },
+    { name: "Integrations", path: "/Integrations", icon: Plug },
   ];
 
   const handleLogout = () => api.auth.logout();
