@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/components/ui/use-toast";
 import { AUDIENCES, PLATFORMS, PLATFORM_META, POST_TYPES, SITE_URL, INTEGRATION_DOT } from "./meta";
 import MediaGrid from "./MediaGrid";
-import { Car, ImagePlus, Link2, Loader2, MessageSquare, Send, Sparkles } from "lucide-react";
+import { Car, Check, ImagePlus, Link2, Loader2, MessageSquare, Send, Sparkles } from "lucide-react";
 
 const emptyForm = (date) => ({
   title: "",
@@ -14,7 +14,7 @@ const emptyForm = (date) => ({
   media: [],
   audience: "public",
   audience_note: "",
-  platform: "Facebook Page",
+  platforms: ["Facebook Page"],
   post_type: "Car Post",
   vehicle_featured: "",
   link_url: SITE_URL,
@@ -34,10 +34,26 @@ export default function PostComposer({ user, integrations = {}, onSaved }) {
     api.entities.Vehicle.list("-created_date", 100).then(setVehicles).catch(() => {});
   }, []);
 
-  const platformMeta = PLATFORM_META[form.platform];
-  const integration = platformMeta.integration ? integrations[platformMeta.integration] : null;
-  const integrationActive = integration?.status === "active";
-  const canPublish = platformMeta.publishable && integrationActive;
+  const targets = form.platforms.map((platform) => {
+    const meta = PLATFORM_META[platform];
+    const integration = meta.integration ? integrations[meta.integration] : null;
+    return { platform, meta, integration, canPublish: meta.publishable && integration?.status === "active" };
+  });
+  const publishableTargets = targets.filter((target) => target.canPublish);
+  const manualTargets = targets.filter((target) => !target.canPublish);
+
+  const togglePlatform = (platform) => {
+    setForm((current) => {
+      const selected = current.platforms.includes(platform);
+      if (selected && current.platforms.length === 1) return current;
+      return {
+        ...current,
+        platforms: selected
+          ? current.platforms.filter((item) => item !== platform)
+          : [...current.platforms, platform],
+      };
+    });
+  };
 
   const selectedVehicle = useMemo(
     () => vehicles.find((vehicle) => vehicle.title === form.vehicle_featured),
@@ -77,27 +93,51 @@ export default function PostComposer({ user, integrations = {}, onSaved }) {
     }
     setSaving(publish ? "publish" : "draft");
     try {
-      const created = await api.entities.SocialPost.create({
-        ...form,
-        posted_by: user?.full_name || user?.email || "",
-        status: "draft",
-        includes_website_link: form.includes_website_link && !!form.link_url.trim(),
-      });
+      // One post per chosen channel, so each platform gets its own status and insights.
+      const fields = { ...form };
+      delete fields.platforms;
+      const created = [];
+      for (const target of targets) {
+        const row = await api.entities.SocialPost.create({
+          ...fields,
+          platform: target.platform,
+          posted_by: user?.full_name || user?.email || "",
+          status: "draft",
+          includes_website_link: form.includes_website_link && !!form.link_url.trim(),
+        });
+        created.push({ target, row });
+      }
 
-      if (publish && canPublish) {
-        try {
-          await api.functions.invoke("publishSocialPost", { post_id: created.id });
-          toast({ title: `Published to ${platformMeta.label}` });
-        } catch (err) {
-          toast({ title: "Saved, but publishing failed", description: err.message, variant: "destructive" });
+      const published = [];
+      const failed = [];
+      if (publish) {
+        for (const { target, row } of created) {
+          if (!target.canPublish) continue;
+          try {
+            await api.functions.invoke("publishSocialPost", { post_id: row.id });
+            published.push(target.meta.label);
+          } catch (err) {
+            failed.push(`${target.meta.label}: ${err.message}`);
+          }
         }
-      } else if (publish) {
+      }
+
+      if (!publish) {
         toast({
-          title: "Saved as a draft",
-          description: `Direct posting is not connected for ${platformMeta.label} — publish it by hand and it is logged here.`,
+          title: "Draft saved",
+          description: targets.length > 1 ? `Saved for ${targets.map((target) => target.meta.label).join(" and ")}.` : undefined,
         });
       } else {
-        toast({ title: "Draft saved" });
+        const manualLabels = manualTargets.map((target) => target.meta.label).join(" and ");
+        const parts = [];
+        if (published.length) parts.push(`Published to ${published.join(" and ")}.`);
+        if (manualLabels) parts.push(`${manualLabels} saved as drafts — post those by hand.`);
+        if (failed.length) parts.push(`Failed: ${failed.join("; ")}.`);
+        toast({
+          title: failed.length ? "Saved, but publishing failed" : published.length ? "Post published" : "Saved as a draft",
+          description: parts.join(" "),
+          variant: failed.length ? "destructive" : undefined,
+        });
       }
 
       setForm(emptyForm(form.post_date));
@@ -235,6 +275,7 @@ export default function PostComposer({ user, integrations = {}, onSaved }) {
 
       <div className="sp-composer-foot">
         <div className="sp-platforms">
+          <span className="sp-note" style={{ alignSelf: "center", marginRight: 2 }}>Publish to</span>
           {PLATFORMS.map((platform) => {
             const meta = PLATFORM_META[platform];
             const Icon = meta.icon;
@@ -243,13 +284,15 @@ export default function PostComposer({ user, integrations = {}, onSaved }) {
               <button
                 key={platform}
                 type="button"
-                className={`sp-platform-chip ${form.platform === platform ? "active" : ""}`}
-                onClick={() => set({ platform })}
+                className={`sp-platform-chip ${form.platforms.includes(platform) ? "active" : ""}`}
+                onClick={() => togglePlatform(platform)}
+                aria-pressed={form.platforms.includes(platform)}
                 title={meta.publishable ? meta.label : `${meta.label} — logged only, no direct posting`}
               >
                 <Icon style={{ width: 13, height: 13, color: meta.color }} />
                 {meta.label}
                 {status && <span className="sp-dot" style={{ background: INTEGRATION_DOT[status] }} />}
+                {form.platforms.includes(platform) && <Check style={{ width: 11, height: 11 }} />}
               </button>
             );
           })}
@@ -269,27 +312,29 @@ export default function PostComposer({ user, integrations = {}, onSaved }) {
           </button>
           <button type="button" className="km-btn-primary" onClick={() => save(true)} disabled={!!saving}>
             {saving === "publish" ? <Loader2 style={{ width: 15, height: 15 }} className="animate-spin" /> : <Send style={{ width: 15, height: 15 }} />}
-            {canPublish ? "Publish now" : "Save post"}
+            {publishableTargets.length ? "Publish now" : "Save post"}
           </button>
         </div>
       </div>
 
       <div className="sp-composer-hint">
-        {platformMeta.publishable ? (
-          integrationActive ? (
-            <span className="sp-note-ok">
-              Publishing directly to {integration.account_name || platformMeta.label}.
-            </span>
-          ) : (
-            <span className="sp-note-warn">
-              {platformMeta.label} direct posting is {integration?.status || "inactive"} — this will be saved so you can post it by hand.
-            </span>
-          )
-        ) : (
-          <span className="sp-note">
-            {platformMeta.label} is logged here only — copy the caption across when you post.
-          </span>
-        )}
+        {targets.map(({ platform, meta, integration, canPublish }) => (
+          <div key={platform}>
+            {canPublish ? (
+              <span className="sp-note-ok">
+                {meta.label}: publishing directly to {integration.account_name || meta.label}.
+              </span>
+            ) : meta.publishable ? (
+              <span className="sp-note-warn">
+                {meta.label}: direct posting is {integration?.status || "inactive"} — saved so you can post it by hand.
+              </span>
+            ) : (
+              <span className="sp-note">
+                {meta.label}: logged here only — copy the caption across when you post.
+              </span>
+            )}
+          </div>
+        ))}
       </div>
     </GlassCard>
   );
