@@ -23,6 +23,8 @@ const TABLES = {
   LeadFollowUp: 'lead_follow_ups',
   WhatsAppMessage: 'whatsapp_messages',
   SocialPost: 'social_posts',
+  SocialIntegration: 'social_integrations',
+  SocialAnalytics: 'social_analytics',
   PushSubscription: 'push_subscriptions',
   User: 'profiles',
 };
@@ -178,7 +180,7 @@ const functions = {
   },
 };
 
-const BUCKETS = { vehicles: 'vehicle-images', adverts: 'advert-images', tradeIns: 'trade-in-images' };
+const BUCKETS = { vehicles: 'vehicle-images', adverts: 'advert-images', tradeIns: 'trade-in-images', socialMedia: 'social-media' };
 
 const integrations = {
   Core: {

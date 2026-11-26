@@ -16,6 +16,7 @@ import PipelineRing from "@/components/premium/PipelineRing";
 import LeadsChart from "@/components/premium/LeadsChart";
 import VehicleImage from "@/components/VehicleImage";
 import QuickTile from "@/components/premium/QuickTile";
+import SocialAnalyticsCard from "@/components/premium/SocialAnalyticsCard";
 
 import { isAdminUser } from "@/lib/admin";
 
@@ -221,6 +222,9 @@ export default function Dashboard() {
               <div className="km-toggle off" />
             </div>
           </GlassCard>
+
+          {/* Social media analytics */}
+          {isAdminUser(currentUser) && <SocialAnalyticsCard />}
 
           {/* Admin portals */}
           {isAdminUser(currentUser) && (
