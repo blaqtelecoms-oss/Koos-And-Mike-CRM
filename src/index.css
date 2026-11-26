@@ -845,6 +845,9 @@ button, a, [role="button"] {
 .sp-post-meta { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--mut); flex-wrap: wrap; margin-top: 3px; }
 .sp-post-title { font-size: 16px; font-weight: 600; margin: 12px 0 4px; letter-spacing: -0.2px; color: var(--ink); }
 .sp-post-body { font-size: 13.5px; line-height: 1.65; color: var(--ink); opacity: .92; white-space: pre-wrap; }
+.sp-thumb-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+.sp-thumb { width: 56px; height: 56px; border-radius: 12px; object-fit: cover; border: 1px solid var(--line); background: rgba(255,255,255,.04); flex-shrink: 0; }
+.sp-thumb-upload { padding: 6px 10px; }
 .sp-post-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 12px; color: var(--gold); text-decoration: none; }
 .sp-post-link:hover { text-decoration: underline; }
 .sp-icon-x { width: 26px; height: 26px; border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--mut); display: grid; place-items: center; cursor: pointer; }

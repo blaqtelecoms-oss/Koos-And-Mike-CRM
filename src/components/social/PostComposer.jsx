@@ -6,12 +6,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/components/ui/use-toast";
 import { AUDIENCES, PLATFORMS, PLATFORM_META, POST_TYPES, SITE_URL, INTEGRATION_DOT } from "./meta";
 import MediaGrid from "./MediaGrid";
-import { Car, Check, ImagePlus, Link2, Loader2, MessageSquare, Send, Sparkles } from "lucide-react";
+import { Car, Check, Image as ImageIcon, ImagePlus, Link2, Loader2, MessageSquare, Send, Sparkles, X } from "lucide-react";
 
 const emptyForm = (date) => ({
   title: "",
   body: "",
   media: [],
+  thumbnail_url: "",
   audience: "public",
   audience_note: "",
   platforms: ["Facebook Page"],
@@ -27,6 +28,7 @@ export default function PostComposer({ user, integrations = {}, onSaved }) {
   const [form, setForm] = useState(() => emptyForm(moment().format("YYYY-MM-DD")));
   const [vehicles, setVehicles] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const [thumbUploading, setThumbUploading] = useState(false);
   const [saving, setSaving] = useState(null);
   const { toast } = useToast();
 
@@ -75,6 +77,21 @@ export default function PostComposer({ user, integrations = {}, onSaved }) {
       toast({ title: "Upload failed", description: err.message, variant: "destructive" });
     } finally {
       setUploading(false);
+      event.target.value = "";
+    }
+  };
+
+  const handleThumbnail = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setThumbUploading(true);
+    try {
+      const { file_url } = await api.integrations.Core.UploadFile({ file, bucket: "social-media" });
+      setForm((current) => ({ ...current, thumbnail_url: file_url }));
+    } catch (err) {
+      toast({ title: "Thumbnail upload failed", description: err.message, variant: "destructive" });
+    } finally {
+      setThumbUploading(false);
       event.target.value = "";
     }
   };
@@ -209,6 +226,16 @@ export default function PostComposer({ user, integrations = {}, onSaved }) {
 
       <MediaGrid media={form.media} onRemove={(index) => set({ media: form.media.filter((_, i) => i !== index) })} />
 
+      {form.thumbnail_url && (
+        <div className="sp-thumb-row">
+          <img src={form.thumbnail_url} alt="Post thumbnail preview" className="sp-thumb" />
+          <span className="sp-note">Thumbnail — shown on the post card.</span>
+          <button type="button" className="sp-icon-x" onClick={() => set({ thumbnail_url: "" })} aria-label="Remove thumbnail">
+            <X style={{ width: 13, height: 13 }} />
+          </button>
+        </div>
+      )}
+
       {form.includes_website_link && (
         <div className="sp-link-row">
           <Link2 style={{ width: 14, height: 14, color: "var(--mut)", flexShrink: 0 }} />
@@ -225,6 +252,12 @@ export default function PostComposer({ user, integrations = {}, onSaved }) {
           {uploading ? <Loader2 style={{ width: 14, height: 14 }} className="animate-spin" /> : <ImagePlus style={{ width: 14, height: 14 }} />}
           {uploading ? "Uploading…" : "Photo"}
           <input type="file" accept="image/*,video/mp4,video/quicktime" multiple hidden onChange={handleFiles} disabled={uploading} />
+        </label>
+
+        <label className={`sp-tool ${thumbUploading ? "active" : ""}`}>
+          {thumbUploading ? <Loader2 style={{ width: 14, height: 14 }} className="animate-spin" /> : <ImageIcon style={{ width: 14, height: 14 }} />}
+          {thumbUploading ? "Uploading…" : form.thumbnail_url ? "Change thumbnail" : "Thumbnail"}
+          <input type="file" accept="image/*" hidden onChange={handleThumbnail} disabled={thumbUploading} />
         </label>
 
         <Select value={form.vehicle_featured || "none"} onValueChange={(value) => set({ vehicle_featured: value === "none" ? "" : value })}>

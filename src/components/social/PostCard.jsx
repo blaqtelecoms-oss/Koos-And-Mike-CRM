@@ -1,10 +1,11 @@
+import { useState } from "react";
 import moment from "moment";
 import GlassCard from "@/components/premium/GlassCard";
 import StatusPill from "@/components/premium/StatusPill";
 import MediaGrid from "./MediaGrid";
 import { PLATFORM_META, audienceIcon, audienceLabel, isVideoUrl } from "./meta";
 import {
-  BarChart3, Bookmark, Eye, ExternalLink, Heart, Loader2, MessageSquare, MousePointerClick,
+  BarChart3, Bookmark, Eye, ExternalLink, Heart, ImagePlus, Loader2, MessageSquare, MousePointerClick,
   RefreshCcw, Send, Share2, Trash2,
 } from "lucide-react";
 
@@ -29,7 +30,21 @@ function metricsFor(post) {
   ];
 }
 
-export default function PostCard({ post, refreshing, publishing, onDelete, onPublish, onRefresh }) {
+export default function PostCard({ post, refreshing, publishing, onDelete, onPublish, onRefresh, onThumbnail }) {
+  const [thumbBusy, setThumbBusy] = useState(false);
+
+  const handleThumbnail = async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file || !onThumbnail) return;
+    setThumbBusy(true);
+    try {
+      await onThumbnail(post, file);
+    } finally {
+      setThumbBusy(false);
+    }
+  };
+
   const meta = PLATFORM_META[post.platform] || PLATFORM_META["Facebook Page"];
   const PlatformIcon = meta.icon;
   const AudienceIcon = audienceIcon(post.audience);
@@ -74,6 +89,17 @@ export default function PostCard({ post, refreshing, publishing, onDelete, onPub
 
       {title && <div className="sp-post-title">{title}</div>}
       {body && <div className="sp-post-body">{body}</div>}
+
+      <div className="sp-thumb-row">
+        {post.thumbnail_url && <img src={post.thumbnail_url} alt="Post thumbnail" className="sp-thumb" />}
+        {onThumbnail && (
+          <label className="sp-tool sp-thumb-upload">
+            {thumbBusy ? <Loader2 style={{ width: 13, height: 13 }} className="animate-spin" /> : <ImagePlus style={{ width: 13, height: 13 }} />}
+            {post.thumbnail_url ? "Change thumbnail" : "Add thumbnail"}
+            <input type="file" accept="image/*" hidden onChange={handleThumbnail} disabled={thumbBusy} />
+          </label>
+        )}
+      </div>
 
       <MediaGrid media={media} />
 

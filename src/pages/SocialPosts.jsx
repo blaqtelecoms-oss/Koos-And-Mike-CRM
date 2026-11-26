@@ -106,6 +106,17 @@ export default function SocialPosts() {
     loadPosts();
   };
 
+  const updateThumbnail = async (post, file) => {
+    try {
+      const { file_url } = await api.integrations.Core.UploadFile({ file, bucket: "social-media" });
+      await api.entities.SocialPost.update(post.id, { thumbnail_url: file_url });
+      await loadPosts();
+      toast({ title: post.thumbnail_url ? "Thumbnail updated" : "Thumbnail added" });
+    } catch (err) {
+      toast({ title: "Could not save the thumbnail", description: err.message, variant: "destructive" });
+    }
+  };
+
   const kpis = [
     { label: "Published", value: fmt(published.length), sub: "posts in range", icon: Send },
     { label: "Reach", value: fmt(totalReach), sub: "people reached", icon: Eye },
@@ -205,6 +216,7 @@ export default function SocialPosts() {
                 onDelete={deletePost}
                 onPublish={publish}
                 onRefresh={refreshInsights}
+                onThumbnail={updateThumbnail}
               />
             ))
           )}
