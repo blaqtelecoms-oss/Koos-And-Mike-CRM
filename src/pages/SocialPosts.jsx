@@ -36,6 +36,7 @@ export default function SocialPosts() {
   const [range, setRange] = useState("30");
   const [refreshingId, setRefreshingId] = useState(null);
   const [publishingId, setPublishingId] = useState(null);
+  const [editing, setEditing] = useState(null);
   const { toast } = useToast();
 
   const loadPosts = async () => {
@@ -52,14 +53,22 @@ export default function SocialPosts() {
     api.auth.me().then(setUser).catch(() => {});
   }, []);
 
+  // Private posts stay visible to the person who wrote them only.
+  const myPosts = useMemo(() => {
+    const name = user?.full_name || user?.email;
+    return posts.filter(
+      (post) => post.audience !== "private" || post.created_by === user?.id || (name && post.posted_by === name)
+    );
+  }, [posts, user]);
+
   const visible = useMemo(() => {
     const since = range === "all" ? null : moment().subtract(Number(range) - 1, "days").startOf("day");
-    return posts.filter((post) => {
+    return myPosts.filter((post) => {
       if (platformFilter !== "all" && post.platform !== platformFilter) return false;
       if (!since) return true;
       return moment(post.post_date || post.created_date).isSameOrAfter(since);
     });
-  }, [posts, platformFilter, range]);
+  }, [myPosts, platformFilter, range]);
 
   const published = visible.filter((post) => post.status === "published");
   const totalReach = published.reduce((total, post) => total + (Number(post.insights?.reach) || 0), 0);
@@ -67,7 +76,7 @@ export default function SocialPosts() {
   const engagementRate = totalReach > 0 ? ((totalEngagement / totalReach) * 100).toFixed(1) : null;
 
   const today = moment().format("YYYY-MM-DD");
-  const todaysPosts = posts.filter((post) => post.post_date === today);
+  const todaysPosts = myPosts.filter((post) => post.post_date === today);
   const requirements = [
     { label: "1 Car Post", met: todaysPosts.some((post) => post.post_type === "Car Post") },
     { label: "1 Reel/Video", met: todaysPosts.some((post) => post.post_type === "Reel/Video") },
@@ -104,6 +113,11 @@ export default function SocialPosts() {
   const deletePost = async (id) => {
     await api.entities.SocialPost.delete(id);
     loadPosts();
+  };
+
+  const startEdit = (post) => {
+    setEditing(post);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const updateThumbnail = async (post, file) => {
@@ -159,7 +173,16 @@ export default function SocialPosts() {
 
       <div className="sp-grid">
         <div className="sp-stack">
-          <PostComposer user={user} integrations={integrations} onSaved={loadPosts} />
+          <PostComposer
+            user={user}
+            integrations={integrations}
+            editingPost={editing}
+            onCancelEdit={() => setEditing(null)}
+            onSaved={() => {
+              setEditing(null);
+              loadPosts();
+            }}
+          />
 
           <GlassCard tight>
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
@@ -217,6 +240,7 @@ export default function SocialPosts() {
                 onPublish={publish}
                 onRefresh={refreshInsights}
                 onThumbnail={updateThumbnail}
+                onEdit={startEdit}
               />
             ))
           )}

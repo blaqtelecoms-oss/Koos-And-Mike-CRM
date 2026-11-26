@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Music2, MessageCircle, Globe, Users, SlidersHorizontal } from "lucide-react";
+import { Facebook, Instagram, Music2, MessageCircle, Globe, Users, SlidersHorizontal, Lock } from "lucide-react";
 
 export const SITE_URL = "https://koosandmike.co.za";
 
@@ -17,6 +17,7 @@ export const AUDIENCES = [
   { value: "public", label: "Public", icon: Globe, hint: "Anyone on or off the platform" },
   { value: "followers", label: "Followers", icon: Users, hint: "People who follow the page" },
   { value: "custom", label: "Custom", icon: SlidersHorizontal, hint: "Describe who should see this" },
+  { value: "private", label: "Private", icon: Lock, hint: "Only you can see this post" },
 ];
 
 export const POST_TYPES = ["Car Post", "Reel/Video", "Story"];

@@ -6,7 +6,7 @@ import MediaGrid from "./MediaGrid";
 import { PLATFORM_META, audienceIcon, audienceLabel, isVideoUrl } from "./meta";
 import {
   BarChart3, Bookmark, Eye, ExternalLink, Heart, ImagePlus, Loader2, MessageSquare, MousePointerClick,
-  RefreshCcw, Send, Share2, Trash2,
+  Pencil, RefreshCcw, Send, Share2, Trash2,
 } from "lucide-react";
 
 const STATUS_LABEL = { draft: "Draft", published: "Published", failed: "Failed" };
@@ -30,7 +30,7 @@ function metricsFor(post) {
   ];
 }
 
-export default function PostCard({ post, refreshing, publishing, onDelete, onPublish, onRefresh, onThumbnail }) {
+export default function PostCard({ post, refreshing, publishing, onDelete, onPublish, onRefresh, onThumbnail, onEdit }) {
   const [thumbBusy, setThumbBusy] = useState(false);
 
   const handleThumbnail = async (event) => {
@@ -163,13 +163,21 @@ export default function PostCard({ post, refreshing, publishing, onDelete, onPub
       ) : (
         <div className="sp-post-actions">
           {post.publish_error && <span className="sp-note-warn">{post.publish_error}</span>}
-          {meta.publishable && (
+          {status === "draft" && onEdit && (
+            <button type="button" className="sp-tool" onClick={() => onEdit(post)}>
+              <Pencil style={{ width: 13, height: 13 }} /> Edit
+            </button>
+          )}
+          {post.audience === "private" ? (
+            <span className="sp-note">Private — only you can see this post; it is never published.</span>
+          ) : meta.publishable ? (
             <button type="button" className="km-btn-primary" onClick={() => onPublish(post)} disabled={publishing}>
               {publishing ? <Loader2 style={{ width: 14, height: 14 }} className="animate-spin" /> : <Send style={{ width: 14, height: 14 }} />}
               Publish now
             </button>
+          ) : (
+            <span className="sp-note">{meta.label} is logged only — post it by hand.</span>
           )}
-          {!meta.publishable && <span className="sp-note">{meta.label} is logged only — post it by hand.</span>}
         </div>
       )}
 

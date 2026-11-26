@@ -24,7 +24,7 @@ const emptyForm = (date) => ({
   post_date: date,
 });
 
-export default function PostComposer({ user, integrations = {}, onSaved }) {
+export default function PostComposer({ user, integrations = {}, onSaved, editingPost, onCancelEdit }) {
   const [form, setForm] = useState(() => emptyForm(moment().format("YYYY-MM-DD")));
   const [vehicles, setVehicles] = useState([]);
   const [uploading, setUploading] = useState(false);
@@ -36,10 +36,40 @@ export default function PostComposer({ user, integrations = {}, onSaved }) {
     api.entities.Vehicle.list("-created_date", 100).then(setVehicles).catch(() => {});
   }, []);
 
+  // Editing a draft fills the composer with that post; leaving edit mode clears it.
+  useEffect(() => {
+    if (!editingPost) {
+      setForm(emptyForm(moment().format("YYYY-MM-DD")));
+      return;
+    }
+    setForm({
+      title: editingPost.title || "",
+      body: editingPost.body || "",
+      media: Array.isArray(editingPost.media) ? editingPost.media : [],
+      thumbnail_url: editingPost.thumbnail_url || "",
+      audience: editingPost.audience || "public",
+      audience_note: editingPost.audience_note || "",
+      platforms: [editingPost.platform],
+      post_type: editingPost.post_type || "Car Post",
+      vehicle_featured: editingPost.vehicle_featured || "",
+      link_url: editingPost.link_url || SITE_URL,
+      includes_website_link: editingPost.includes_website_link ?? true,
+      includes_cta: editingPost.includes_cta ?? true,
+      post_date: editingPost.post_date || moment().format("YYYY-MM-DD"),
+    });
+  }, [editingPost]);
+
+  const isPrivate = form.audience === "private";
+
   const targets = form.platforms.map((platform) => {
     const meta = PLATFORM_META[platform];
     const integration = meta.integration ? integrations[meta.integration] : null;
-    return { platform, meta, integration, canPublish: meta.publishable && integration?.status === "active" };
+    return {
+      platform,
+      meta,
+      integration,
+      canPublish: !isPrivate && meta.publishable && integration?.status === "active",
+    };
   });
   const publishableTargets = targets.filter((target) => target.canPublish);
   const manualTargets = targets.filter((target) => !target.canPublish);
@@ -110,17 +140,52 @@ export default function PostComposer({ user, integrations = {}, onSaved }) {
     }
     setSaving(publish ? "publish" : "draft");
     try {
-      // One post per chosen channel, so each platform gets its own status and insights.
       const fields = { ...form };
       delete fields.platforms;
+      const payload = {
+        ...fields,
+        posted_by: user?.full_name || user?.email || "",
+        includes_website_link: form.includes_website_link && !!form.link_url.trim(),
+      };
+
+      // Editing a draft updates that post instead of creating new ones.
+      if (editingPost) {
+        await api.entities.SocialPost.update(editingPost.id, payload);
+        const target = targets[0];
+        let failure = null;
+        if (publish && target?.canPublish) {
+          try {
+            await api.functions.invoke("publishSocialPost", { post_id: editingPost.id });
+          } catch (err) {
+            failure = err.message;
+          }
+        }
+        if (failure) {
+          toast({ title: "Draft updated, but publishing failed", description: failure, variant: "destructive" });
+        } else if (publish && target?.canPublish) {
+          toast({ title: `Published to ${target.meta.label}` });
+        } else if (publish) {
+          toast({
+            title: "Draft updated",
+            description: isPrivate
+              ? "Private posts stay in the studio — they are never published to your channels."
+              : `Direct posting is not connected for ${target?.meta.label || editingPost.platform} — post it by hand and it is logged here.`,
+          });
+        } else {
+          toast({ title: "Draft updated" });
+        }
+        onSaved?.();
+        return;
+      }
+
+      // One post per chosen channel, so each platform gets its own status and insights.
       const created = [];
       for (const target of targets) {
         const row = await api.entities.SocialPost.create({
-          ...fields,
+          ...payload,
           platform: target.platform,
-          posted_by: user?.full_name || user?.email || "",
+          created_by: user?.id || null,
           status: "draft",
-          includes_website_link: form.includes_website_link && !!form.link_url.trim(),
         });
         created.push({ target, row });
       }
@@ -143,6 +208,11 @@ export default function PostComposer({ user, integrations = {}, onSaved }) {
         toast({
           title: "Draft saved",
           description: targets.length > 1 ? `Saved for ${targets.map((target) => target.meta.label).join(" and ")}.` : undefined,
+        });
+      } else if (isPrivate) {
+        toast({
+          title: "Private post saved",
+          description: "Only you can see it in the studio — it is never published to your channels.",
         });
       } else {
         const manualLabels = manualTargets.map((target) => target.meta.label).join(" and ");
@@ -196,7 +266,7 @@ export default function PostComposer({ user, integrations = {}, onSaved }) {
           </div>
         </div>
         <span className="sp-composer-badge">
-          <Sparkles style={{ width: 12, height: 12 }} /> Studio
+          <Sparkles style={{ width: 12, height: 12 }} /> {editingPost ? "Editing draft" : "Studio"}
         </span>
       </div>
 
@@ -320,7 +390,14 @@ export default function PostComposer({ user, integrations = {}, onSaved }) {
                 className={`sp-platform-chip ${form.platforms.includes(platform) ? "active" : ""}`}
                 onClick={() => togglePlatform(platform)}
                 aria-pressed={form.platforms.includes(platform)}
-                title={meta.publishable ? meta.label : `${meta.label} — logged only, no direct posting`}
+                disabled={!!editingPost}
+                title={
+                  editingPost
+                    ? "A draft keeps its channel"
+                    : meta.publishable
+                      ? meta.label
+                      : `${meta.label} — logged only, no direct posting`
+                }
               >
                 <Icon style={{ width: 13, height: 13, color: meta.color }} />
                 {meta.label}
@@ -340,8 +417,13 @@ export default function PostComposer({ user, integrations = {}, onSaved }) {
         />
 
         <div className="sp-actions-right">
+          {editingPost && (
+            <button type="button" className="sp-tool" onClick={() => onCancelEdit?.()} disabled={!!saving}>
+              Cancel
+            </button>
+          )}
           <button type="button" className="sp-tool" onClick={() => save(false)} disabled={!!saving}>
-            {saving === "draft" ? <Loader2 style={{ width: 14, height: 14 }} className="animate-spin" /> : "Save draft"}
+            {saving === "draft" ? <Loader2 style={{ width: 14, height: 14 }} className="animate-spin" /> : editingPost ? "Save changes" : "Save draft"}
           </button>
           <button type="button" className="km-btn-primary" onClick={() => save(true)} disabled={!!saving}>
             {saving === "publish" ? <Loader2 style={{ width: 15, height: 15 }} className="animate-spin" /> : <Send style={{ width: 15, height: 15 }} />}
@@ -351,23 +433,29 @@ export default function PostComposer({ user, integrations = {}, onSaved }) {
       </div>
 
       <div className="sp-composer-hint">
-        {targets.map(({ platform, meta, integration, canPublish }) => (
-          <div key={platform}>
-            {canPublish ? (
-              <span className="sp-note-ok">
-                {meta.label}: publishing directly to {integration.account_name || meta.label}.
-              </span>
-            ) : meta.publishable ? (
-              <span className="sp-note-warn">
-                {meta.label}: direct posting is {integration?.status || "inactive"} — saved so you can post it by hand.
-              </span>
-            ) : (
-              <span className="sp-note">
-                {meta.label}: logged here only — copy the caption across when you post.
-              </span>
-            )}
-          </div>
-        ))}
+        {isPrivate ? (
+          <span className="sp-note">
+            Private — only you can see this post in the studio. It is never published to your channels.
+          </span>
+        ) : (
+          targets.map(({ platform, meta, integration, canPublish }) => (
+            <div key={platform}>
+              {canPublish ? (
+                <span className="sp-note-ok">
+                  {meta.label}: publishing directly to {integration.account_name || meta.label}.
+                </span>
+              ) : meta.publishable ? (
+                <span className="sp-note-warn">
+                  {meta.label}: direct posting is {integration?.status || "inactive"} — saved so you can post it by hand.
+                </span>
+              ) : (
+                <span className="sp-note">
+                  {meta.label}: logged here only — copy the caption across when you post.
+                </span>
+              )}
+            </div>
+          ))
+        )}
       </div>
     </GlassCard>
   );
