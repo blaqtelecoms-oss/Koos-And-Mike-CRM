@@ -808,6 +808,9 @@ button, a, [role="button"] {
 .sp-media { position: relative; background: #000; overflow: hidden; aspect-ratio: 1.5; }
 .sp-media.one { aspect-ratio: 16 / 9; }
 .sp-media img, .sp-media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Videos show their whole frame at the clip's own aspect ratio instead of being cropped. */
+.sp-media.sp-media-video { aspect-ratio: auto; }
+.sp-media.sp-media-video video { height: auto; object-fit: contain; }
 .sp-media-x { position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; border-radius: 50%; border: 0; background: rgba(0,0,0,.62); color: #fff; display: grid; place-items: center; cursor: pointer; }
 .sp-media-x:hover { background: rgba(229,72,77,.9); }
 .sp-media-more { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(0,0,0,.55); color: #fff; font-size: 20px; font-weight: 600; }

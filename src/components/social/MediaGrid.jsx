@@ -10,7 +10,7 @@ export default function MediaGrid({ media = [], onRemove }) {
   return (
     <div className={`sp-media-grid ${layout}`}>
       {shown.map((url, index) => (
-        <div key={`${url}-${index}`} className={`sp-media ${media.length === 1 ? "one" : ""}`}>
+        <div key={`${url}-${index}`} className={`sp-media ${media.length === 1 ? "one" : ""} ${isVideoUrl(url) ? "sp-media-video" : ""}`}>
           {isVideoUrl(url) ? (
             <video src={url} muted playsInline controls={!onRemove} />
           ) : (
