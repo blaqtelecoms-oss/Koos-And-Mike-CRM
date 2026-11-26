@@ -1,0 +1,296 @@
+import { useEffect, useMemo, useState } from "react";
+import moment from "moment";
+import { api } from "@/api/supabaseClient";
+import GlassCard from "@/components/premium/GlassCard";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
+import { AUDIENCES, PLATFORMS, PLATFORM_META, POST_TYPES, SITE_URL, INTEGRATION_DOT } from "./meta";
+import MediaGrid from "./MediaGrid";
+import { Car, ImagePlus, Link2, Loader2, MessageSquare, Send, Sparkles } from "lucide-react";
+
+const emptyForm = (date) => ({
+  title: "",
+  body: "",
+  media: [],
+  audience: "public",
+  audience_note: "",
+  platform: "Facebook Page",
+  post_type: "Car Post",
+  vehicle_featured: "",
+  link_url: SITE_URL,
+  includes_website_link: true,
+  includes_cta: true,
+  post_date: date,
+});
+
+export default function PostComposer({ user, integrations = {}, onSaved }) {
+  const [form, setForm] = useState(() => emptyForm(moment().format("YYYY-MM-DD")));
+  const [vehicles, setVehicles] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    api.entities.Vehicle.list("-created_date", 100).then(setVehicles).catch(() => {});
+  }, []);
+
+  const platformMeta = PLATFORM_META[form.platform];
+  const integration = platformMeta.integration ? integrations[platformMeta.integration] : null;
+  const integrationActive = integration?.status === "active";
+  const canPublish = platformMeta.publishable && integrationActive;
+
+  const selectedVehicle = useMemo(
+    () => vehicles.find((vehicle) => vehicle.title === form.vehicle_featured),
+    [vehicles, form.vehicle_featured]
+  );
+
+  const set = (patch) => setForm((current) => ({ ...current, ...patch }));
+
+  const handleFiles = async (event) => {
+    const files = Array.from(event.target.files || []);
+    if (!files.length) return;
+    setUploading(true);
+    try {
+      for (const file of files) {
+        const { file_url } = await api.integrations.Core.UploadFile({ file, bucket: "social-media" });
+        setForm((current) => ({ ...current, media: [...current.media, file_url] }));
+      }
+    } catch (err) {
+      toast({ title: "Upload failed", description: err.message, variant: "destructive" });
+    } finally {
+      setUploading(false);
+      event.target.value = "";
+    }
+  };
+
+  const attachVehiclePhoto = () => {
+    const photo = selectedVehicle?.images?.[0];
+    if (!photo) return;
+    if (form.media.includes(photo)) return;
+    set({ media: [...form.media, photo] });
+  };
+
+  const save = async (publish) => {
+    if (!form.title.trim() && !form.body.trim() && form.media.length === 0) {
+      toast({ title: "Add a headline, some text or media first", variant: "destructive" });
+      return;
+    }
+    setSaving(publish ? "publish" : "draft");
+    try {
+      const created = await api.entities.SocialPost.create({
+        ...form,
+        posted_by: user?.full_name || user?.email || "",
+        status: "draft",
+        includes_website_link: form.includes_website_link && !!form.link_url.trim(),
+      });
+
+      if (publish && canPublish) {
+        try {
+          await api.functions.invoke("publishSocialPost", { post_id: created.id });
+          toast({ title: `Published to ${platformMeta.label}` });
+        } catch (err) {
+          toast({ title: "Saved, but publishing failed", description: err.message, variant: "destructive" });
+        }
+      } else if (publish) {
+        toast({
+          title: "Saved as a draft",
+          description: `Direct posting is not connected for ${platformMeta.label} — publish it by hand and it is logged here.`,
+        });
+      } else {
+        toast({ title: "Draft saved" });
+      }
+
+      setForm(emptyForm(form.post_date));
+      onSaved?.();
+    } catch (err) {
+      toast({ title: "Could not save the post", description: err.message, variant: "destructive" });
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  const initials = (user?.full_name || "KM")
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  return (
+    <GlassCard className="sp-composer">
+      <div className="sp-composer-head">
+        <div className="sp-avatar">{initials}</div>
+        <div style={{ minWidth: 0 }}>
+          <div className="sp-composer-name">{user?.full_name || "Koos & Mike Cars"}</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 3 }}>
+            <Select value={form.audience} onValueChange={(value) => set({ audience: value })}>
+              <SelectTrigger className="sp-audience-trigger">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {AUDIENCES.map((audience) => (
+                  <SelectItem key={audience.value} value={audience.value}>
+                    {audience.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <span className="sp-note">{AUDIENCES.find((a) => a.value === form.audience)?.hint}</span>
+          </div>
+        </div>
+        <span className="sp-composer-badge">
+          <Sparkles style={{ width: 12, height: 12 }} /> Studio
+        </span>
+      </div>
+
+      <input
+        className="sp-title-input"
+        value={form.title}
+        onChange={(event) => set({ title: event.target.value })}
+        placeholder="Headline — e.g. 2021 Toyota Hilux Legend RS now in stock"
+        maxLength={140}
+      />
+      <textarea
+        className="sp-body-input"
+        value={form.body}
+        onChange={(event) => set({ body: event.target.value })}
+        placeholder="Tell your customers what makes this special…"
+        rows={3}
+      />
+
+      {form.audience === "custom" && (
+        <input
+          className="sp-audience-note"
+          value={form.audience_note}
+          onChange={(event) => set({ audience_note: event.target.value })}
+          placeholder="Who should see this? e.g. Hilux buyers in Polokwane"
+        />
+      )}
+
+      <MediaGrid media={form.media} onRemove={(index) => set({ media: form.media.filter((_, i) => i !== index) })} />
+
+      {form.includes_website_link && (
+        <div className="sp-link-row">
+          <Link2 style={{ width: 14, height: 14, color: "var(--mut)", flexShrink: 0 }} />
+          <input
+            value={form.link_url}
+            onChange={(event) => set({ link_url: event.target.value })}
+            placeholder={SITE_URL}
+          />
+        </div>
+      )}
+
+      <div className="sp-toolbar">
+        <label className={`sp-tool ${uploading ? "active" : ""}`}>
+          {uploading ? <Loader2 style={{ width: 14, height: 14 }} className="animate-spin" /> : <ImagePlus style={{ width: 14, height: 14 }} />}
+          {uploading ? "Uploading…" : "Photo"}
+          <input type="file" accept="image/*,video/mp4,video/quicktime" multiple hidden onChange={handleFiles} disabled={uploading} />
+        </label>
+
+        <Select value={form.vehicle_featured || "none"} onValueChange={(value) => set({ vehicle_featured: value === "none" ? "" : value })}>
+          <SelectTrigger className="sp-tool sp-tool-select">
+            <Car style={{ width: 14, height: 14 }} />
+            <SelectValue placeholder="Feature a vehicle" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="none">No vehicle</SelectItem>
+            {vehicles.map((vehicle) => (
+              <SelectItem key={vehicle.id} value={vehicle.title}>{vehicle.title}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {selectedVehicle?.images?.length > 0 && (
+          <button type="button" className="sp-tool" onClick={attachVehiclePhoto}>
+            <ImagePlus style={{ width: 14, height: 14 }} /> Use vehicle photo
+          </button>
+        )}
+
+        <button
+          type="button"
+          className={`sp-tool ${form.includes_cta ? "active" : ""}`}
+          onClick={() => set({ includes_cta: !form.includes_cta })}
+        >
+          <MessageSquare style={{ width: 14, height: 14 }} /> Contact CTA
+        </button>
+        <button
+          type="button"
+          className={`sp-tool ${form.includes_website_link ? "active" : ""}`}
+          onClick={() => set({ includes_website_link: !form.includes_website_link })}
+        >
+          <Link2 style={{ width: 14, height: 14 }} /> Website link
+        </button>
+
+        <Select value={form.post_type} onValueChange={(value) => set({ post_type: value })}>
+          <SelectTrigger className="sp-tool sp-tool-select">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {POST_TYPES.map((type) => (
+              <SelectItem key={type} value={type}>{type}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="sp-composer-foot">
+        <div className="sp-platforms">
+          {PLATFORMS.map((platform) => {
+            const meta = PLATFORM_META[platform];
+            const Icon = meta.icon;
+            const status = meta.integration ? integrations[meta.integration]?.status || "inactive" : null;
+            return (
+              <button
+                key={platform}
+                type="button"
+                className={`sp-platform-chip ${form.platform === platform ? "active" : ""}`}
+                onClick={() => set({ platform })}
+                title={meta.publishable ? meta.label : `${meta.label} — logged only, no direct posting`}
+              >
+                <Icon style={{ width: 13, height: 13, color: meta.color }} />
+                {meta.label}
+                {status && <span className="sp-dot" style={{ background: INTEGRATION_DOT[status] }} />}
+              </button>
+            );
+          })}
+        </div>
+
+        <input
+          type="date"
+          className="sp-date"
+          value={form.post_date}
+          onChange={(event) => set({ post_date: event.target.value })}
+          aria-label="Post date"
+        />
+
+        <div className="sp-actions-right">
+          <button type="button" className="sp-tool" onClick={() => save(false)} disabled={!!saving}>
+            {saving === "draft" ? <Loader2 style={{ width: 14, height: 14 }} className="animate-spin" /> : "Save draft"}
+          </button>
+          <button type="button" className="km-btn-primary" onClick={() => save(true)} disabled={!!saving}>
+            {saving === "publish" ? <Loader2 style={{ width: 15, height: 15 }} className="animate-spin" /> : <Send style={{ width: 15, height: 15 }} />}
+            {canPublish ? "Publish now" : "Save post"}
+          </button>
+        </div>
+      </div>
+
+      <div className="sp-composer-hint">
+        {platformMeta.publishable ? (
+          integrationActive ? (
+            <span className="sp-note-ok">
+              Publishing directly to {integration.account_name || platformMeta.label}.
+            </span>
+          ) : (
+            <span className="sp-note-warn">
+              {platformMeta.label} direct posting is {integration?.status || "inactive"} — this will be saved so you can post it by hand.
+            </span>
+          )
+        ) : (
+          <span className="sp-note">
+            {platformMeta.label} is logged here only — copy the caption across when you post.
+          </span>
+        )}
+      </div>
+    </GlassCard>
+  );
+}

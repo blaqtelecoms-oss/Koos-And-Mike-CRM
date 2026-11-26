@@ -180,7 +180,7 @@ const functions = {
   },
 };
 
-const BUCKETS = { vehicles: 'vehicle-images', adverts: 'advert-images', tradeIns: 'trade-in-images' };
+const BUCKETS = { vehicles: 'vehicle-images', adverts: 'advert-images', tradeIns: 'trade-in-images', socialMedia: 'social-media' };
 
 const integrations = {
   Core: {

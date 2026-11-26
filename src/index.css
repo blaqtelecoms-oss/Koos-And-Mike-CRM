@@ -774,3 +774,114 @@ button, a, [role="button"] {
 [data-theme="dark"] .km-app .km-content .text-gray-300 { color: var(--mut) !important; }
 [data-theme="dark"] .km-admin-page .border-amber-200\/60,
 [data-theme="dark"] .km-app .km-content .border-amber-200\/60 { border-color: var(--glass-border) !important; }
+
+/* ===== Social Studio ===== */
+.sp-grid { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(270px, 1fr); gap: 14px; align-items: start; }
+.sp-stack { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+
+.sp-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px; }
+.sp-kpi { position: relative; overflow: hidden; }
+.sp-kpi::after { content: ""; position: absolute; right: -30px; top: -30px; width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle, rgba(255,157,0,.18), transparent 70%); pointer-events: none; }
+.sp-kpi-label { display: flex; align-items: center; gap: 6px; font-size: 10.5px; letter-spacing: .5px; text-transform: uppercase; color: var(--mut); }
+.sp-kpi-value { font-size: 26px; font-weight: 600; letter-spacing: -1px; margin-top: 8px; color: var(--ink); line-height: 1; }
+.sp-kpi-sub { font-size: 10.5px; color: var(--mut); margin-top: 4px; }
+
+/* Composer */
+.sp-composer { position: relative; overflow: hidden; }
+.sp-composer::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity: .65; }
+.sp-composer-head { display: flex; align-items: center; gap: 10px; }
+.sp-composer-badge { margin-left: auto; display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; color: var(--gold); background: rgba(255,157,0,.1); border: 1px solid rgba(255,157,0,.25); border-radius: 999px; padding: 4px 9px; }
+.sp-avatar { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 12px; color: #1a1300; background: linear-gradient(135deg, var(--gold), var(--gold-deep)); flex-shrink: 0; box-shadow: 0 6px 16px rgba(255,157,0,.25); }
+.sp-composer-name { font-size: 13.5px; font-weight: 600; color: var(--ink); line-height: 1.2; }
+
+.km-app .sp-audience-trigger { height: 24px !important; width: auto !important; padding: 0 9px !important; border-radius: 999px !important; background: rgba(255,255,255,.06) !important; border: 1px solid var(--glass-border) !important; font-size: 11px !important; gap: 4px; color: var(--ink) !important; box-shadow: none !important; }
+.km-app .sp-audience-trigger svg { width: 12px; height: 12px; opacity: .6; }
+
+.km-app .sp-title-input { width: 100%; border: 0 !important; background: transparent !important; box-shadow: none !important; font: 600 18px/1.35 'Inter'; letter-spacing: -0.4px; color: var(--ink); padding: 16px 0 4px; height: auto; }
+.km-app .sp-body-input { width: 100%; border: 0 !important; background: transparent !important; box-shadow: none !important; font: 400 14px/1.65 'Inter'; color: var(--ink); padding: 6px 0 10px; min-height: 92px; resize: vertical; }
+.km-app .sp-audience-note { width: 100%; border: 1px solid var(--glass-border) !important; background: rgba(255,255,255,.04) !important; border-radius: 10px; font-size: 12px; padding: 9px 12px; margin-bottom: 8px; height: auto; }
+
+.sp-media-grid { display: grid; gap: 4px; margin: 4px 0 10px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); }
+.sp-media-grid.one { grid-template-columns: 1fr; }
+.sp-media-grid.two { grid-template-columns: 1fr 1fr; }
+.sp-media-grid.many { grid-template-columns: repeat(3, 1fr); }
+.sp-media { position: relative; background: #000; overflow: hidden; aspect-ratio: 1.5; }
+.sp-media.one { aspect-ratio: 16 / 9; }
+.sp-media img, .sp-media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sp-media-x { position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; border-radius: 50%; border: 0; background: rgba(0,0,0,.62); color: #fff; display: grid; place-items: center; cursor: pointer; }
+.sp-media-x:hover { background: rgba(229,72,77,.9); }
+.sp-media-more { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(0,0,0,.55); color: #fff; font-size: 20px; font-weight: 600; }
+
+.sp-link-row { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border: 1px solid var(--glass-border); border-radius: 10px; background: rgba(255,255,255,.04); margin-bottom: 4px; }
+.km-app .sp-link-row input { border: 0 !important; background: transparent !important; box-shadow: none !important; height: 28px; font-size: 12px; padding: 0; }
+
+.sp-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.sp-tool { display: inline-flex; align-items: center; gap: 6px; font: 500 12px 'Inter'; color: var(--ink); background: var(--glass); border: 1px solid var(--glass-border); border-radius: 10px; padding: 7px 11px; cursor: pointer; transition: .2s; height: auto; }
+.sp-tool:hover { border-color: var(--gold); }
+.sp-tool.active { border-color: rgba(255,157,0,.5); background: rgba(255,157,0,.12); color: var(--gold); }
+.sp-tool:disabled { opacity: .6; cursor: default; }
+.km-app .sp-tool-select { width: auto !important; max-width: 210px; justify-content: flex-start; gap: 6px; padding: 7px 10px !important; }
+.km-app .sp-tool-select > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 500; color: inherit; }
+
+.sp-composer-foot { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.sp-platforms { display: flex; gap: 6px; flex-wrap: wrap; }
+.sp-platform-chip { display: inline-flex; align-items: center; gap: 6px; font: 500 11.5px 'Inter'; color: var(--ink); background: var(--glass); border: 1px solid var(--glass-border); border-radius: 999px; padding: 5px 10px; cursor: pointer; transition: .2s; }
+.sp-platform-chip:hover { border-color: var(--gold); }
+.sp-platform-chip.active { background: rgba(255,157,0,.14); border-color: rgba(255,157,0,.55); color: var(--gold); }
+.km-app .sp-date { width: 132px; height: 32px; border-radius: 10px; font-size: 11.5px; padding: 0 8px; }
+.sp-actions-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.sp-composer-hint { margin-top: 10px; }
+
+.sp-note { font-size: 11.5px; color: var(--mut); }
+.sp-note-warn { font-size: 11.5px; color: #e0a800; }
+.sp-note-ok { font-size: 11.5px; color: #22c55e; }
+.sp-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.sp-range { margin-left: auto; display: flex; gap: 2px; background: rgba(255,255,255,.04); border: 1px solid var(--glass-border); border-radius: 10px; padding: 2px; }
+.sp-range-btn { border: 0; background: transparent; color: var(--mut); font: 500 11px 'Inter'; padding: 5px 9px; border-radius: 8px; cursor: pointer; }
+.sp-range-btn.active { background: var(--gold); color: #1a1300; }
+
+/* Post card */
+.sp-post-head { display: flex; align-items: flex-start; gap: 10px; }
+.sp-post-meta { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--mut); flex-wrap: wrap; margin-top: 3px; }
+.sp-post-title { font-size: 16px; font-weight: 600; margin: 12px 0 4px; letter-spacing: -0.2px; color: var(--ink); }
+.sp-post-body { font-size: 13.5px; line-height: 1.65; color: var(--ink); opacity: .92; white-space: pre-wrap; }
+.sp-post-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 12px; color: var(--gold); text-decoration: none; }
+.sp-post-link:hover { text-decoration: underline; }
+.sp-icon-x { width: 26px; height: 26px; border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--mut); display: grid; place-items: center; cursor: pointer; }
+.sp-icon-x:hover { color: #ef4444; border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.08); }
+.sp-post-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.sp-post-actions .km-btn-primary { margin-left: auto; padding: 9px 16px; }
+
+/* Per-post insights */
+.sp-perf { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+.sp-perf-head { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 500; color: var(--ink); flex-wrap: wrap; }
+.sp-perf-updated { font-size: 10.5px; color: var(--mut); font-weight: 400; }
+.sp-refresh { margin-left: auto; padding: 5px 9px; font-size: 11px; }
+.sp-metrics { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin-top: 10px; }
+.sp-metric { background: rgba(255,255,255,.035); border: 1px solid var(--line); border-radius: 10px; padding: 8px 9px; }
+.sp-metric-label { display: flex; align-items: center; gap: 4px; font-size: 9.5px; letter-spacing: .4px; text-transform: uppercase; color: var(--mut); white-space: nowrap; }
+.sp-metric-value { font-size: 16px; font-weight: 600; letter-spacing: -.3px; color: var(--ink); margin-top: 3px; }
+.sp-perf-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-top: 8px; font-size: 11px; color: var(--mut); }
+.sp-perf-foot b { color: var(--ink); font-weight: 600; }
+
+/* Channels */
+.sp-channels { display: flex; flex-direction: column; gap: 8px; }
+.sp-channel { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.03); }
+.sp-channel-name { font-size: 12.5px; font-weight: 500; color: var(--ink); }
+.sp-channel-sub { font-size: 10.5px; color: var(--mut); margin-top: 1px; }
+.sp-channel .sp-dot { margin-left: auto; }
+
+[data-theme="light"] .sp-metric,
+[data-theme="light"] .sp-channel { background: rgba(23,19,10,.03); }
+
+@media (max-width: 1080px) {
+  .sp-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 900px) {
+  .sp-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sp-range { margin-left: 0; }
+}
+@media (max-width: 640px) {
+  .sp-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sp-actions-right { margin-left: 0; width: 100%; justify-content: flex-end; }
+}
