@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api/supabaseClient";
 import GlassCard from "@/components/premium/GlassCard";
@@ -26,15 +26,20 @@ export default function WhatsApp() {
   const [activePhone, setActivePhone] = useState("");
   const [reply, setReply] = useState("");
   const [replying, setReplying] = useState(false);
+  const threadRef = useRef(null);
 
   const { data: leads = [] } = useQuery({
     queryKey: ["leads", "whatsapp"],
     queryFn: () => api.entities.Lead.listAll("-created_date"),
+    refetchInterval: 60000,
   });
 
   const { data: messages = [] } = useQuery({
     queryKey: ["whatsapp-messages"],
     queryFn: () => api.entities.WhatsAppMessage.list("-created_at", 500),
+    // New replies arrive through the WhatsApp webhook; poll so they appear
+    // without the user reloading or clicking refresh.
+    refetchInterval: 15000,
   });
 
   useEffect(() => {
@@ -63,6 +68,20 @@ export default function WhatsApp() {
   }, [messages, leads]);
 
   const active = conversations.find((c) => c.phone === activePhone) || conversations[0] || null;
+  const lastMessageId = active?.thread[active.thread.length - 1]?.id;
+
+  // Open a conversation at its newest message.
+  useEffect(() => {
+    const node = threadRef.current;
+    if (node) node.scrollTop = node.scrollHeight;
+  }, [active?.phone]);
+
+  // Follow incoming messages, but never yank the view while reading older ones.
+  useEffect(() => {
+    const node = threadRef.current;
+    if (!node) return;
+    if (node.scrollHeight - node.scrollTop - node.clientHeight < 120) node.scrollTop = node.scrollHeight;
+  }, [lastMessageId]);
 
   const sendBroadcast = async () => {
     const text = message.trim();
@@ -215,7 +234,7 @@ export default function WhatsApp() {
                   <div style={{ fontSize: 13, fontWeight: 600, color: "var(--ink)" }}>{active.lead?.lead_name || `+${active.phone}`}</div>
                   <div style={{ fontSize: 11.5, color: "var(--mut)" }}>+{active.phone}</div>
                 </div>
-                <div style={{ display: "grid", gap: 8, maxHeight: 330, overflowY: "auto", paddingRight: 4 }}>
+                <div ref={threadRef} style={{ display: "grid", gap: 8, maxHeight: 330, overflowY: "auto", paddingRight: 4 }}>
                   {active.thread.map((item) => (
                     <div key={item.id} style={{ justifySelf: item.direction === "out" ? "end" : "start", maxWidth: "85%" }}>
                       <div style={{
