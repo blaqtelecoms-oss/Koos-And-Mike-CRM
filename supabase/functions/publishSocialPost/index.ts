@@ -114,12 +114,24 @@ serve(async (req) => {
       const token = String(creds.page_access_token || "").trim();
       if (!pageId || !token) return json({ error: "Facebook Page ID or access token is missing" }, 400);
 
+      const video = firstVideoUrl(post);
       const image = firstImageUrl(post);
-      // A photo post gets the image on the card; without media it is a text post.
-      const result = image
-        ? await graphPost(`${pageId}/photos`, { url: image, message: caption, access_token: token })
-        : await graphPost(`${pageId}/feed`, { message: caption, access_token: token });
-      publishedId = result.post_id || result.id;
+
+      if (video) {
+        // Facebook pulls the video from the URL and attaches the caption itself.
+        const result = await graphPost(`${pageId}/videos`, {
+          file_url: video,
+          description: caption,
+          access_token: token,
+        });
+        publishedId = result.id;
+      } else {
+        // A photo post gets the image on the card; without media it is a text post.
+        const result = image
+          ? await graphPost(`${pageId}/photos`, { url: image, message: caption, access_token: token })
+          : await graphPost(`${pageId}/feed`, { message: caption, access_token: token });
+        publishedId = result.post_id || result.id;
+      }
     } else {
       // Instagram publishes media, so it needs an image: the post's own media
       // first, otherwise the featured vehicle's first photo.
