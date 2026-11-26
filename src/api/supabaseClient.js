@@ -24,6 +24,7 @@ const TABLES = {
   WhatsAppMessage: 'whatsapp_messages',
   SocialPost: 'social_posts',
   SocialIntegration: 'social_integrations',
+  SocialAnalytics: 'social_analytics',
   PushSubscription: 'push_subscriptions',
   User: 'profiles',
 };
