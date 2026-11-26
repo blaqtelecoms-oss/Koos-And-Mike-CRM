@@ -148,52 +148,32 @@ export default function PostComposer({ user, integrations = {}, onSaved, editing
         includes_website_link: form.includes_website_link && !!form.link_url.trim(),
       };
 
-      // Editing a draft updates that post instead of creating new ones.
-      if (editingPost) {
-        await api.entities.SocialPost.update(editingPost.id, payload);
-        const target = targets[0];
-        let failure = null;
-        if (publish && target?.canPublish) {
-          try {
-            await api.functions.invoke("publishSocialPost", { post_id: editingPost.id });
-          } catch (err) {
-            failure = err.message;
-          }
-        }
-        if (failure) {
-          toast({ title: "Draft updated, but publishing failed", description: failure, variant: "destructive" });
-        } else if (publish && target?.canPublish) {
-          toast({ title: `Published to ${target.meta.label}` });
-        } else if (publish) {
-          toast({
-            title: "Draft updated",
-            description: isPrivate
-              ? "Private posts stay in the studio — they are never published to your channels."
-              : `Direct posting is not connected for ${target?.meta.label || editingPost.platform} — post it by hand and it is logged here.`,
-          });
-        } else {
-          toast({ title: "Draft updated" });
-        }
-        onSaved?.();
-        return;
-      }
-
       // One post per chosen channel, so each platform gets its own status and insights.
-      const created = [];
-      for (const target of targets) {
+      // When editing, the original post keeps its row (and channel) and every extra
+      // channel chosen gets its own new draft.
+      const rows = [];
+      if (editingPost) {
+        const keptTarget = targets.find((target) => target.platform === editingPost.platform) || targets[0];
+        await api.entities.SocialPost.update(editingPost.id, { ...payload, platform: keptTarget.platform });
+        rows.push({ target: keptTarget, row: { id: editingPost.id } });
+      }
+      const extraTargets = editingPost
+        ? targets.filter((target) => target.platform !== editingPost.platform)
+        : targets;
+      for (const target of extraTargets) {
         const row = await api.entities.SocialPost.create({
           ...payload,
           platform: target.platform,
           created_by: user?.id || null,
           status: "draft",
         });
-        created.push({ target, row });
+        rows.push({ target, row });
       }
 
       const published = [];
       const failed = [];
       if (publish) {
-        for (const { target, row } of created) {
+        for (const { target, row } of rows) {
           if (!target.canPublish) continue;
           try {
             await api.functions.invoke("publishSocialPost", { post_id: row.id });
@@ -206,12 +186,12 @@ export default function PostComposer({ user, integrations = {}, onSaved, editing
 
       if (!publish) {
         toast({
-          title: "Draft saved",
+          title: editingPost ? "Draft updated" : "Draft saved",
           description: targets.length > 1 ? `Saved for ${targets.map((target) => target.meta.label).join(" and ")}.` : undefined,
         });
       } else if (isPrivate) {
         toast({
-          title: "Private post saved",
+          title: editingPost ? "Private post updated" : "Private post saved",
           description: "Only you can see it in the studio — it is never published to your channels.",
         });
       } else {
@@ -221,7 +201,13 @@ export default function PostComposer({ user, integrations = {}, onSaved, editing
         if (manualLabels) parts.push(`${manualLabels} saved as drafts — post those by hand.`);
         if (failed.length) parts.push(`Failed: ${failed.join("; ")}.`);
         toast({
-          title: failed.length ? "Saved, but publishing failed" : published.length ? "Post published" : "Saved as a draft",
+          title: failed.length
+            ? "Saved, but publishing failed"
+            : published.length
+              ? "Post published"
+              : editingPost
+                ? "Draft updated"
+                : "Saved as a draft",
           description: parts.join(" "),
           variant: failed.length ? "destructive" : undefined,
         });
@@ -390,14 +376,7 @@ export default function PostComposer({ user, integrations = {}, onSaved, editing
                 className={`sp-platform-chip ${form.platforms.includes(platform) ? "active" : ""}`}
                 onClick={() => togglePlatform(platform)}
                 aria-pressed={form.platforms.includes(platform)}
-                disabled={!!editingPost}
-                title={
-                  editingPost
-                    ? "A draft keeps its channel"
-                    : meta.publishable
-                      ? meta.label
-                      : `${meta.label} — logged only, no direct posting`
-                }
+                title={meta.publishable ? meta.label : `${meta.label} — logged only, no direct posting`}
               >
                 <Icon style={{ width: 13, height: 13, color: meta.color }} />
                 {meta.label}

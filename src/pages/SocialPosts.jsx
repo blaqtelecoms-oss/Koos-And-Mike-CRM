@@ -112,6 +112,7 @@ export default function SocialPosts() {
 
   const deletePost = async (id) => {
     await api.entities.SocialPost.delete(id);
+    if (editing?.id === id) setEditing(null);
     loadPosts();
   };
 
