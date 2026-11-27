@@ -30,6 +30,9 @@ export default function WhatsApp() {
   const [reply, setReply] = useState("");
   const [replying, setReplying] = useState(false);
   const messagesRef = useRef(null);
+  const threadRef = useRef(null);
+  const inputRef = useRef(null);
+  const focusPending = useRef(false);
 
   const { data: leads = [] } = useQuery({
     queryKey: ["leads", "whatsapp"],
@@ -82,6 +85,40 @@ export default function WhatsApp() {
   useEffect(() => {
     if (messagesRef.current) messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
   }, [active?.phone, threadLength, threadOpen]);
+
+  // Keep the chat sized to the visible area so the composer stays above the mobile keyboard
+  useEffect(() => {
+    const thread = threadRef.current;
+    const vv = window.visualViewport;
+    if (!threadOpen || !thread || !vv) return;
+    const apply = () => {
+      if (window.innerWidth > 900) {
+        thread.style.height = "";
+        thread.style.top = "";
+        return;
+      }
+      thread.style.height = `${vv.height}px`;
+      thread.style.top = `${vv.offsetTop}px`;
+      const box = messagesRef.current;
+      if (box) box.scrollTop = box.scrollHeight;
+    };
+    apply();
+    vv.addEventListener("resize", apply);
+    vv.addEventListener("scroll", apply);
+    return () => {
+      vv.removeEventListener("resize", apply);
+      vv.removeEventListener("scroll", apply);
+      thread.style.height = "";
+      thread.style.top = "";
+    };
+  }, [threadOpen, active?.phone]);
+
+  // Focus the message box as the chat opens, like WhatsApp
+  useEffect(() => {
+    if (!threadOpen || !focusPending.current) return;
+    focusPending.current = false;
+    inputRef.current?.focus();
+  }, [threadOpen, active?.phone]);
 
   const sendBroadcast = async () => {
     const text = message.trim();
@@ -221,7 +258,7 @@ export default function WhatsApp() {
                   key={conversation.phone}
                   type="button"
                   className={`wa-row ${active?.phone === conversation.phone ? "active" : ""}`}
-                  onClick={() => { setActivePhone(conversation.phone); setThreadOpen(true); }}
+                  onClick={() => { focusPending.current = true; setActivePhone(conversation.phone); setThreadOpen(true); }}
                 >
                   <Avatar name={conversation.lead?.lead_name || conversation.phone} size={44} />
                   <div className="wa-row-body">
@@ -239,7 +276,7 @@ export default function WhatsApp() {
           </div>
 
           {active && (
-            <div className={`wa-thread ${threadOpen ? "wa-open" : ""}`}>
+            <div ref={threadRef} className={`wa-thread ${threadOpen ? "wa-open" : ""}`}>
               <div className="wa-thread-head">
                 <button type="button" className="wa-back" onClick={() => setThreadOpen(false)} aria-label="Back to conversations">
                   <ChevronLeft style={{ width: 22, height: 22 }} />
@@ -276,16 +313,20 @@ export default function WhatsApp() {
 
               <div className="wa-quick">
                 {QUICK_REPLIES.map((text) => (
-                  <button key={text} type="button" className="wa-quick-chip" onClick={() => setReply(text)}>{text}</button>
+                  <button key={text} type="button" className="wa-quick-chip" onClick={() => { setReply(text); inputRef.current?.focus(); }}>{text}</button>
                 ))}
               </div>
-              <div className="wa-composer">
+              <div className="wa-composer" onClick={(e) => { if (!e.target.closest("button")) inputRef.current?.focus(); }}>
                 <textarea
+                  ref={inputRef}
                   className="wa-input"
                   value={reply}
                   onChange={(e) => setReply(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendReply(); } }}
+                  onFocus={() => { const box = messagesRef.current; if (box) box.scrollTop = box.scrollHeight; }}
                   rows={1}
+                  enterKeyHint="send"
+                  autoComplete="off"
                   placeholder="Message"
                 />
                 <button type="button" className="wa-send" onClick={sendReply} disabled={replying || !reply.trim()} aria-label="Send message">

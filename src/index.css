@@ -1261,10 +1261,12 @@ button, a, [role="button"] {
     display: flex;
     position: fixed;
     inset: 0;
+    height: 100dvh;
     z-index: 70;
     background: var(--bg);
     padding-top: env(safe-area-inset-top);
   }
+  .wa-input { font-size: 16px; }
   .wa-back { display: grid; }
   .wa-thread-head { padding: 10px 12px; }
   .wa-messages { max-height: none; padding: 14px 12px; }
