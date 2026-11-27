@@ -1478,3 +1478,118 @@ button, a, [role="button"] {
     animation: none !important;
   }
 }
+
+/* ===== Liquid glass — desktop =====
+   The same frosted, translucent surface language used on mobile, sized for
+   the wider canvas: ambient light behind the glass, specular top edges and
+   eased transitions. */
+@media (min-width: 901px) {
+  /* Ambient light behind the glass so the blur has something to refract */
+  .km-app {
+    background:
+      radial-gradient(900px 620px at 10% -12%, rgba(255,157,0,.10), transparent 62%),
+      radial-gradient(780px 560px at 106% 8%, rgba(255,184,77,.07), transparent 60%),
+      var(--app-canvas);
+  }
+  [data-theme="light"] .km-app {
+    background:
+      radial-gradient(900px 620px at 10% -12%, rgba(255,193,69,.26), transparent 62%),
+      radial-gradient(780px 560px at 106% 8%, rgba(240,164,0,.14), transparent 60%),
+      var(--app-canvas);
+  }
+
+  /* Cards: frosted glass with a top specular edge */
+  .km-card,
+  .km-card-tight {
+    background: linear-gradient(180deg, rgba(255,255,255,.065), rgba(255,255,255,.03));
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 18px;
+    box-shadow: 0 14px 34px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.09);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    backdrop-filter: blur(22px) saturate(180%);
+    transition: background .22s ease, border-color .22s ease, box-shadow .22s ease;
+  }
+  [data-theme="light"] .km-card,
+  [data-theme="light"] .km-card-tight {
+    background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.68));
+    border-color: rgba(23,19,10,.08);
+    box-shadow: 0 14px 30px rgba(120,100,40,.12), inset 0 1px 0 rgba(255,255,255,.95);
+  }
+
+  /* Sidebar: same dark slab, now with a glassy translucency and soft edge */
+  .km-sidebar {
+    background: linear-gradient(180deg, rgba(22,22,22,.92), rgba(12,12,12,.86));
+    -webkit-backdrop-filter: blur(26px) saturate(170%);
+    backdrop-filter: blur(26px) saturate(170%);
+    box-shadow:
+      inset -1px 0 0 rgba(255,255,255,.07),
+      inset 0 1px 0 rgba(255,255,255,.06);
+  }
+
+  /* Pills, chips and icon buttons */
+  .km-pill,
+  .km-icon-btn,
+  .km-chip,
+  .sp-tool,
+  .sp-platform-chip {
+    background: rgba(255,255,255,.06);
+    border-color: rgba(255,255,255,.12);
+    -webkit-backdrop-filter: blur(16px) saturate(170%);
+    backdrop-filter: blur(16px) saturate(170%);
+  }
+  [data-theme="light"] .km-pill,
+  [data-theme="light"] .km-icon-btn,
+  [data-theme="light"] .km-chip,
+  [data-theme="light"] .sp-tool,
+  [data-theme="light"] .sp-platform-chip {
+    background: rgba(255,255,255,.7);
+    border-color: rgba(23,19,10,.10);
+  }
+
+  /* Fields */
+  .km-app input,
+  .km-app textarea,
+  .km-app select {
+    background: rgba(255,255,255,.06);
+    border-color: rgba(255,255,255,.12);
+    border-radius: 12px;
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    backdrop-filter: blur(14px) saturate(160%);
+  }
+  [data-theme="light"] .km-app input,
+  [data-theme="light"] .km-app textarea,
+  [data-theme="light"] .km-app select {
+    background: rgba(255,255,255,.75);
+    border-color: rgba(23,19,10,.12);
+  }
+
+  /* Dialogs: deep frosted glass */
+  [role="dialog"] {
+    background: rgba(22,22,22,.72);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 30px 80px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  [data-theme="light"] [role="dialog"] {
+    background: rgba(255,255,255,.82);
+    border-color: rgba(23,19,10,.10);
+    box-shadow: 0 30px 70px rgba(120,100,40,.22), inset 0 1px 0 rgba(255,255,255,.9);
+  }
+
+  /* Smooth, iOS-eased transitions on every interactive surface */
+  .km-app button,
+  .km-app a {
+    transition:
+      background-color .22s cubic-bezier(.32,.72,0,1),
+      color .18s ease,
+      border-color .22s ease,
+      box-shadow .22s ease,
+      opacity .18s ease,
+      transform .22s cubic-bezier(.32,.72,0,1);
+  }
+}
+
+@media (min-width: 901px) and (prefers-reduced-motion: reduce) {
+  .km-app * { transition: none !important; animation: none !important; }
+}
