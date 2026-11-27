@@ -652,7 +652,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   }
   .km-app::before { display: none; }
   .km-sidebar { display: none; }
-  .km-content { overflow: visible; padding: 0 14px calc(92px + env(safe-area-inset-bottom)); }
+  .km-content { overflow: visible; padding: 0 16px calc(96px + env(safe-area-inset-bottom)); }
+  .km-card { padding: 16px; }
+  .km-card-tight { padding: 14px; }
   .km-stats-grid, .km-3cards { grid-template-columns: 1fr 1fr; }
   .km-main-grid, .km-two-col { grid-template-columns: 1fr; }
   .km-topbar {
@@ -662,8 +664,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     justify-content: space-between;
     flex-wrap: nowrap;
     gap: 8px;
-    margin: 0 -14px 2px;
-    padding: 10px 14px;
+    margin: 0 -16px 2px;
+    padding: 12px 16px;
     background: rgba(15,15,15,.88);
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
@@ -678,9 +680,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .km-topbar .km-pill { height: 36px; min-width: 36px; border-radius: 11px; box-shadow: none; }
   .km-topbar .km-pill-name { display: none; }
   .km-topbar .km-notification-dot { top: 8px; right: 9px; }
-  .km-hero { margin: 16px 0 12px; align-items: center; }
+  .km-hero { margin: 18px 0 14px; align-items: center; }
   .km-hero .km-h1 { font-size: 26px; }
-  .km-chip-scroll { flex-wrap: nowrap !important; overflow-x: auto; scrollbar-width: none; margin: 0 -18px; padding: 2px 18px 4px; }
+  .km-chip-scroll { flex-wrap: nowrap !important; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 2px 16px 4px; }
   .km-chip-scroll::-webkit-scrollbar { display: none; }
   .km-chip-scroll .km-chip { flex-shrink: 0; }
   .km-chip-scroll .km-chip-filter { margin-left: 0 !important; }
@@ -695,7 +697,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     z-index: 60;
     background: var(--sidebar-bg);
     border-top: 1px solid rgba(255,255,255,.08);
-    padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+    padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
     box-shadow: 0 -10px 30px rgba(0,0,0,.22);
   }
 
@@ -761,7 +763,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     border-radius: 18px 18px 0 0;
     border-top: 1px solid rgba(255,255,255,.08);
     box-shadow: 0 -20px 44px rgba(0,0,0,.4);
-    padding: 14px 12px calc(96px + env(safe-area-inset-bottom));
+    padding: 16px 16px calc(100px + env(safe-area-inset-bottom));
     animation: kmSheetUp .22s ease-out;
   }
 
@@ -804,7 +806,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     grid-template-areas: "lead actions" "interest status";
     align-items: center;
     gap: 7px 10px;
-    padding: 12px 2px;
+    padding: 14px 0;
     border-top: 1px solid var(--line);
   }
   .km-table-cards tr:first-child { border-top: 0; }
@@ -817,12 +819,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
   /* Dialogs sit inset from the screen edge instead of edge-to-edge */
   [role="dialog"]:not(.km-mnav-sheet) {
-    width: calc(100% - 24px) !important;
+    width: calc(100vw - 32px) !important;
     max-width: none !important;
     max-height: 88vh;
     overflow-y: auto;
     border-radius: 18px;
-    padding: 18px;
+    padding: 16px;
   }
 }
 
@@ -954,7 +956,7 @@ button, a, [role="button"] {
 .sp-grid { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(270px, 1fr); gap: 14px; align-items: start; }
 .sp-stack { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 
-.sp-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px; }
+.sp-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px; }
 .sp-kpi { position: relative; overflow: hidden; }
 .sp-kpi::after { content: ""; position: absolute; right: -30px; top: -30px; width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle, rgba(255,157,0,.18), transparent 70%); pointer-events: none; }
 .sp-kpi-label { display: flex; align-items: center; gap: 6px; font-size: 10.5px; letter-spacing: .5px; text-transform: uppercase; color: var(--mut); }
