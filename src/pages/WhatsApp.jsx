@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api/supabaseClient";
 import GlassCard from "@/components/premium/GlassCard";
 import EmptyState from "@/components/premium/EmptyState";
-import { Button } from "@/components/ui/button";
+import Avatar from "@/components/premium/Avatar";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle, Inbox, MessageCircle, Send, Users } from "lucide-react";
+import { AlertTriangle, ChevronLeft, Inbox, MessageCircle, Send, Users } from "lucide-react";
 import moment from "moment";
 
 const BATCH = 25;
@@ -24,8 +24,10 @@ export default function WhatsApp() {
   const [summary, setSummary] = useState(null);
   const [error, setError] = useState("");
   const [activePhone, setActivePhone] = useState("");
+  const [threadOpen, setThreadOpen] = useState(false);
   const [reply, setReply] = useState("");
   const [replying, setReplying] = useState(false);
+  const messagesRef = useRef(null);
 
   const { data: leads = [] } = useQuery({
     queryKey: ["leads", "whatsapp"],
@@ -63,6 +65,11 @@ export default function WhatsApp() {
   }, [messages, leads]);
 
   const active = conversations.find((c) => c.phone === activePhone) || conversations[0] || null;
+  const threadLength = active?.thread?.length || 0;
+
+  useEffect(() => {
+    if (messagesRef.current) messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+  }, [active?.phone, threadLength, threadOpen]);
 
   const sendBroadcast = async () => {
     const text = message.trim();
@@ -118,10 +125,10 @@ export default function WhatsApp() {
       </div>
 
       <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
-        <span className={`km-chip ${tab === "broadcast" ? "active" : ""}`} onClick={() => setTab("broadcast")}>
+        <span className={`km-chip ${tab === "broadcast" ? "active" : ""}`} onClick={() => { setTab("broadcast"); setThreadOpen(false); }}>
           <Users style={{ width: 14, height: 14 }} /> Send to leads
         </span>
-        <span className={`km-chip ${tab === "inbox" ? "active" : ""}`} onClick={() => setTab("inbox")}>
+        <span className={`km-chip ${tab === "inbox" ? "active" : ""}`} onClick={() => { setTab("inbox"); setThreadOpen(false); }}>
           <Inbox style={{ width: 14, height: 14 }} /> Conversations
         </span>
       </div>
@@ -139,7 +146,7 @@ export default function WhatsApp() {
             <div>
               <div style={{ fontSize: 12, color: "var(--mut)", marginBottom: 6 }}>Send to</div>
               <Select value={audience} onValueChange={setAudience}>
-                <SelectTrigger style={{ width: 260, background: "var(--glass)", border: "1px solid var(--glass-border)", borderRadius: 30, height: 40 }}>
+                <SelectTrigger style={{ width: "100%", maxWidth: 260, background: "var(--glass)", border: "1px solid var(--glass-border)", borderRadius: 30, height: 40 }}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -185,69 +192,69 @@ export default function WhatsApp() {
       ) : conversations.length === 0 ? (
         <EmptyState icon={<MessageCircle style={{ width: 20, height: 20 }} />} message="No WhatsApp conversations yet. Messages you send and replies from leads appear here." />
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "minmax(220px, 1fr) minmax(0, 1.6fr)", gap: 14 }}>
-          <GlassCard tight>
-            <div style={{ display: "grid", gap: 2, maxHeight: 460, overflowY: "auto" }}>
-              {conversations.map((conversation) => (
-                <button
-                  key={conversation.phone}
-                  onClick={() => setActivePhone(conversation.phone)}
-                  style={{
-                    textAlign: "left", padding: "9px 10px", borderRadius: 10, border: 0, cursor: "pointer",
-                    background: active?.phone === conversation.phone ? "var(--glass-border)" : "transparent",
-                  }}
-                >
-                  <div style={{ fontSize: 12.5, fontWeight: 600, color: "var(--ink)" }}>
-                    {conversation.lead?.lead_name || `+${conversation.phone}`}
+        <div className="wa-inbox">
+          <div className="wa-list">
+            {conversations.map((conversation) => (
+              <button
+                key={conversation.phone}
+                type="button"
+                className={`wa-row ${active?.phone === conversation.phone ? "active" : ""}`}
+                onClick={() => { setActivePhone(conversation.phone); setThreadOpen(true); }}
+              >
+                <Avatar name={conversation.lead?.lead_name || conversation.phone} size={44} />
+                <div className="wa-row-body">
+                  <div className="wa-row-top">
+                    <span className="wa-row-name">{conversation.lead?.lead_name || `+${conversation.phone}`}</span>
+                    <span className="wa-row-time">{moment(conversation.last.created_at).format("HH:mm")}</span>
                   </div>
-                  <div style={{ fontSize: 11, color: "var(--mut)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <div className="wa-row-msg">
                     {conversation.last.direction === "out" ? "You: " : ""}{conversation.last.body}
                   </div>
-                </button>
-              ))}
-            </div>
-          </GlassCard>
+                </div>
+              </button>
+            ))}
+          </div>
 
-          <GlassCard tight>
-            {active && (
-              <div style={{ display: "grid", gap: 10 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "var(--ink)" }}>{active.lead?.lead_name || `+${active.phone}`}</div>
-                  <div style={{ fontSize: 11.5, color: "var(--mut)" }}>+{active.phone}</div>
-                </div>
-                <div style={{ display: "grid", gap: 8, maxHeight: 330, overflowY: "auto", paddingRight: 4 }}>
-                  {active.thread.map((item) => (
-                    <div key={item.id} style={{ justifySelf: item.direction === "out" ? "end" : "start", maxWidth: "85%" }}>
-                      <div style={{
-                        padding: "8px 11px", borderRadius: 12, fontSize: 12.5, lineHeight: 1.45, whiteSpace: "pre-wrap",
-                        background: item.direction === "out" ? "var(--gold)" : "var(--glass)",
-                        color: item.direction === "out" ? "#1a1300" : "var(--ink)",
-                        border: item.direction === "out" ? "none" : "1px solid var(--glass-border)",
-                      }}>
-                        {item.body}
-                      </div>
-                      <div style={{ fontSize: 10, color: "var(--mut)", marginTop: 2, textAlign: item.direction === "out" ? "right" : "left" }}>
-                        {moment(item.created_at).format("DD MMM, HH:mm")}
-                        {item.direction === "out" && item.status ? ` · ${item.status}` : ""}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <Textarea
-                  value={reply}
-                  onChange={(e) => setReply(e.target.value)}
-                  rows={3}
-                  placeholder="Reply on WhatsApp…"
-                  style={{ background: "var(--glass)", border: "1px solid var(--glass-border)", borderRadius: 12, color: "var(--ink)" }}
-                />
-                <div>
-                  <Button onClick={sendReply} disabled={replying || !reply.trim()} style={{ background: "var(--gold)", color: "#1a1300", fontWeight: 600 }}>
-                    {replying ? "Sending…" : "Send reply"}
-                  </Button>
+          {active && (
+            <div className={`wa-thread ${threadOpen ? "wa-open" : ""}`}>
+              <div className="wa-thread-head">
+                <button type="button" className="wa-back" onClick={() => setThreadOpen(false)} aria-label="Back to conversations">
+                  <ChevronLeft style={{ width: 22, height: 22 }} />
+                </button>
+                <Avatar name={active.lead?.lead_name || active.phone} size={36} />
+                <div className="wa-thread-id">
+                  <b>{active.lead?.lead_name || `+${active.phone}`}</b>
+                  <span>+{active.phone}</span>
                 </div>
               </div>
-            )}
-          </GlassCard>
+
+              <div className="wa-messages" ref={messagesRef}>
+                {active.thread.map((item) => (
+                  <div key={item.id} className={`wa-bubble ${item.direction === "out" ? "out" : "in"}`}>
+                    {item.body}
+                    <span className="wa-time">
+                      {moment(item.created_at).format("HH:mm")}
+                      {item.direction === "out" && item.status ? ` · ${item.status}` : ""}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="wa-composer">
+                <textarea
+                  className="wa-input"
+                  value={reply}
+                  onChange={(e) => setReply(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendReply(); } }}
+                  rows={1}
+                  placeholder="Message"
+                />
+                <button type="button" className="wa-send" onClick={sendReply} disabled={replying || !reply.trim()} aria-label="Send message">
+                  <Send style={{ width: 18, height: 18 }} />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
