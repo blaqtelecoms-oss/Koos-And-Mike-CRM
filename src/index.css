@@ -257,6 +257,7 @@ body:has(.km-app) {
 }
 
 .km-pill-search { min-width: 240px; color: var(--mut); }
+.km-topbar-brand { display: none; }
 
 .km-notification-dot {
   position: absolute;
@@ -647,13 +648,43 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     grid-template-columns: 1fr;
     grid-template-rows: auto;
     height: auto;
+    overflow: visible;
   }
+  .km-app::before { display: none; }
   .km-sidebar { display: none; }
   .km-content { overflow: visible; padding: 0 14px calc(92px + env(safe-area-inset-bottom)); }
   .km-stats-grid, .km-3cards { grid-template-columns: 1fr 1fr; }
   .km-main-grid, .km-two-col { grid-template-columns: 1fr; }
-  .km-topbar { justify-content: flex-start; padding: 0 0 0 14px; }
-  .km-pill-search { min-width: 0; flex: 1; }
+  .km-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin: 0 -14px 2px;
+    padding: 10px 14px;
+    background: rgba(15,15,15,.88);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--line);
+  }
+  [data-theme="light"] .km-topbar { background: rgba(253,248,236,.92); }
+  .km-topbar-brand { display: flex; align-items: center; gap: 9px; min-width: 0; }
+  .km-topbar-brand img { width: 32px; height: 32px; object-fit: contain; flex-shrink: 0; }
+  .km-topbar-brand b { display: block; font-size: 13px; font-weight: 600; letter-spacing: -.2px; color: var(--ink); white-space: nowrap; }
+  .km-topbar-brand small { display: block; font-size: 8.5px; letter-spacing: 1.1px; text-transform: uppercase; color: var(--mut); }
+  .km-pill-search { display: none; }
+  .km-topbar .km-pill { height: 36px; min-width: 36px; border-radius: 11px; box-shadow: none; }
+  .km-topbar .km-pill-name { display: none; }
+  .km-topbar .km-notification-dot { top: 8px; right: 9px; }
+  .km-hero { margin: 16px 0 12px; align-items: center; }
+  .km-hero .km-h1 { font-size: 26px; }
+  .km-chip-scroll { flex-wrap: nowrap !important; overflow-x: auto; scrollbar-width: none; margin: 0 -18px; padding: 2px 18px 4px; }
+  .km-chip-scroll::-webkit-scrollbar { display: none; }
+  .km-chip-scroll .km-chip { flex-shrink: 0; }
+  .km-chip-scroll .km-chip-filter { margin-left: 0 !important; }
+  .km-table-wrap { -webkit-overflow-scrolling: touch; }
 
   .km-mnav {
     display: flex;
@@ -751,6 +782,48 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .km-mnav-groups .km-nav-group-label { margin: 14px 14px 6px; }
   .km-mnav-groups .km-nav-item { padding: 10px 14px; }
   .km-mnav-sheet .km-user-card small { max-width: none; }
+}
+
+/* ===== Small-phone refinements ===== */
+@media (max-width: 640px) {
+  .km-leads-filters { flex-direction: column; align-items: stretch !important; }
+  .km-leads-filters > div:first-child { min-width: 0 !important; }
+  .km-leads-filters .km-filter-select { width: 100% !important; }
+
+  .km-pagination { gap: 8px !important; }
+  .km-pagination-size { margin-left: 0 !important; width: 100%; justify-content: space-between; }
+  .km-pagination .km-page-size { width: 108px !important; }
+
+  /* Data tables collapse into one card per row on phones */
+  .km-table-cards { border-collapse: separate; border-spacing: 0; }
+  .km-table-cards thead { display: none; }
+  .km-table-cards, .km-table-cards tbody { display: block; width: 100%; }
+  .km-table-cards tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "lead actions" "interest status";
+    align-items: center;
+    gap: 7px 10px;
+    padding: 12px 2px;
+    border-top: 1px solid var(--line);
+  }
+  .km-table-cards tr:first-child { border-top: 0; }
+  .km-table-cards td { display: block; padding: 0; border: 0; white-space: normal; min-width: 0; }
+  .km-table-cards td:nth-child(1) { grid-area: lead; }
+  .km-table-cards td:nth-child(2) { grid-area: interest; max-width: none !important; }
+  .km-table-cards td:nth-child(3) { grid-area: status; justify-self: end; }
+  .km-table-cards td:nth-child(4) { grid-area: actions; justify-self: end; text-align: right; }
+  .km-table-cards td:nth-child(2) > div { min-width: 0; }
+
+  /* Dialogs sit inset from the screen edge instead of edge-to-edge */
+  [role="dialog"]:not(.km-mnav-sheet) {
+    width: calc(100% - 24px) !important;
+    max-width: none !important;
+    max-height: 88vh;
+    overflow-y: auto;
+    border-radius: 18px;
+    padding: 18px;
+  }
 }
 
 /* ===== Route slide animation (mobile) ===== */

@@ -158,6 +158,13 @@ export default function Layout({ children, currentPageName }) {
       <main className="km-content" key={location.pathname} data-page-content>
         {/* Top bar */}
         <div className="km-topbar">
+          <div className="km-topbar-brand">
+            <img src={`${PUBLIC_ASSETS}/km-logo-round.png`} alt="Koos & Mike Cars" />
+            <div>
+              <b>Koos &amp; Mike</b>
+              <small>Lead Management</small>
+            </div>
+          </div>
           <div className="km-pill km-pill-search">
             <Search style={{ width: 16, height: 16, strokeWidth: 1.6 }} />
             <span>Search…</span>
@@ -168,7 +175,7 @@ export default function Layout({ children, currentPageName }) {
           </div>
           <div className="km-pill" style={{ padding: "0 12px" }}>
             <Avatar name={user?.full_name || user?.email || "?"} size={28} />
-            <span>{firstName}</span>
+            <span className="km-pill-name">{firstName}</span>
           </div>
           <ThemeToggle />
         </div>

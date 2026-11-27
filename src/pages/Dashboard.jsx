@@ -155,7 +155,7 @@ export default function Dashboard() {
               <div className="km-empty">No leads yet</div>
             ) : (
               <div className="km-table-wrap">
-                <table className="km-table">
+                <table className="km-table km-table-cards">
                   <thead>
                     <tr><th>Lead</th><th>Interest</th><th>Status</th><th></th></tr>
                   </thead>

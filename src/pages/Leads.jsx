@@ -202,22 +202,22 @@ export default function Leads() {
 
       {/* Filter chips */}
       <GlassCard style={{ marginBottom: 14 }}>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+        <div className="km-chip-scroll" style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
           <span className={`km-chip ${filterStatus === "all" ? "active" : ""}`} onClick={() => setFilterStatus("all")}>All · {leads.length}</span>
           {STATUSES.map(s => (
             <span key={s} className={`km-chip ${filterStatus === s ? "active" : ""}`} onClick={() => setFilterStatus(s)}>{s}</span>
           ))}
-          <span className="km-chip" style={{ marginLeft: "auto" }}>
+          <span className="km-chip km-chip-filter" style={{ marginLeft: "auto" }}>
             <Filter style={{ width: 14, height: 14 }} /> Filter
           </span>
         </div>
-        <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap", alignItems: "center" }}>
+        <div className="km-leads-filters" style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap", alignItems: "center" }}>
           <div style={{ position: "relative", flex: 1, minWidth: 200 }}>
             <Search style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", width: 16, height: 16, color: "var(--mut)" }} />
             <Input placeholder="Search by name, phone, or car…" value={search} onChange={(e) => setSearch(e.target.value)} style={{ paddingLeft: 36, background: "var(--glass)", border: "1px solid var(--glass-border)", borderRadius: 30, height: 40 }} />
           </div>
           <Select value={filterConsultant} onValueChange={setFilterConsultant}>
-            <SelectTrigger style={{ width: 180, background: "var(--glass)", border: "1px solid var(--glass-border)", borderRadius: 30, height: 40 }}>
+            <SelectTrigger className="km-filter-select" style={{ width: 180, background: "var(--glass)", border: "1px solid var(--glass-border)", borderRadius: 30, height: 40 }}>
               <SelectValue placeholder="Consultant" />
             </SelectTrigger>
             <SelectContent>
@@ -246,7 +246,7 @@ export default function Leads() {
         ) : (
           <>
           <div className="km-table-wrap">
-            <table className="km-table">
+            <table className="km-table km-table-cards">
               <thead>
                 <tr><th>Lead</th><th>Interest</th><th>Status</th><th></th></tr>
               </thead>
@@ -307,7 +307,7 @@ export default function Leads() {
           </div>
 
           {/* Pagination */}
-          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--line)" }}>
+          <div className="km-pagination" style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--line)" }}>
             <button
               className="km-icon-btn"
               onClick={() => setPage(Math.max(1, safePage - 1))}
@@ -337,9 +337,9 @@ export default function Leads() {
             >
               <ChevronRight style={{ width: 16, height: 16 }} />
             </button>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginLeft: "auto" }}>
+            <div className="km-pagination-size" style={{ display: "flex", alignItems: "center", gap: 10, marginLeft: "auto" }}>
               <Select value={String(pageSize)} onValueChange={(v) => setPageSize(Number(v))}>
-                <SelectTrigger style={{ width: 120, height: 34, background: "var(--glass)", border: "1px solid var(--glass-border)", borderRadius: 10, fontSize: 12 }}>
+                <SelectTrigger className="km-page-size" style={{ width: 120, height: 34, background: "var(--glass)", border: "1px solid var(--glass-border)", borderRadius: 10, fontSize: 12 }}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -387,16 +387,16 @@ export default function Leads() {
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader><DialogTitle>{editingLead ? "Edit Lead" : "Add New Lead"}</DialogTitle></DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2"><Label>Lead Name *</Label><Input required value={form.lead_name} onChange={(e) => setForm({...form, lead_name: e.target.value})} placeholder="John Doe" /></div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="sm:col-span-2"><Label>Lead Name *</Label><Input required value={form.lead_name} onChange={(e) => setForm({...form, lead_name: e.target.value})} placeholder="John Doe" /></div>
               <div><Label>Phone *</Label><Input required value={form.phone} onChange={(e) => setForm({...form, phone: e.target.value})} placeholder="082 123 4567" /></div>
               <div><Label>Email</Label><Input type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} placeholder="john@example.com" /></div>
-              <div className="col-span-2"><Label>Car Interested In</Label><Input value={form.car_interested} onChange={(e) => setForm({...form, car_interested: e.target.value})} placeholder="2020 Toyota Hilux" /></div>
+              <div className="sm:col-span-2"><Label>Car Interested In</Label><Input value={form.car_interested} onChange={(e) => setForm({...form, car_interested: e.target.value})} placeholder="2020 Toyota Hilux" /></div>
               <div><Label>Sales Consultant</Label><Select value={form.assigned_consultant} onValueChange={(v) => setForm({...form, assigned_consultant: v})}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="Unassigned">Unassigned</SelectItem>{consultants.map(c => <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>)}</SelectContent></Select></div>
               <div><Label>Status</Label><Select value={form.status} onValueChange={(v) => setForm({...form, status: v})}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{STATUSES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>
               <div><Label>Lead Source</Label><Select value={form.source} onValueChange={(v) => setForm({...form, source: v})}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{SOURCES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>
               <div><Label>Response Time (min)</Label><Input type="number" value={form.response_time_minutes} onChange={(e) => setForm({...form, response_time_minutes: e.target.value})} placeholder="5" /></div>
-              <div className="col-span-2"><Label>Notes</Label><Textarea value={form.notes} onChange={(e) => setForm({...form, notes: e.target.value})} placeholder="Additional notes about the lead..." rows={3} /></div>
+              <div className="sm:col-span-2"><Label>Notes</Label><Textarea value={form.notes} onChange={(e) => setForm({...form, notes: e.target.value})} placeholder="Additional notes about the lead..." rows={3} /></div>
             </div>
             <div className="flex gap-3 pt-4">
               <Button type="button" variant="outline" onClick={() => setShowForm(false)} className="flex-1">Cancel</Button>
