@@ -665,7 +665,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   }
   .km-app::before { display: none; }
   .km-sidebar { display: none; }
-  .km-content { overflow: visible; padding: 0 16px calc(122px + env(safe-area-inset-bottom)); }
+  .km-content { overflow: visible; padding: 0 16px calc(112px + env(safe-area-inset-bottom)); }
   .km-card { padding: 16px; }
   .km-card-tight { padding: 14px; }
   .km-stats-grid, .km-3cards { grid-template-columns: 1fr 1fr; }
@@ -707,8 +707,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     bottom: calc(10px + env(safe-area-inset-bottom));
     z-index: 60;
     align-items: flex-end;
-    padding: 10px 6px 8px;
-    border-radius: 26px;
+    padding: 8px 6px 6px;
+    border-radius: 24px;
     background: rgba(16,16,16,.94);
     -webkit-backdrop-filter: blur(18px);
     backdrop-filter: blur(18px);
@@ -734,18 +734,18 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .km-mnav-more-orb {
     display: grid;
     place-items: center;
-    width: 58px;
-    height: 58px;
-    transform: translateY(-34px);
+    width: 46px;
+    height: 46px;
+    transform: translateY(-28px);
     border-radius: 50%;
     background: linear-gradient(135deg, var(--gold-light), var(--gold));
     color: #1a1300;
     border: 1px solid rgba(255,255,255,.25);
-    box-shadow: 0 0 0 6px var(--bg), 0 12px 26px rgba(255,157,0,.45);
+    box-shadow: 0 0 0 5px var(--bg), 0 8px 18px rgba(255,157,0,.35);
     transition: transform .18s ease;
   }
-  .km-mnav-more:active .km-mnav-more-orb { transform: translateY(-34px) scale(.94); }
-  .km-mnav-more-orb svg { width: 24px; height: 24px; stroke-width: 2.2; }
+  .km-mnav-more:active .km-mnav-more-orb { transform: translateY(-28px) scale(.94); }
+  .km-mnav-more-orb svg { width: 20px; height: 20px; stroke-width: 2.2; }
 
   .km-mnav-item {
     flex: 1;
@@ -758,7 +758,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     border: 0;
     background: none;
     color: #a3a3a3;
-    font: 600 10px/1.1 'Inter';
+    font: 600 9.5px/1.1 'Inter';
     letter-spacing: .2px;
     border-radius: 10px;
     text-decoration: none;
