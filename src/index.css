@@ -1322,140 +1322,168 @@ button, a, [role="button"] {
   .wa-composer { padding: 8px 10px calc(10px + env(safe-area-inset-bottom)); }
 }
 
+/* ===== Liquid glass =====
+   A frosted pane over a blurred, lit backdrop: highly translucent surfaces,
+   heavy blur, a thin lit top edge and a faint prismatic rim. Shared by
+   desktop and mobile; the media blocks below add viewport specifics. */
+
+/* Ambient colour behind the glass so the blur has something to refract */
+.km-app {
+  background:
+    radial-gradient(900px 720px at 4% -16%, rgba(255,157,0,.20), transparent 60%),
+    radial-gradient(820px 660px at 98% 0%, rgba(255,200,96,.13), transparent 62%),
+    radial-gradient(760px 640px at 82% 108%, rgba(110,145,255,.11), transparent 60%),
+    radial-gradient(620px 520px at 16% 96%, rgba(255,122,84,.09), transparent 62%),
+    var(--app-canvas);
+}
+[data-theme="light"] .km-app {
+  background:
+    radial-gradient(900px 720px at 4% -16%, rgba(255,193,69,.42), transparent 60%),
+    radial-gradient(820px 660px at 98% 0%, rgba(255,228,176,.60), transparent 62%),
+    radial-gradient(760px 640px at 82% 108%, rgba(255,168,116,.24), transparent 60%),
+    radial-gradient(620px 520px at 16% 96%, rgba(122,168,255,.16), transparent 62%),
+    var(--app-canvas);
+}
+
+/* Cards: see-through pane, lit hairline and a soft prismatic rim */
+.km-card,
+.km-card-tight {
+  background: linear-gradient(155deg, rgba(255,255,255,.11), rgba(255,255,255,.035) 52%, rgba(255,255,255,.06));
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 22px;
+  box-shadow:
+    0 22px 48px rgba(0,0,0,.42),
+    inset 0 1px 0 rgba(255,255,255,.30),
+    inset 0 -1px 0 rgba(150,195,255,.16),
+    inset 1px 0 0 rgba(255,180,130,.10);
+  -webkit-backdrop-filter: blur(34px) saturate(190%);
+  backdrop-filter: blur(34px) saturate(190%);
+  transition: background .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+[data-theme="light"] .km-card,
+[data-theme="light"] .km-card-tight {
+  background: linear-gradient(155deg, rgba(255,255,255,.78), rgba(255,255,255,.48) 55%, rgba(255,255,255,.62));
+  border-color: rgba(255,255,255,.90);
+  box-shadow:
+    0 22px 46px rgba(120,100,40,.16),
+    inset 0 1px 0 rgba(255,255,255,.98),
+    inset 0 -1px 0 rgba(150,190,255,.30),
+    inset 1px 0 0 rgba(255,190,140,.24);
+}
+
+/* Pills, chips and icon buttons: same pane, thinner */
+.km-pill,
+.km-icon-btn,
+.km-chip,
+.sp-tool,
+.sp-platform-chip {
+  background: rgba(255,255,255,.075);
+  border-color: rgba(255,255,255,.17);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.22);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+}
+[data-theme="light"] .km-pill,
+[data-theme="light"] .km-icon-btn,
+[data-theme="light"] .km-chip,
+[data-theme="light"] .sp-tool,
+[data-theme="light"] .sp-platform-chip {
+  background: rgba(255,255,255,.62);
+  border-color: rgba(255,255,255,.88);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 6px 18px rgba(120,100,40,.10);
+}
+
+/* Fields */
+.km-app input,
+.km-app textarea,
+.km-app select {
+  background: rgba(255,255,255,.07);
+  border-color: rgba(255,255,255,.15);
+  border-radius: 12px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.14);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  backdrop-filter: blur(18px) saturate(170%);
+}
+[data-theme="light"] .km-app input,
+[data-theme="light"] .km-app textarea,
+[data-theme="light"] .km-app select {
+  background: rgba(255,255,255,.68);
+  border-color: rgba(255,255,255,.90);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.95);
+}
+
+/* Dialogs: deep frosted glass */
+[role="dialog"] {
+  background: linear-gradient(160deg, rgba(34,34,34,.62), rgba(18,18,18,.56));
+  -webkit-backdrop-filter: blur(44px) saturate(190%);
+  backdrop-filter: blur(44px) saturate(190%);
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow:
+    0 34px 90px rgba(0,0,0,.58),
+    inset 0 1px 0 rgba(255,255,255,.24),
+    inset 0 -1px 0 rgba(150,195,255,.14);
+}
+[data-theme="light"] [role="dialog"] {
+  background: linear-gradient(160deg, rgba(255,255,255,.86), rgba(255,255,255,.68));
+  border-color: rgba(255,255,255,.95);
+  box-shadow:
+    0 34px 80px rgba(120,100,40,.24),
+    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 -1px 0 rgba(150,190,255,.28);
+}
+
+/* Smooth, iOS-eased transitions on every interactive surface */
+.km-app button,
+.km-app a {
+  transition:
+    background-color .22s cubic-bezier(.32,.72,0,1),
+    color .18s ease,
+    border-color .22s ease,
+    box-shadow .22s ease,
+    opacity .18s ease,
+    transform .22s cubic-bezier(.32,.72,0,1);
+}
+
 /* ===== Liquid glass — mobile =====
-   Frosted, translucent surfaces with soft specular highlights and eased
-   transitions, matching the iOS "liquid glass" feel. Mobile only. */
+   Sticky top bar, floating bottom nav, sheets and touch feedback. */
 @media (max-width: 900px) {
-  /* Ambient light behind the glass so the blur has something to refract */
-  .km-app {
-    background:
-      radial-gradient(680px 460px at 6% -8%, rgba(255,157,0,.12), transparent 62%),
-      radial-gradient(560px 420px at 108% 16%, rgba(255,184,77,.08), transparent 60%),
-      var(--app-canvas);
-  }
-  [data-theme="light"] .km-app {
-    background:
-      radial-gradient(680px 460px at 6% -8%, rgba(255,193,69,.30), transparent 62%),
-      radial-gradient(560px 420px at 108% 16%, rgba(240,164,0,.16), transparent 60%),
-      var(--app-canvas);
-  }
-
-  /* Cards: frosted glass with a top specular edge */
-  .km-card,
-  .km-card-tight {
-    background: linear-gradient(180deg, rgba(255,255,255,.065), rgba(255,255,255,.03));
-    border: 1px solid rgba(255,255,255,.10);
-    border-radius: 20px;
-    box-shadow: 0 10px 28px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.10);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    backdrop-filter: blur(20px) saturate(180%);
-    transition: background .22s ease, border-color .22s ease, box-shadow .22s ease;
-  }
-  [data-theme="light"] .km-card,
-  [data-theme="light"] .km-card-tight {
-    background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.68));
-    border-color: rgba(23,19,10,.08);
-    box-shadow: 0 10px 24px rgba(120,100,40,.12), inset 0 1px 0 rgba(255,255,255,.95);
-  }
-
   /* Sticky top bar: translucent glass like the bottom nav */
   .km-topbar {
-    background: rgba(15,15,15,.55);
-    -webkit-backdrop-filter: blur(26px) saturate(180%);
-    backdrop-filter: blur(26px) saturate(180%);
-    border-bottom: 1px solid rgba(255,255,255,.07);
+    background: rgba(15,15,15,.42);
+    -webkit-backdrop-filter: blur(32px) saturate(190%);
+    backdrop-filter: blur(32px) saturate(190%);
+    border-bottom: 1px solid rgba(255,255,255,.10);
   }
   [data-theme="light"] .km-topbar {
-    background: rgba(253,248,236,.62);
-    border-bottom-color: rgba(23,19,10,.07);
+    background: rgba(253,248,236,.55);
+    border-bottom-color: rgba(255,255,255,.75);
   }
 
   /* Bottom navigation: same transparent glass, notch intact */
   .km-mnav::before {
-    background: rgba(18,18,18,.42);
-    -webkit-backdrop-filter: blur(28px) saturate(190%);
-    backdrop-filter: blur(28px) saturate(190%);
-    border-color: rgba(255,255,255,.14);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.10);
+    background: rgba(18,18,18,.38);
+    -webkit-backdrop-filter: blur(34px) saturate(200%);
+    backdrop-filter: blur(34px) saturate(200%);
+    border-color: rgba(255,255,255,.18);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(150,195,255,.10);
   }
   [data-theme="light"] .km-mnav::before {
-    background: rgba(255,255,255,.45);
-    border-color: rgba(23,19,10,.10);
+    background: rgba(255,255,255,.42);
+    border-color: rgba(255,255,255,.85);
   }
 
-  /* Pills, chips and icon buttons */
-  .km-pill,
-  .km-icon-btn,
-  .km-chip,
-  .sp-tool,
-  .sp-platform-chip {
-    background: rgba(255,255,255,.06);
-    border-color: rgba(255,255,255,.12);
-    -webkit-backdrop-filter: blur(16px) saturate(170%);
-    backdrop-filter: blur(16px) saturate(170%);
-  }
-  [data-theme="light"] .km-pill,
-  [data-theme="light"] .km-icon-btn,
-  [data-theme="light"] .km-chip,
-  [data-theme="light"] .sp-tool,
-  [data-theme="light"] .sp-platform-chip {
-    background: rgba(255,255,255,.7);
-    border-color: rgba(23,19,10,.10);
-  }
-
-  /* Fields */
-  .km-app input,
-  .km-app textarea,
-  .km-app select {
-    background: rgba(255,255,255,.06);
-    border-color: rgba(255,255,255,.12);
-    border-radius: 12px;
-    -webkit-backdrop-filter: blur(14px) saturate(160%);
-    backdrop-filter: blur(14px) saturate(160%);
-  }
-  [data-theme="light"] .km-app input,
-  [data-theme="light"] .km-app textarea,
-  [data-theme="light"] .km-app select {
-    background: rgba(255,255,255,.75);
-    border-color: rgba(23,19,10,.12);
-  }
-
-  /* Dialogs and the More sheet: deep frosted glass */
-  [role="dialog"]:not(.km-mnav-sheet) {
-    background: rgba(22,22,22,.72);
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
-    backdrop-filter: blur(30px) saturate(180%);
-    border: 1px solid rgba(255,255,255,.12);
-    box-shadow: 0 30px 80px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08);
-  }
-  [data-theme="light"] [role="dialog"]:not(.km-mnav-sheet) {
-    background: rgba(255,255,255,.82);
-    border-color: rgba(23,19,10,.10);
-    box-shadow: 0 30px 70px rgba(120,100,40,.22), inset 0 1px 0 rgba(255,255,255,.9);
-  }
   .km-mnav-sheet {
-    background: rgba(20,20,20,.62);
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
-    backdrop-filter: blur(30px) saturate(180%);
-    border-top: 1px solid rgba(255,255,255,.12);
+    background: rgba(20,20,20,.55);
+    -webkit-backdrop-filter: blur(38px) saturate(190%);
+    backdrop-filter: blur(38px) saturate(190%);
+    border-top: 1px solid rgba(255,255,255,.16);
   }
   .lead-sheet-actions {
-    background: rgba(15,15,15,.72);
-    -webkit-backdrop-filter: blur(20px) saturate(170%);
-    backdrop-filter: blur(20px) saturate(170%);
+    background: rgba(15,15,15,.62);
+    -webkit-backdrop-filter: blur(26px) saturate(180%);
+    backdrop-filter: blur(26px) saturate(180%);
   }
 
-  /* Smooth, iOS-eased transitions on every interactive surface */
-  .km-app button,
-  .km-app a {
-    transition:
-      background-color .22s cubic-bezier(.32,.72,0,1),
-      color .18s ease,
-      border-color .22s ease,
-      box-shadow .22s ease,
-      opacity .18s ease,
-      transform .22s cubic-bezier(.32,.72,0,1);
-  }
   .km-app button,
   .km-app a,
   .lead-card,
@@ -1480,113 +1508,18 @@ button, a, [role="button"] {
 }
 
 /* ===== Liquid glass — desktop =====
-   The same frosted, translucent surface language used on mobile, sized for
-   the wider canvas: ambient light behind the glass, specular top edges and
-   eased transitions. */
+   The sidebar becomes a lit, translucent slab; the rest is shared above. */
 @media (min-width: 901px) {
-  /* Ambient light behind the glass so the blur has something to refract */
-  .km-app {
-    background:
-      radial-gradient(900px 620px at 10% -12%, rgba(255,157,0,.10), transparent 62%),
-      radial-gradient(780px 560px at 106% 8%, rgba(255,184,77,.07), transparent 60%),
-      var(--app-canvas);
-  }
-  [data-theme="light"] .km-app {
-    background:
-      radial-gradient(900px 620px at 10% -12%, rgba(255,193,69,.26), transparent 62%),
-      radial-gradient(780px 560px at 106% 8%, rgba(240,164,0,.14), transparent 60%),
-      var(--app-canvas);
-  }
-
-  /* Cards: frosted glass with a top specular edge */
-  .km-card,
-  .km-card-tight {
-    background: linear-gradient(180deg, rgba(255,255,255,.065), rgba(255,255,255,.03));
-    border: 1px solid rgba(255,255,255,.10);
-    border-radius: 18px;
-    box-shadow: 0 14px 34px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.09);
-    -webkit-backdrop-filter: blur(22px) saturate(180%);
-    backdrop-filter: blur(22px) saturate(180%);
-    transition: background .22s ease, border-color .22s ease, box-shadow .22s ease;
-  }
-  [data-theme="light"] .km-card,
-  [data-theme="light"] .km-card-tight {
-    background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.68));
-    border-color: rgba(23,19,10,.08);
-    box-shadow: 0 14px 30px rgba(120,100,40,.12), inset 0 1px 0 rgba(255,255,255,.95);
-  }
-
-  /* Sidebar: same dark slab, now with a glassy translucency and soft edge */
   .km-sidebar {
-    background: linear-gradient(180deg, rgba(22,22,22,.92), rgba(12,12,12,.86));
-    -webkit-backdrop-filter: blur(26px) saturate(170%);
-    backdrop-filter: blur(26px) saturate(170%);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 24%),
+      linear-gradient(180deg, rgba(22,22,22,.90), rgba(12,12,12,.84));
+    -webkit-backdrop-filter: blur(32px) saturate(180%);
+    backdrop-filter: blur(32px) saturate(180%);
     box-shadow:
-      inset -1px 0 0 rgba(255,255,255,.07),
-      inset 0 1px 0 rgba(255,255,255,.06);
-  }
-
-  /* Pills, chips and icon buttons */
-  .km-pill,
-  .km-icon-btn,
-  .km-chip,
-  .sp-tool,
-  .sp-platform-chip {
-    background: rgba(255,255,255,.06);
-    border-color: rgba(255,255,255,.12);
-    -webkit-backdrop-filter: blur(16px) saturate(170%);
-    backdrop-filter: blur(16px) saturate(170%);
-  }
-  [data-theme="light"] .km-pill,
-  [data-theme="light"] .km-icon-btn,
-  [data-theme="light"] .km-chip,
-  [data-theme="light"] .sp-tool,
-  [data-theme="light"] .sp-platform-chip {
-    background: rgba(255,255,255,.7);
-    border-color: rgba(23,19,10,.10);
-  }
-
-  /* Fields */
-  .km-app input,
-  .km-app textarea,
-  .km-app select {
-    background: rgba(255,255,255,.06);
-    border-color: rgba(255,255,255,.12);
-    border-radius: 12px;
-    -webkit-backdrop-filter: blur(14px) saturate(160%);
-    backdrop-filter: blur(14px) saturate(160%);
-  }
-  [data-theme="light"] .km-app input,
-  [data-theme="light"] .km-app textarea,
-  [data-theme="light"] .km-app select {
-    background: rgba(255,255,255,.75);
-    border-color: rgba(23,19,10,.12);
-  }
-
-  /* Dialogs: deep frosted glass */
-  [role="dialog"] {
-    background: rgba(22,22,22,.72);
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
-    backdrop-filter: blur(30px) saturate(180%);
-    border: 1px solid rgba(255,255,255,.12);
-    box-shadow: 0 30px 80px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08);
-  }
-  [data-theme="light"] [role="dialog"] {
-    background: rgba(255,255,255,.82);
-    border-color: rgba(23,19,10,.10);
-    box-shadow: 0 30px 70px rgba(120,100,40,.22), inset 0 1px 0 rgba(255,255,255,.9);
-  }
-
-  /* Smooth, iOS-eased transitions on every interactive surface */
-  .km-app button,
-  .km-app a {
-    transition:
-      background-color .22s cubic-bezier(.32,.72,0,1),
-      color .18s ease,
-      border-color .22s ease,
-      box-shadow .22s ease,
-      opacity .18s ease,
-      transform .22s cubic-bezier(.32,.72,0,1);
+      inset -1px 0 0 rgba(255,255,255,.10),
+      inset 0 1px 0 rgba(255,255,255,.12),
+      inset 0 -1px 0 rgba(150,195,255,.08);
   }
 }
 
