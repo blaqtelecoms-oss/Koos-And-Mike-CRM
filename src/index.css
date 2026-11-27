@@ -270,6 +270,19 @@ body:has(.km-app) {
   border: 2px solid var(--bg);
 }
 
+/* ===== Scrollbars (subtle, theme-aware) ===== */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.16) transparent;
+}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,.16); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.28); }
+[data-theme="light"] * { scrollbar-color: rgba(23,19,10,.18) transparent; }
+[data-theme="light"] ::-webkit-scrollbar-thumb { background: rgba(23,19,10,.18); }
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: rgba(23,19,10,.3); }
+
 /* ===== Content area ===== */
 .km-content {
   min-width: 0;
