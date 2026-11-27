@@ -14,7 +14,7 @@ export default function ThemeToggle({ floating = false }) {
   return (
     <button
       type="button"
-      className="km-pill"
+      className={`km-pill${floating ? " km-theme-float" : ""}`}
       onClick={() => setTheme(next)}
       title={`Switch to ${next} mode`}
       aria-label={`Switch to ${next} mode`}

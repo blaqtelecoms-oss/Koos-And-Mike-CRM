@@ -1,17 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/api/supabaseClient";
-import { Car, ExternalLink, ArrowLeft, Phone, MessageCircle, Search, Filter } from "lucide-react";
+import { Car, ExternalLink, ArrowLeft, Phone, MessageCircle, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import ClientLayout from "@/components/client/ClientLayout";
 import VehicleImage from "@/components/VehicleImage";
 
 export default function ClientInventory() {
-  const [search, setSearch] = useState("");
+  const [params, setParams] = useSearchParams();
+  const [search, setSearch] = useState(params.get("q") || "");
   const [dealerFilter, setDealerFilter] = useState("All");
+  const financeOnly = params.get("finance") === "1";
+
+  useEffect(() => {
+    setSearch(params.get("q") || "");
+  }, [params]);
 
   const { data: vehicles = [] } = useQuery({
     queryKey: ["vehicles-public"],
@@ -23,7 +29,8 @@ export default function ClientInventory() {
   const filtered = vehicles.filter(v => {
     const matchSearch = !search || `${v.make} ${v.model} ${v.title}`.toLowerCase().includes(search.toLowerCase());
     const matchStand = dealerFilter === "All" || v.stand === dealerFilter;
-    return matchSearch && matchStand;
+    const matchFinance = !financeOnly || v.finance_available;
+    return matchSearch && matchStand && matchFinance;
   });
 
   return (
@@ -32,11 +39,11 @@ export default function ClientInventory() {
         {/* Back + Title */}
         <div className="flex items-center gap-3 mb-8">
           <Link to="/ClientPortal">
-            <Button variant="ghost" size="sm" className="text-slate-300 hover:text-gray-900 gap-1">
+            <Button variant="ghost" size="sm" className="gap-1" style={{ color: "var(--mut)" }}>
               <ArrowLeft className="w-4 h-4" /> Back
             </Button>
           </Link>
-          <h1 className="text-gray-900 text-3xl font-bold">Available Vehicles</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl" style={{ color: "var(--ink)" }}>Available Vehicles</h1>
         </div>
 
         {/* Website CTA */}
@@ -67,8 +74,8 @@ export default function ClientInventory() {
                 size="sm"
                 onClick={() => setDealerFilter(s)}
                 variant={dealerFilter === s ? "default" : "outline"}
-                style={dealerFilter === s ? { background: "var(--gold)", color: "#000", border: "none" } : {}}
-                className={dealerFilter === s ? "" : "border-amber-200/60 text-slate-300 hover:bg-white/70"}
+                className={dealerFilter === s ? "" : "border-amber-200/60 hover:bg-white/70"}
+                style={dealerFilter === s ? { background: "var(--gold)", color: "#000", border: "none" } : { color: "var(--ink)" }}
               >
                 {s === "All" ? "All Stands" : s}
               </Button>
@@ -77,7 +84,22 @@ export default function ClientInventory() {
         </div>
 
         {/* Results count */}
-        <p className="text-slate-400 text-sm mb-4">{filtered.length} vehicle{filtered.length !== 1 ? "s" : ""} found</p>
+        <div className="mb-4 flex flex-wrap items-center gap-3">
+          <p className="text-sm" style={{ color: "var(--mut)" }}>{filtered.length} vehicle{filtered.length !== 1 ? "s" : ""} found</p>
+          {financeOnly && (
+            <button
+              onClick={() => {
+                const next = new URLSearchParams(params);
+                next.delete("finance");
+                setParams(next);
+              }}
+              className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold"
+              style={{ borderColor: "#C9A84C55", color: "var(--gold)", background: "#C9A84C12" }}
+            >
+              Finance available only ✕
+            </button>
+          )}
+        </div>
 
         {/* Vehicle Grid */}
         {filtered.length === 0 ? (

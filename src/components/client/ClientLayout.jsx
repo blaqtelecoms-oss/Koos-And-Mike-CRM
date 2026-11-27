@@ -3,8 +3,7 @@ import { MessageCircle, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import ClientNav from "@/components/client/ClientNav";
 import ClientMenu from "@/components/client/ClientMenu";
-
-const GOLD = "var(--gold)";
+import ClientBottomNav from "@/components/client/ClientBottomNav";
 
 export default function ClientLayout({ children }) {
   return (
@@ -72,7 +71,7 @@ export default function ClientLayout({ children }) {
 
       <main>{children}</main>
 
-      <footer className="border-t py-6 text-center text-xs mt-10" style={{ borderColor: "#C9A84C22", color: "var(--mut)" }}>
+      <footer className="border-t pt-6 pb-28 min-[980px]:pb-6 text-center text-xs mt-10" style={{ borderColor: "#C9A84C22", color: "var(--mut)" }}>
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mb-2">
           <Link to="/ClientPrivacy" className="hover:underline">Privacy Policy</Link>
           <span aria-hidden="true" style={{ color: "#C9A84C55" }}>·</span>
@@ -80,6 +79,8 @@ export default function ClientLayout({ children }) {
         </div>
         © 2026 Koos &amp; Mike Cars · Quality Vehicles, Trusted Service.
       </footer>
+
+      <ClientBottomNav />
     </div>
   );
 }

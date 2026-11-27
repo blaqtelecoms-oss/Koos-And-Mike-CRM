@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api/supabaseClient";
 import GlassCard from "@/components/premium/GlassCard";
@@ -6,7 +6,7 @@ import EmptyState from "@/components/premium/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle, Inbox, MessageCircle, Send, Users } from "lucide-react";
+import { AlertTriangle, Inbox, MessageCircle, RefreshCw, Send, Users } from "lucide-react";
 import moment from "moment";
 
 const BATCH = 25;
@@ -14,7 +14,7 @@ const digits = (value) => (value || "").replace(/\D/g, "");
 
 export default function WhatsApp() {
   const qc = useQueryClient();
-  const [tab, setTab] = useState("broadcast");
+  const [tab, setTab] = useState("inbox");
   const [audience, setAudience] = useState("new");
   const [message, setMessage] = useState(
     "Hi there, this is Koos & Mike Cars. We received your enquiry — are you still looking for a vehicle? Reply here and a consultant will assist you.",
@@ -32,13 +32,20 @@ export default function WhatsApp() {
     queryFn: () => api.entities.Lead.listAll("-created_date"),
   });
 
-  const { data: messages = [] } = useQuery({
+  const { data: messages = [], isFetching: messagesFetching } = useQuery({
     queryKey: ["whatsapp-messages"],
     queryFn: () => api.entities.WhatsAppMessage.list("-created_at", 500),
+    // Keep the inbox fresh: inbound replies show up without a manual refresh even
+    // when the Realtime publication is not enabled on the table.
+    refetchInterval: 4000,
+    refetchOnWindowFocus: true,
+    staleTime: 0,
   });
 
   useEffect(() => {
-    const unsubscribe = api.entities.WhatsAppMessage.subscribe(() => qc.invalidateQueries(["whatsapp-messages"]));
+    const unsubscribe = api.entities.WhatsAppMessage.subscribe(() =>
+      qc.invalidateQueries({ queryKey: ["whatsapp-messages"] }),
+    );
     return unsubscribe;
   }, [qc]);
 
@@ -63,6 +70,14 @@ export default function WhatsApp() {
   }, [messages, leads]);
 
   const active = conversations.find((c) => c.phone === activePhone) || conversations[0] || null;
+  const threadRef = useRef(null);
+  const lastMessageId = active?.thread?.[active.thread.length - 1]?.id;
+
+  // Jump to the newest message whenever the open thread changes or a reply lands.
+  useEffect(() => {
+    const el = threadRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [active?.phone, lastMessageId]);
 
   const sendBroadcast = async () => {
     const text = message.trim();
@@ -84,7 +99,7 @@ export default function WhatsApp() {
         setProgress({ done: Math.min(i + BATCH, recipients.length), total: recipients.length });
       }
       setSummary(totals);
-      qc.invalidateQueries(["whatsapp-messages"]);
+      qc.invalidateQueries({ queryKey: ["whatsapp-messages"] });
     } catch (err) {
       setError(err.message || "Could not send WhatsApp messages");
     } finally {
@@ -100,7 +115,7 @@ export default function WhatsApp() {
     try {
       await api.functions.invoke("whatsappSend", { to: active.phone, lead_id: active.lead?.id ?? null, text });
       setReply("");
-      qc.invalidateQueries(["whatsapp-messages"]);
+      qc.invalidateQueries({ queryKey: ["whatsapp-messages"] });
     } catch (err) {
       setError(err.message || "Could not send the reply");
     } finally {
@@ -185,9 +200,25 @@ export default function WhatsApp() {
       ) : conversations.length === 0 ? (
         <EmptyState icon={<MessageCircle style={{ width: 20, height: 20 }} />} message="No WhatsApp conversations yet. Messages you send and replies from leads appear here." />
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "minmax(220px, 1fr) minmax(0, 1.6fr)", gap: 14 }}>
+        <>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <span className="inline-flex items-center gap-1.5" style={{ fontSize: 11.5, color: "var(--mut)" }}>
+              <span className="h-1.5 w-1.5 rounded-full" style={{ background: "#22c55e" }} />
+              Live · new replies appear automatically
+            </span>
+            <button
+              type="button"
+              className="km-chip"
+              onClick={() => qc.invalidateQueries({ queryKey: ["whatsapp-messages"] })}
+              disabled={messagesFetching}
+            >
+              <RefreshCw style={{ width: 13, height: 13 }} className={messagesFetching ? "animate-spin" : ""} /> Refresh
+            </button>
+          </div>
+
+          <div className="grid gap-3.5 lg:grid-cols-[minmax(220px,1fr)_minmax(0,1.6fr)]">
           <GlassCard tight>
-            <div style={{ display: "grid", gap: 2, maxHeight: 460, overflowY: "auto" }}>
+            <div className="grid max-h-56 gap-0.5 overflow-y-auto lg:max-h-[460px]">
               {conversations.map((conversation) => (
                 <button
                   key={conversation.phone}
@@ -215,7 +246,7 @@ export default function WhatsApp() {
                   <div style={{ fontSize: 13, fontWeight: 600, color: "var(--ink)" }}>{active.lead?.lead_name || `+${active.phone}`}</div>
                   <div style={{ fontSize: 11.5, color: "var(--mut)" }}>+{active.phone}</div>
                 </div>
-                <div style={{ display: "grid", gap: 8, maxHeight: 330, overflowY: "auto", paddingRight: 4 }}>
+                <div ref={threadRef} className="grid max-h-[46vh] gap-2 overflow-y-auto pr-1 lg:max-h-[330px]">
                   {active.thread.map((item) => (
                     <div key={item.id} style={{ justifySelf: item.direction === "out" ? "end" : "start", maxWidth: "85%" }}>
                       <div style={{
@@ -248,7 +279,8 @@ export default function WhatsApp() {
               </div>
             )}
           </GlassCard>
-        </div>
+          </div>
+        </>
       )}
     </div>
   );
