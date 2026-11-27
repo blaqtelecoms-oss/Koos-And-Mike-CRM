@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import Avatar from "@/components/premium/Avatar";
 import StatusPill from "@/components/premium/StatusPill";
@@ -5,12 +6,14 @@ import { Phone, Mail, Car, Clock, Edit, ClipboardList, MessageCircle } from "luc
 import moment from "moment";
 
 export default function LeadDetailSheet({ lead, platform, open, onClose, onEdit, onFollowUp, onLogCall, onWhatsApp }) {
+  const [notesExpanded, setNotesExpanded] = useState(false);
   if (!lead) return null;
 
   const created = lead.created_date ? moment(lead.created_date) : null;
   const age = created && created.isValid() ? created.fromNow() : null;
   const added = created && created.isValid() ? created.format("DD MMM YYYY, HH:mm") : "—";
   const hasResponseTime = lead.response_time_minutes !== null && lead.response_time_minutes !== undefined && lead.response_time_minutes !== "";
+  const notesAreLong = (lead.notes || "").length > 110;
 
   return (
     <Dialog open={open} onOpenChange={(next) => { if (!next) onClose(); }}>
@@ -18,7 +21,7 @@ export default function LeadDetailSheet({ lead, platform, open, onClose, onEdit,
         <DialogTitle className="sr-only">{lead.lead_name || "Lead"} details</DialogTitle>
 
         <div className="lead-sheet-head">
-          <Avatar name={lead.lead_name || "?"} size={46} />
+          <Avatar name={lead.lead_name || "?"} size={44} />
           <div className="lead-sheet-id">
             <div className="lead-sheet-name">{lead.lead_name || "Unnamed lead"}</div>
             <div className="lead-sheet-sub">{lead.phone || "No phone number"}</div>
@@ -59,7 +62,12 @@ export default function LeadDetailSheet({ lead, platform, open, onClose, onEdit,
         {lead.notes && (
           <div className="lead-sheet-notes-wrap">
             <span className="lead-sheet-label">Notes</span>
-            <div className="lead-sheet-notes">{lead.notes}</div>
+            <div className={`lead-sheet-notes ${notesExpanded ? "expanded" : ""}`}>{lead.notes}</div>
+            {notesAreLong && (
+              <button type="button" className="lead-sheet-notes-toggle" onClick={() => setNotesExpanded(v => !v)}>
+                {notesExpanded ? "Show less" : "Show more"}
+              </button>
+            )}
           </div>
         )}
 

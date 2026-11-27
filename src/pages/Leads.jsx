@@ -397,6 +397,7 @@ export default function Leads() {
 
       {detailLead && (
         <LeadDetailSheet
+          key={detailLead.id}
           lead={detailLead}
           platform={getPlatformFromNotes(detailLead.notes)}
           open={!!detailLead}
