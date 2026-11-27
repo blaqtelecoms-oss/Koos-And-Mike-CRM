@@ -782,6 +782,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .km-mnav-groups .km-nav-group-label { margin: 14px 14px 6px; }
   .km-mnav-groups .km-nav-item { padding: 10px 14px; }
   .km-mnav-sheet .km-user-card small { max-width: none; }
+
+  /* Bottom nav steps aside while a dialog or sheet is open */
+  body:has([role="dialog"][data-state="open"]) .km-mnav { display: none !important; }
 }
 
 /* ===== Small-phone refinements ===== */
@@ -872,32 +875,55 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     max-height: 88vh;
     overflow-y: auto;
     border-radius: 22px 22px 0 0 !important;
-    padding: 18px 16px calc(18px + env(safe-area-inset-bottom)) !important;
+    padding: 14px 16px 0 !important;
     animation: kmSheetUp .22s ease-out !important;
+  }
+  [role="dialog"].lead-sheet::before {
+    content: "";
+    justify-self: center;
+    width: 40px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.22);
+    margin: 0 0 -4px;
+  }
+  [data-theme="light"] [role="dialog"].lead-sheet::before { background: rgba(0,0,0,.16); }
+  .lead-sheet-actions {
+    position: sticky;
+    bottom: 0;
+    margin: 0 -16px;
+    padding: 10px 16px calc(14px + env(safe-area-inset-bottom));
+    background: var(--bg);
+    border-top: 1px solid var(--line);
   }
 }
 
 /* ===== Lead detail sheet ===== */
-.lead-sheet-head { display: flex; align-items: center; gap: 12px; padding-right: 28px; }
+.lead-sheet { gap: 14px !important; }
+.lead-sheet-head { display: flex; align-items: center; gap: 12px; padding-right: 32px; }
 .lead-sheet-id { flex: 1; min-width: 0; }
-.lead-sheet-name { font-size: 16px; font-weight: 600; letter-spacing: -.2px; color: var(--ink); }
-.lead-sheet-sub { font-size: 12.5px; color: var(--mut); margin-top: 2px; }
-.lead-sheet-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; padding: 12px; border-radius: 12px; background: var(--glass); border: 1px solid var(--glass-border); }
-.lead-sheet-facts span { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .5px; color: var(--mut); }
-.lead-sheet-facts b { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink); margin-top: 2px; }
-.lead-sheet-interest > span { font-size: 10px; text-transform: uppercase; letter-spacing: .5px; color: var(--mut); }
-.lead-sheet-interest > div { display: flex; align-items: center; gap: 7px; margin-top: 4px; font-size: 13px; color: var(--ink); min-width: 0; }
+.lead-sheet-name { font-size: 16px; font-weight: 600; letter-spacing: -.2px; color: var(--ink); line-height: 1.2; }
+.lead-sheet-sub { font-size: 12.5px; color: var(--mut); margin-top: 3px; }
+.lead-sheet-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11.5px; color: var(--mut); }
+.lead-sheet-meta > span:not(.km-status)::before { content: "·"; margin-right: 8px; opacity: .5; }
+.lead-sheet-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; padding: 12px 14px; border-radius: 14px; background: var(--glass); border: 1px solid var(--glass-border); }
+.lead-sheet-facts > div:last-child:nth-child(odd) { grid-column: span 2; }
+.lead-sheet-facts span { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .6px; color: var(--mut); }
+.lead-sheet-facts b { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink); margin-top: 3px; }
+.lead-sheet-label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .6px; color: var(--mut); margin-bottom: 6px; }
+.lead-sheet-interest > span { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .6px; color: var(--mut); }
+.lead-sheet-interest > div { display: flex; align-items: center; gap: 7px; margin-top: 5px; font-size: 13px; color: var(--ink); min-width: 0; }
 .lead-sheet-interest svg { width: 15px; height: 15px; color: var(--gold); flex-shrink: 0; }
 .lead-sheet-interest b { font-weight: 500; overflow: hidden; text-overflow: ellipsis; }
 .lead-sheet-interest em { margin-left: auto; font-style: normal; font-size: 10px; padding: 2px 6px; border-radius: 8px; flex-shrink: 0; }
-.lead-sheet-links { display: flex; flex-direction: column; gap: 8px; }
-.lead-sheet-links a, .lead-sheet-links > div { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink); text-decoration: none; min-width: 0; word-break: break-all; }
-.lead-sheet-links svg { width: 14px; height: 14px; color: var(--mut); flex-shrink: 0; }
-.lead-sheet-links a { color: var(--gold); }
-.lead-sheet-notes { font-size: 12px; line-height: 1.5; color: var(--mut); background: var(--glass); border: 1px solid var(--glass-border); border-radius: 12px; padding: 10px 12px; max-height: 96px; overflow-y: auto; white-space: pre-wrap; }
-.lead-sheet-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.lead-sheet-action { display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 42px; border-radius: 12px; border: 1px solid var(--glass-border); background: var(--glass); color: var(--ink); font-size: 12.5px; font-weight: 500; cursor: pointer; }
-.lead-sheet-action svg { width: 15px; height: 15px; }
+.lead-sheet-contact { display: grid; gap: 9px; }
+.lead-sheet-contact a { display: flex; align-items: center; gap: 9px; font-size: 12.5px; color: var(--gold); text-decoration: none; min-width: 0; }
+.lead-sheet-contact a svg { width: 14px; height: 14px; flex-shrink: 0; }
+.lead-sheet-contact a span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lead-sheet-notes { font-size: 12px; line-height: 1.55; color: var(--mut); background: var(--glass); border: 1px solid var(--glass-border); border-radius: 14px; padding: 10px 12px; max-height: 88px; overflow-y: auto; white-space: pre-wrap; }
+.lead-sheet-actions { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 8px; }
+.lead-sheet-action { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; height: 58px; border-radius: 13px; border: 1px solid var(--glass-border); background: var(--glass); color: var(--ink); font-size: 10px; font-weight: 500; cursor: pointer; }
+.lead-sheet-action svg { width: 17px; height: 17px; }
 .lead-sheet-action.primary { background: linear-gradient(135deg, var(--gold), var(--gold-deep)); color: #1a1300; border: 0; font-weight: 600; }
 
 /* ===== Route slide animation (mobile) ===== */

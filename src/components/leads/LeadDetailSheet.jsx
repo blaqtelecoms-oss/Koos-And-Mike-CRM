@@ -23,14 +23,18 @@ export default function LeadDetailSheet({ lead, platform, open, onClose, onEdit,
             <div className="lead-sheet-name">{lead.lead_name || "Unnamed lead"}</div>
             <div className="lead-sheet-sub">{lead.phone || "No phone number"}</div>
           </div>
+        </div>
+
+        <div className="lead-sheet-meta">
           <StatusPill status={lead.status} />
+          {age && <span>Added {age}</span>}
         </div>
 
         <div className="lead-sheet-facts">
-          <div><span>In system</span><b>{age || "—"}</b></div>
-          <div><span>Added</span><b>{added}</b></div>
+          <div><span>Date added</span><b>{added}</b></div>
           <div><span>Source</span><b>{lead.source || "—"}</b></div>
           <div><span>Consultant</span><b>{lead.assigned_consultant || "Unassigned"}</b></div>
+          {hasResponseTime && <div><span>Response</span><b>{lead.response_time_minutes} min</b></div>}
         </div>
 
         {lead.car_interested && (
@@ -44,28 +48,35 @@ export default function LeadDetailSheet({ lead, platform, open, onClose, onEdit,
           </div>
         )}
 
-        <div className="lead-sheet-links">
-          {lead.phone && <a href={`tel:${lead.phone}`}><Phone /> {lead.phone}</a>}
-          {lead.email && <a href={`mailto:${lead.email}`}><Mail /> {lead.email}</a>}
-          {hasResponseTime && <div><Clock /> Responded in {lead.response_time_minutes} min</div>}
-        </div>
+        {(lead.phone || lead.email) && (
+          <div className="lead-sheet-contact">
+            <span className="lead-sheet-label">Contact</span>
+            {lead.phone && <a href={`tel:${lead.phone}`}><Phone /> <span>{lead.phone}</span></a>}
+            {lead.email && <a href={`mailto:${lead.email}`}><Mail /> <span>{lead.email}</span></a>}
+          </div>
+        )}
 
-        {lead.notes && <div className="lead-sheet-notes">{lead.notes}</div>}
+        {lead.notes && (
+          <div className="lead-sheet-notes-wrap">
+            <span className="lead-sheet-label">Notes</span>
+            <div className="lead-sheet-notes">{lead.notes}</div>
+          </div>
+        )}
 
         <div className="lead-sheet-actions">
           <button type="button" className="lead-sheet-action primary" onClick={() => onLogCall(lead)}>
-            <Phone /> Log call
+            <Phone /><span>Log call</span>
           </button>
           {lead.phone && (
             <button type="button" className="lead-sheet-action" onClick={() => onWhatsApp(lead)}>
-              <MessageCircle /> WhatsApp
+              <MessageCircle /><span>WhatsApp</span>
             </button>
           )}
           <button type="button" className="lead-sheet-action" onClick={() => onFollowUp(lead)}>
-            <ClipboardList /> Follow-up
+            <ClipboardList /><span>Follow-up</span>
           </button>
           <button type="button" className="lead-sheet-action" onClick={() => onEdit(lead)}>
-            <Edit /> Edit lead
+            <Edit /><span>Edit</span>
           </button>
         </div>
       </DialogContent>
