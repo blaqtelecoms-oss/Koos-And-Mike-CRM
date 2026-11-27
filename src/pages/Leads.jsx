@@ -8,9 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Plus, Search, Phone, Mail, Car, Filter, Edit, ClipboardList, Clock, RefreshCw, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, Phone, Mail, Car, Edit, ClipboardList, Clock, RefreshCw, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import moment from "moment";
 import LeadFollowUpDialog from "@/components/leads/LeadFollowUpDialog";
+import LeadDetailSheet from "@/components/leads/LeadDetailSheet";
 import CallDialog from "@/components/leads/CallDialog";
 import WhatsAppDialog from "@/components/leads/WhatsAppDialog";
 import NewLeadNotifier from "@/components/leads/NewLeadNotifier";
@@ -44,6 +45,7 @@ export default function Leads() {
   const [followUpLead, setFollowUpLead] = useState(null);
   const [callingLead, setCallingLead] = useState(null);
   const [whatsappLead, setWhatsappLead] = useState(null);
+  const [detailLead, setDetailLead] = useState(null);
   const [form, setForm] = useState({
     lead_name: "", phone: "", email: "", car_interested: "",
     assigned_consultant: "Unassigned", status: "New", source: "Website",
@@ -207,9 +209,6 @@ export default function Leads() {
           {STATUSES.map(s => (
             <span key={s} className={`km-chip ${filterStatus === s ? "active" : ""}`} onClick={() => setFilterStatus(s)}>{s}</span>
           ))}
-          <span className="km-chip km-chip-filter" style={{ marginLeft: "auto" }}>
-            <Filter style={{ width: 14, height: 14 }} /> Filter
-          </span>
         </div>
         <div className="km-leads-filters" style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap", alignItems: "center" }}>
           <div style={{ position: "relative", flex: 1, minWidth: 200 }}>
@@ -245,7 +244,50 @@ export default function Leads() {
           <div className="km-empty">No leads found. Try adjusting your search or filters.</div>
         ) : (
           <>
-          <div className="km-table-wrap">
+          {/* Mobile lead cards */}
+          <div className="leads-cards">
+            {pagedLeads.map(lead => {
+              const platform = getPlatformFromNotes(lead.notes);
+              const created = moment(lead.created_date);
+              const age = created.isValid() ? created.fromNow() : null;
+              return (
+                <button
+                  key={lead.id}
+                  type="button"
+                  className="lead-card"
+                  onClick={() => setDetailLead(lead)}
+                  aria-label={`Open details for ${lead.lead_name || "lead"}`}
+                >
+                  <div className="lead-card-top">
+                    <Avatar name={lead.lead_name || "?"} />
+                    <div className="lead-card-id">
+                      <div className="lead-card-name">{lead.lead_name || "Unnamed lead"}</div>
+                      {lead.phone && <div className="lead-card-phone">{lead.phone}</div>}
+                    </div>
+                    <StatusPill status={lead.status} />
+                  </div>
+                  <div className="lead-card-car">
+                    <Car />
+                    <span>{lead.car_interested || "No vehicle specified"}</span>
+                    {platform && <em style={{ background: platform.color + "22", color: platform.color }}>{platform.name}</em>}
+                  </div>
+                  <div className="lead-card-meta">
+                    <Clock />
+                    <span>{age ? `Added ${age}` : "Recently added"}</span>
+                    {lead.assigned_consultant && (
+                      <>
+                        <span className="lead-card-dot">·</span>
+                        <span className="lead-card-consultant">{lead.assigned_consultant}</span>
+                      </>
+                    )}
+                    <ChevronRight className="lead-card-chev" />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="km-table-wrap leads-table-desktop">
             <table className="km-table km-table-cards">
               <thead>
                 <tr><th>Lead</th><th>Interest</th><th>Status</th><th></th></tr>
@@ -352,6 +394,19 @@ export default function Leads() {
           </>
         )}
       </GlassCard>
+
+      {detailLead && (
+        <LeadDetailSheet
+          lead={detailLead}
+          platform={getPlatformFromNotes(detailLead.notes)}
+          open={!!detailLead}
+          onClose={() => setDetailLead(null)}
+          onEdit={(lead) => { setDetailLead(null); handleEdit(lead); }}
+          onFollowUp={(lead) => { setDetailLead(null); setFollowUpLead(lead); }}
+          onLogCall={(lead) => { setDetailLead(null); setCallingLead(lead); }}
+          onWhatsApp={(lead) => { setDetailLead(null); setWhatsappLead(lead); }}
+        />
+      )}
 
       <NewLeadNotifier onNewLead={loadLeads} />
       {whatsappLead && <WhatsAppDialog lead={whatsappLead} open={!!whatsappLead} onClose={() => setWhatsappLead(null)} onSaved={loadLeads} />}
