@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api/supabaseClient";
 import GlassCard from "@/components/premium/GlassCard";
@@ -6,11 +6,12 @@ import EmptyState from "@/components/premium/EmptyState";
 import Avatar from "@/components/premium/Avatar";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle, ChevronLeft, Inbox, MessageCircle, Send, Users } from "lucide-react";
+import { AlertTriangle, ChevronLeft, Inbox, MessageCircle, Search, Send, Users } from "lucide-react";
 import moment from "moment";
 
 const BATCH = 25;
 const digits = (value) => (value || "").replace(/\D/g, "");
+const QUICK_REPLIES = ["Thanks for your enquiry!", "Are you still interested?", "When can we call you?"];
 
 export default function WhatsApp() {
   const qc = useQueryClient();
@@ -25,6 +26,7 @@ export default function WhatsApp() {
   const [error, setError] = useState("");
   const [activePhone, setActivePhone] = useState("");
   const [threadOpen, setThreadOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const [reply, setReply] = useState("");
   const [replying, setReplying] = useState(false);
   const messagesRef = useRef(null);
@@ -63,6 +65,16 @@ export default function WhatsApp() {
       })
       .sort((a, b) => new Date(b.last.created_at) - new Date(a.last.created_at));
   }, [messages, leads]);
+
+  const visibleConversations = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return conversations;
+    return conversations.filter((c) =>
+      (c.lead?.lead_name || "").toLowerCase().includes(q) ||
+      c.phone.includes(q) ||
+      (c.last.body || "").toLowerCase().includes(q)
+    );
+  }, [conversations, search]);
 
   const active = conversations.find((c) => c.phone === activePhone) || conversations[0] || null;
   const threadLength = active?.thread?.length || 0;
@@ -194,25 +206,36 @@ export default function WhatsApp() {
       ) : (
         <div className="wa-inbox">
           <div className="wa-list">
-            {conversations.map((conversation) => (
-              <button
-                key={conversation.phone}
-                type="button"
-                className={`wa-row ${active?.phone === conversation.phone ? "active" : ""}`}
-                onClick={() => { setActivePhone(conversation.phone); setThreadOpen(true); }}
-              >
-                <Avatar name={conversation.lead?.lead_name || conversation.phone} size={44} />
-                <div className="wa-row-body">
-                  <div className="wa-row-top">
-                    <span className="wa-row-name">{conversation.lead?.lead_name || `+${conversation.phone}`}</span>
-                    <span className="wa-row-time">{moment(conversation.last.created_at).format("HH:mm")}</span>
+            <div className="wa-list-head">
+              <div className="wa-list-title">Chats <span>{conversations.length}</span></div>
+            </div>
+            <div className="wa-search">
+              <Search style={{ width: 14, height: 14 }} />
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search conversations" />
+            </div>
+            <div className="wa-list-scroll">
+              {visibleConversations.length === 0 ? (
+                <div className="wa-empty">No conversations match “{search}”.</div>
+              ) : visibleConversations.map((conversation) => (
+                <button
+                  key={conversation.phone}
+                  type="button"
+                  className={`wa-row ${active?.phone === conversation.phone ? "active" : ""}`}
+                  onClick={() => { setActivePhone(conversation.phone); setThreadOpen(true); }}
+                >
+                  <Avatar name={conversation.lead?.lead_name || conversation.phone} size={44} />
+                  <div className="wa-row-body">
+                    <div className="wa-row-top">
+                      <span className="wa-row-name">{conversation.lead?.lead_name || `+${conversation.phone}`}</span>
+                      <span className="wa-row-time">{moment(conversation.last.created_at).format("HH:mm")}</span>
+                    </div>
+                    <div className="wa-row-msg">
+                      {conversation.last.direction === "out" ? "You: " : ""}{conversation.last.body}
+                    </div>
                   </div>
-                  <div className="wa-row-msg">
-                    {conversation.last.direction === "out" ? "You: " : ""}{conversation.last.body}
-                  </div>
-                </div>
-              </button>
-            ))}
+                </button>
+              ))}
+            </div>
           </div>
 
           {active && (
@@ -229,17 +252,33 @@ export default function WhatsApp() {
               </div>
 
               <div className="wa-messages" ref={messagesRef}>
-                {active.thread.map((item) => (
-                  <div key={item.id} className={`wa-bubble ${item.direction === "out" ? "out" : "in"}`}>
-                    {item.body}
-                    <span className="wa-time">
-                      {moment(item.created_at).format("HH:mm")}
-                      {item.direction === "out" && item.status ? ` · ${item.status}` : ""}
-                    </span>
-                  </div>
-                ))}
+                {active.thread.map((item, index) => {
+                  const day = moment(item.created_at).format("DD MMM YYYY");
+                  const prevDay = index > 0 ? moment(active.thread[index - 1].created_at).format("DD MMM YYYY") : null;
+                  return (
+                    <Fragment key={item.id}>
+                      {day !== prevDay && (
+                        <div className="wa-day">
+                          {moment(item.created_at).calendar(null, { sameDay: "[Today]", lastDay: "[Yesterday]", lastWeek: "dddd", sameElse: "DD MMM YYYY" })}
+                        </div>
+                      )}
+                      <div className={`wa-bubble ${item.direction === "out" ? "out" : "in"}`}>
+                        {item.body}
+                        <span className="wa-time">
+                          {moment(item.created_at).format("HH:mm")}
+                          {item.direction === "out" && item.status ? ` · ${item.status}` : ""}
+                        </span>
+                      </div>
+                    </Fragment>
+                  );
+                })}
               </div>
 
+              <div className="wa-quick">
+                {QUICK_REPLIES.map((text) => (
+                  <button key={text} type="button" className="wa-quick-chip" onClick={() => setReply(text)}>{text}</button>
+                ))}
+              </div>
               <div className="wa-composer">
                 <textarea
                   className="wa-input"
