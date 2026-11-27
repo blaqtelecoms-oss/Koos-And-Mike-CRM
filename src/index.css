@@ -708,17 +708,29 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     z-index: 60;
     align-items: flex-end;
     padding: 8px 6px 6px;
-    border-radius: 24px;
-    background: rgba(16,16,16,.94);
+    border-radius: 999px;
+    box-shadow: 0 18px 44px rgba(0,0,0,.55);
+  }
+  /* Bar surface with a notch cut out around the raised button */
+  .km-mnav::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: rgba(10,10,10,.96);
     -webkit-backdrop-filter: blur(18px);
     backdrop-filter: blur(18px);
     border: 1px solid rgba(255,255,255,.09);
-    box-shadow: 0 18px 44px rgba(0,0,0,.5);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    pointer-events: none;
+    -webkit-mask-image: radial-gradient(circle 27px at 50% calc(100% - 58px), transparent 26.5px, #000 27px);
+    mask-image: radial-gradient(circle 27px at 50% calc(100% - 58px), transparent 26.5px, #000 27px);
   }
-  [data-theme="light"] .km-mnav {
+  .km-mnav > * { position: relative; z-index: 1; }
+  [data-theme="light"] .km-mnav { box-shadow: 0 18px 40px rgba(120,100,40,.18); }
+  [data-theme="light"] .km-mnav::before {
     background: rgba(255,255,255,.94);
     border-color: rgba(23,19,10,.1);
-    box-shadow: 0 18px 40px rgba(120,100,40,.18);
   }
   [data-theme="light"] .km-mnav-badge { border-color: #fff; }
 
@@ -738,10 +750,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     height: 46px;
     transform: translateY(-28px);
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    background: radial-gradient(circle at 34% 26%, #ffe2b0 0%, var(--gold-light) 34%, var(--gold) 66%, var(--gold-deep) 100%);
     color: #1a1300;
-    border: 1px solid rgba(255,255,255,.25);
-    box-shadow: 0 0 0 5px var(--bg), 0 8px 18px rgba(255,157,0,.35);
+    border: 1px solid rgba(255,255,255,.28);
+    box-shadow: 0 10px 22px rgba(255,157,0,.38), inset 0 -2px 6px rgba(140,80,0,.35);
     transition: transform .18s ease;
   }
   .km-mnav-more:active .km-mnav-more-orb { transform: translateY(-28px) scale(.94); }
