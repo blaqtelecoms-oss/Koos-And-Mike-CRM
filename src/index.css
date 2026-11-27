@@ -627,6 +627,18 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 .km-app option { background: #1a1a1a !important; color: var(--ink) !important; }
 
+/* ===== Mobile navigation (bottom bar + more sheet) ===== */
+.km-mnav { display: none; position: fixed; }
+
+@keyframes kmFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes kmSheetUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 900px) {
   body:has(.km-app) { overflow: auto; height: auto; }
@@ -636,19 +648,109 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     grid-template-rows: auto;
     height: auto;
   }
-  .km-sidebar { min-height: 0; height: auto; }
-  .km-nav-scroll {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4px;
-    overflow: visible;
-  }
-  .km-nav-group-label { grid-column: 1 / -1; }
-  .km-content { overflow: visible; padding: 0 14px 14px; }
+  .km-sidebar { display: none; }
+  .km-content { overflow: visible; padding: 0 14px calc(92px + env(safe-area-inset-bottom)); }
   .km-stats-grid, .km-3cards { grid-template-columns: 1fr 1fr; }
   .km-main-grid, .km-two-col { grid-template-columns: 1fr; }
   .km-topbar { justify-content: flex-start; padding: 0 0 0 14px; }
   .km-pill-search { min-width: 0; flex: 1; }
+
+  .km-mnav {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
+    background: var(--sidebar-bg);
+    border-top: 1px solid rgba(255,255,255,.08);
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+    box-shadow: 0 -10px 30px rgba(0,0,0,.22);
+  }
+
+  .km-mnav-item {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 6px 2px;
+    border: 0;
+    background: none;
+    color: #a3a3a3;
+    font: 600 10px/1.1 'Inter';
+    letter-spacing: .2px;
+    border-radius: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color .2s;
+  }
+  .km-mnav-item > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+  .km-mnav-item svg { width: 20px; height: 20px; stroke-width: 1.7; }
+  .km-mnav-item.active { color: var(--gold); }
+  .km-mnav-item.active svg { stroke-width: 2.2; }
+
+  .km-mnav-icon { position: relative; display: grid; place-items: center; height: 22px; }
+  .km-mnav-badge {
+    position: absolute;
+    top: -6px;
+    left: 11px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 9.5px;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+    border: 2px solid #101010;
+  }
+
+  .km-mnav-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    background: rgba(0,0,0,.45);
+    animation: kmFadeIn .18s ease-out;
+  }
+
+  .km-mnav-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 58;
+    max-height: 82vh;
+    overflow-y: auto;
+    background: var(--sidebar-bg);
+    color: #f3f3f3;
+    border-radius: 18px 18px 0 0;
+    border-top: 1px solid rgba(255,255,255,.08);
+    box-shadow: 0 -20px 44px rgba(0,0,0,.4);
+    padding: 14px 12px calc(96px + env(safe-area-inset-bottom));
+    animation: kmSheetUp .22s ease-out;
+  }
+
+  .km-mnav-sheet-head { display: flex; align-items: flex-start; gap: 8px; }
+  .km-mnav-close {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.06);
+    color: #f3f3f3;
+    cursor: pointer;
+  }
+
+  .km-mnav-groups .km-nav-group-label { margin: 14px 14px 6px; }
+  .km-mnav-groups .km-nav-item { padding: 10px 14px; }
+  .km-mnav-sheet .km-user-card small { max-width: none; }
 }
 
 /* ===== Route slide animation (mobile) ===== */

@@ -3,8 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "./utils";
 import {
   LayoutGrid, Users, Car, CheckSquare, Share2,
-  Menu, X, LogOut, RefreshCcw, Search, BarChart3,
-  ShieldCheck, Megaphone, Bell, Plus, Trash2, MessageCircle, Plug
+  LogOut, RefreshCcw, Search, BarChart3,
+  ShieldCheck, Megaphone, Bell, MessageCircle, Plug
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { api } from "@/api/supabaseClient";
@@ -12,6 +12,7 @@ import { isAdminUser } from "@/lib/admin";
 import DeleteAccountDialog from "@/components/DeleteAccountDialog";
 import Avatar from "@/components/premium/Avatar";
 import ThemeToggle from "@/components/ThemeToggle";
+import MobileNav from "@/components/MobileNav";
 
 const TOP_LEVEL_PAGES = ["Dashboard", "Leads", "WhatsApp", "Vehicles", "Tasks", "SocialPosts", "TradeIns", "CarRequests", "Adverts"];
 
@@ -175,6 +176,16 @@ export default function Layout({ children, currentPageName }) {
         {/* Page content */}
         {children}
       </main>
+
+      {/* ===== Mobile navigation (bottom bar + more sheet) ===== */}
+      <MobileNav
+        navigation={navigation}
+        clientNav={clientNav}
+        adminNav={adminNav}
+        user={user}
+        newLeadsCount={newLeadsCount}
+        onLogout={handleLogout}
+      />
     </div>
   );
 }
