@@ -22,6 +22,8 @@ export default function MobileNav({ navigation = [], clientNav = [], adminNav = 
     .map((name) => navigation.find((item) => item.name === name))
     .filter(Boolean);
   const rest = navigation.filter((item) => !PRIMARY_PAGES.includes(item.name));
+  const left = primary.slice(0, 2);
+  const right = primary.slice(2);
 
   const groups = [
     { label: "Workspace", items: rest },
@@ -93,7 +95,7 @@ export default function MobileNav({ navigation = [], clientNav = [], adminNav = 
       )}
 
       <nav className="km-mnav" aria-label="Main navigation">
-        {primary.map((item) => {
+        {left.map((item) => {
           const Icon = item.icon;
           const badge = badgeFor(item);
           return (
@@ -110,15 +112,34 @@ export default function MobileNav({ navigation = [], clientNav = [], adminNav = 
             </Link>
           );
         })}
+
         <button
           type="button"
-          className={`km-mnav-item ${open ? "active" : ""}`}
+          className={`km-mnav-more ${open ? "active" : ""}`}
           onClick={() => setOpen((current) => !current)}
           aria-expanded={open}
+          aria-label="More"
         >
-          <span className="km-mnav-icon">{open ? <X /> : <Menu />}</span>
-          <span>More</span>
+          <span className="km-mnav-more-orb">{open ? <X /> : <Menu />}</span>
         </button>
+
+        {right.map((item) => {
+          const Icon = item.icon;
+          const badge = badgeFor(item);
+          return (
+            <Link
+              key={item.name}
+              to={href(item)}
+              className={`km-mnav-item ${isActive(item) ? "active" : ""}`}
+            >
+              <span className="km-mnav-icon">
+                <Icon />
+                {badge != null && <span className="km-mnav-badge">{badge}</span>}
+              </span>
+              <span>{item.name}</span>
+            </Link>
+          );
+        })}
       </nav>
     </>
   );
