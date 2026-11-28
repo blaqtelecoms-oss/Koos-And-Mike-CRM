@@ -1338,47 +1338,46 @@ button, a, [role="button"] {
   position: fixed;
   inset: -8%;
   background:
-    radial-gradient(900px 720px at 4% -16%, rgba(255,157,0,.20), transparent 60%),
-    radial-gradient(760px 640px at 92% 108%, rgba(110,145,255,.10), transparent 60%),
-    linear-gradient(180deg, rgba(10,10,10,.55), rgba(8,8,8,.68)),
-    url("/app-bg.png") center 38% / cover no-repeat;
-  filter: blur(7px) saturate(110%);
+    radial-gradient(900px 720px at 4% -16%, rgba(255,157,0,.10), transparent 60%),
+    linear-gradient(180deg, rgba(8,8,8,.28), rgba(6,6,6,.44)),
+    url("/app-bg.png") center / cover no-repeat;
+  filter: blur(9px) saturate(115%);
   pointer-events: none;
   z-index: 0;
 }
 [data-theme="light"] .km-app::before {
   background:
-    radial-gradient(900px 720px at 4% -16%, rgba(255,193,69,.26), transparent 60%),
-    radial-gradient(760px 640px at 92% 108%, rgba(122,168,255,.12), transparent 60%),
-    linear-gradient(180deg, rgba(253,248,236,.58), rgba(253,248,236,.72)),
-    url("/app-bg.png") center 38% / cover no-repeat;
+    radial-gradient(900px 720px at 4% -16%, rgba(255,193,69,.14), transparent 60%),
+    linear-gradient(180deg, rgba(253,248,236,.42), rgba(253,248,236,.58)),
+    url("/app-bg.png") center / cover no-repeat;
 }
 
-/* Cards: see-through pane, lit hairline and a soft prismatic rim */
+/* Cards: a barely-tinted pane with a lit hairline and a prismatic rim,
+   like the reference: the photo reads clearly through the glass. */
 .km-card,
 .km-card-tight {
-  background: linear-gradient(155deg, rgba(255,255,255,.10), rgba(255,255,255,.03) 52%, rgba(255,255,255,.055));
-  border: 1px solid rgba(255,255,255,.26);
+  background: linear-gradient(150deg, rgba(255,255,255,.22), rgba(255,255,255,.09) 55%, rgba(255,255,255,.14));
+  border: 1px solid rgba(255,255,255,.45);
   border-radius: 26px;
   box-shadow:
-    0 26px 56px rgba(0,0,0,.46),
-    inset 0 1px 0 rgba(255,255,255,.38),
-    inset 0 -1px 0 rgba(150,195,255,.22),
-    inset 1px 0 0 rgba(255,180,130,.14),
-    inset -1px 0 0 rgba(190,150,255,.12);
-  -webkit-backdrop-filter: blur(42px) saturate(200%);
-  backdrop-filter: blur(42px) saturate(200%);
+    0 24px 60px rgba(0,0,0,.38),
+    inset 0 1px 0 rgba(255,255,255,.65),
+    inset 0 -1px 0 rgba(140,190,255,.35),
+    inset 1px 0 0 rgba(255,170,120,.22),
+    inset -1px 0 0 rgba(200,150,255,.20);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  backdrop-filter: blur(40px) saturate(200%);
   transition: background .22s ease, border-color .22s ease, box-shadow .22s ease;
 }
 [data-theme="light"] .km-card,
 [data-theme="light"] .km-card-tight {
-  background: linear-gradient(155deg, rgba(255,255,255,.78), rgba(255,255,255,.48) 55%, rgba(255,255,255,.62));
-  border-color: rgba(255,255,255,.90);
+  background: linear-gradient(150deg, rgba(255,255,255,.72), rgba(255,255,255,.44) 55%, rgba(255,255,255,.58));
+  border-color: rgba(255,255,255,.95);
   box-shadow:
-    0 22px 46px rgba(120,100,40,.16),
-    inset 0 1px 0 rgba(255,255,255,.98),
-    inset 0 -1px 0 rgba(150,190,255,.30),
-    inset 1px 0 0 rgba(255,190,140,.24);
+    0 22px 50px rgba(120,100,40,.16),
+    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 -1px 0 rgba(150,190,255,.40),
+    inset 1px 0 0 rgba(255,190,140,.35);
 }
 
 /* Pills, chips and icon buttons: same pane, thinner */
@@ -1387,59 +1386,59 @@ button, a, [role="button"] {
 .km-chip,
 .sp-tool,
 .sp-platform-chip {
-  background: rgba(255,255,255,.075);
-  border-color: rgba(255,255,255,.17);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.22);
-  -webkit-backdrop-filter: blur(22px) saturate(180%);
-  backdrop-filter: blur(22px) saturate(180%);
+  background: rgba(255,255,255,.18);
+  border-color: rgba(255,255,255,.42);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.55);
+  -webkit-backdrop-filter: blur(26px) saturate(190%);
+  backdrop-filter: blur(26px) saturate(190%);
 }
 [data-theme="light"] .km-pill,
 [data-theme="light"] .km-icon-btn,
 [data-theme="light"] .km-chip,
 [data-theme="light"] .sp-tool,
 [data-theme="light"] .sp-platform-chip {
-  background: rgba(255,255,255,.62);
-  border-color: rgba(255,255,255,.88);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 6px 18px rgba(120,100,40,.10);
+  background: rgba(255,255,255,.58);
+  border-color: rgba(255,255,255,.95);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 6px 18px rgba(120,100,40,.10);
 }
 
 /* Fields */
 .km-app input,
 .km-app textarea,
 .km-app select {
-  background: rgba(255,255,255,.07);
-  border-color: rgba(255,255,255,.15);
+  background: rgba(255,255,255,.15);
+  border-color: rgba(255,255,255,.35);
   border-radius: 12px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.14);
-  -webkit-backdrop-filter: blur(18px) saturate(170%);
-  backdrop-filter: blur(18px) saturate(170%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.35);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
 }
 [data-theme="light"] .km-app input,
 [data-theme="light"] .km-app textarea,
 [data-theme="light"] .km-app select {
-  background: rgba(255,255,255,.68);
-  border-color: rgba(255,255,255,.90);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.95);
+  background: rgba(255,255,255,.62);
+  border-color: rgba(255,255,255,.95);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,1);
 }
 
 /* Dialogs: deep frosted glass */
 [role="dialog"] {
-  background: linear-gradient(160deg, rgba(34,34,34,.62), rgba(18,18,18,.56));
-  -webkit-backdrop-filter: blur(44px) saturate(190%);
-  backdrop-filter: blur(44px) saturate(190%);
-  border: 1px solid rgba(255,255,255,.18);
+  background: linear-gradient(160deg, rgba(255,255,255,.20), rgba(255,255,255,.10));
+  -webkit-backdrop-filter: blur(48px) saturate(200%);
+  backdrop-filter: blur(48px) saturate(200%);
+  border: 1px solid rgba(255,255,255,.45);
   box-shadow:
-    0 34px 90px rgba(0,0,0,.58),
-    inset 0 1px 0 rgba(255,255,255,.24),
-    inset 0 -1px 0 rgba(150,195,255,.14);
+    0 34px 90px rgba(0,0,0,.50),
+    inset 0 1px 0 rgba(255,255,255,.65),
+    inset 0 -1px 0 rgba(150,195,255,.28);
 }
 [data-theme="light"] [role="dialog"] {
-  background: linear-gradient(160deg, rgba(255,255,255,.86), rgba(255,255,255,.68));
-  border-color: rgba(255,255,255,.95);
+  background: linear-gradient(160deg, rgba(255,255,255,.86), rgba(255,255,255,.66));
+  border-color: rgba(255,255,255,.98);
   box-shadow:
     0 34px 80px rgba(120,100,40,.24),
     inset 0 1px 0 rgba(255,255,255,1),
-    inset 0 -1px 0 rgba(150,190,255,.28);
+    inset 0 -1px 0 rgba(150,190,255,.30);
 }
 
 /* Smooth, iOS-eased transitions on every interactive surface */
