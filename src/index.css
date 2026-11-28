@@ -1337,18 +1337,22 @@ button, a, [role="button"] {
   display: block;
   position: fixed;
   inset: -8%;
+  width: auto;
+  height: auto;
+  right: -8%;
+  bottom: -8%;
   background:
     radial-gradient(900px 720px at 4% -16%, rgba(255,157,0,.10), transparent 60%),
-    linear-gradient(180deg, rgba(8,8,8,.28), rgba(6,6,6,.44)),
+    linear-gradient(180deg, rgba(8,8,8,.40), rgba(6,6,6,.55)),
     url("/app-bg.png") center / cover no-repeat;
-  filter: blur(9px) saturate(115%);
+  filter: blur(8px) brightness(1.08) saturate(118%);
   pointer-events: none;
   z-index: 0;
 }
 [data-theme="light"] .km-app::before {
   background:
     radial-gradient(900px 720px at 4% -16%, rgba(255,193,69,.14), transparent 60%),
-    linear-gradient(180deg, rgba(253,248,236,.42), rgba(253,248,236,.58)),
+    linear-gradient(180deg, rgba(253,248,236,.52), rgba(253,248,236,.66)),
     url("/app-bg.png") center / cover no-repeat;
 }
 
@@ -1356,8 +1360,8 @@ button, a, [role="button"] {
    like the reference: the photo reads clearly through the glass. */
 .km-card,
 .km-card-tight {
-  background: linear-gradient(150deg, rgba(255,255,255,.22), rgba(255,255,255,.09) 55%, rgba(255,255,255,.14));
-  border: 1px solid rgba(255,255,255,.45);
+  background: linear-gradient(150deg, rgba(255,255,255,.26), rgba(255,255,255,.10) 55%, rgba(255,255,255,.15));
+  border: 1px solid rgba(255,255,255,.50);
   border-radius: 26px;
   box-shadow:
     0 24px 60px rgba(0,0,0,.38),
@@ -1521,10 +1525,10 @@ button, a, [role="button"] {
 @media (min-width: 901px) {
   .km-sidebar {
     background:
-      linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,0) 24%),
-      linear-gradient(180deg, rgba(22,22,22,.84), rgba(12,12,12,.76));
-    -webkit-backdrop-filter: blur(38px) saturate(190%);
-    backdrop-filter: blur(38px) saturate(190%);
+      linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,0) 26%),
+      linear-gradient(180deg, rgba(22,22,22,.58), rgba(10,10,10,.70));
+    -webkit-backdrop-filter: blur(44px) saturate(190%);
+    backdrop-filter: blur(44px) saturate(190%);
     box-shadow:
       inset -1px 0 0 rgba(255,255,255,.10),
       inset 0 1px 0 rgba(255,255,255,.12),
