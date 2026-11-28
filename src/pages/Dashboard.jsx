@@ -98,7 +98,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div style={{ maxWidth: "100%" }}>
+    <div className="km-dash" style={{ maxWidth: "100%" }}>
       {/* Hero */}
       <div className="km-hero">
         <div>
@@ -141,7 +141,7 @@ export default function Dashboard() {
           </div>
 
           {/* Recent Leads table */}
-          <GlassCard style={{ marginTop: 14 }}>
+          <GlassCard style={{ marginTop: 30 }}>
             <div className="km-card-header">
               <div>
                 Recent Leads
@@ -181,7 +181,7 @@ export default function Dashboard() {
         </div>
 
         {/* Right column */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 30 }}>
           {/* Vehicle spotlight */}
           <GlassCard>
             <div className="km-card-header">

@@ -1597,3 +1597,44 @@ button, a, [role="button"] {
 @media (min-width: 901px) and (prefers-reduced-motion: reduce) {
   .km-app * { transition: none !important; animation: none !important; }
 }
+
+/* ===== Dashboard — open layout =====
+   The page is the only surface: one calm scrim over the photo, and the
+   widgets sit directly on it, separated by space instead of boxes. */
+.km-content:has(.km-dash) {
+  background: rgba(10,11,13,.42);
+}
+[data-theme="light"] .km-content:has(.km-dash) {
+  background: rgba(253,248,236,.56);
+}
+
+/* Slightly lighter secondary ink so small labels stay readable on the scrim */
+.km-dash { --mut: #c2c2c2; }
+[data-theme="light"] .km-dash { --mut: #6f6a5c; }
+
+.km-dash .km-card,
+.km-dash .km-card-tight {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.km-dash .km-card::before,
+.km-dash .km-card::after { display: none; }
+
+.km-dash .km-stat:hover { transform: none; }
+.km-dash .km-stat.highlight { border: 0; box-shadow: none; }
+
+.km-dash .km-stats-grid { gap: 30px; margin-bottom: 30px; }
+.km-dash .km-main-grid,
+.km-dash .km-two-col { gap: 34px; }
+.km-dash .km-card-header { margin-bottom: 14px; }
+
+@media (max-width: 900px) {
+  .km-dash .km-stats-grid { gap: 20px; margin-bottom: 22px; }
+  .km-dash .km-main-grid,
+  .km-dash .km-two-col { gap: 26px; }
+}
