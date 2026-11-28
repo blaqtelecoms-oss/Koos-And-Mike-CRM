@@ -1327,37 +1327,47 @@ button, a, [role="button"] {
    heavy blur, a thin lit top edge and a faint prismatic rim. Shared by
    desktop and mobile; the media blocks below add viewport specifics. */
 
-/* Ambient colour behind the glass so the blur has something to refract */
+/* Full-bleed showroom photo behind the interface, blurred and tinted so the
+   glass panes above it have real light and colour to refract. */
 .km-app {
+  background: var(--app-canvas);
+}
+.km-app::before {
+  content: "";
+  display: block;
+  position: fixed;
+  inset: -8%;
   background:
     radial-gradient(900px 720px at 4% -16%, rgba(255,157,0,.20), transparent 60%),
-    radial-gradient(820px 660px at 98% 0%, rgba(255,200,96,.13), transparent 62%),
-    radial-gradient(760px 640px at 82% 108%, rgba(110,145,255,.11), transparent 60%),
-    radial-gradient(620px 520px at 16% 96%, rgba(255,122,84,.09), transparent 62%),
-    var(--app-canvas);
+    radial-gradient(760px 640px at 92% 108%, rgba(110,145,255,.10), transparent 60%),
+    linear-gradient(180deg, rgba(10,10,10,.55), rgba(8,8,8,.68)),
+    url("/app-bg.png") center 38% / cover no-repeat;
+  filter: blur(7px) saturate(110%);
+  pointer-events: none;
+  z-index: 0;
 }
-[data-theme="light"] .km-app {
+[data-theme="light"] .km-app::before {
   background:
-    radial-gradient(900px 720px at 4% -16%, rgba(255,193,69,.42), transparent 60%),
-    radial-gradient(820px 660px at 98% 0%, rgba(255,228,176,.60), transparent 62%),
-    radial-gradient(760px 640px at 82% 108%, rgba(255,168,116,.24), transparent 60%),
-    radial-gradient(620px 520px at 16% 96%, rgba(122,168,255,.16), transparent 62%),
-    var(--app-canvas);
+    radial-gradient(900px 720px at 4% -16%, rgba(255,193,69,.26), transparent 60%),
+    radial-gradient(760px 640px at 92% 108%, rgba(122,168,255,.12), transparent 60%),
+    linear-gradient(180deg, rgba(253,248,236,.58), rgba(253,248,236,.72)),
+    url("/app-bg.png") center 38% / cover no-repeat;
 }
 
 /* Cards: see-through pane, lit hairline and a soft prismatic rim */
 .km-card,
 .km-card-tight {
-  background: linear-gradient(155deg, rgba(255,255,255,.11), rgba(255,255,255,.035) 52%, rgba(255,255,255,.06));
-  border: 1px solid rgba(255,255,255,.16);
-  border-radius: 22px;
+  background: linear-gradient(155deg, rgba(255,255,255,.10), rgba(255,255,255,.03) 52%, rgba(255,255,255,.055));
+  border: 1px solid rgba(255,255,255,.26);
+  border-radius: 26px;
   box-shadow:
-    0 22px 48px rgba(0,0,0,.42),
-    inset 0 1px 0 rgba(255,255,255,.30),
-    inset 0 -1px 0 rgba(150,195,255,.16),
-    inset 1px 0 0 rgba(255,180,130,.10);
-  -webkit-backdrop-filter: blur(34px) saturate(190%);
-  backdrop-filter: blur(34px) saturate(190%);
+    0 26px 56px rgba(0,0,0,.46),
+    inset 0 1px 0 rgba(255,255,255,.38),
+    inset 0 -1px 0 rgba(150,195,255,.22),
+    inset 1px 0 0 rgba(255,180,130,.14),
+    inset -1px 0 0 rgba(190,150,255,.12);
+  -webkit-backdrop-filter: blur(42px) saturate(200%);
+  backdrop-filter: blur(42px) saturate(200%);
   transition: background .22s ease, border-color .22s ease, box-shadow .22s ease;
 }
 [data-theme="light"] .km-card,
@@ -1512,10 +1522,10 @@ button, a, [role="button"] {
 @media (min-width: 901px) {
   .km-sidebar {
     background:
-      linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 24%),
-      linear-gradient(180deg, rgba(22,22,22,.90), rgba(12,12,12,.84));
-    -webkit-backdrop-filter: blur(32px) saturate(180%);
-    backdrop-filter: blur(32px) saturate(180%);
+      linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,0) 24%),
+      linear-gradient(180deg, rgba(22,22,22,.84), rgba(12,12,12,.76));
+    -webkit-backdrop-filter: blur(38px) saturate(190%);
+    backdrop-filter: blur(38px) saturate(190%);
     box-shadow:
       inset -1px 0 0 rgba(255,255,255,.10),
       inset 0 1px 0 rgba(255,255,255,.12),
